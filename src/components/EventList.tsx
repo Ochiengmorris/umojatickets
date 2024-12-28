@@ -27,7 +27,7 @@ const EventList = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <section className="flex items-center justify-between mb-8">
         <div className="w-full">
           <div className="flex items-center justify-between ">
             <h1 className="text-xl md:text-2xl  lg:text-3xl font-bold text-gray-900">
@@ -54,15 +54,15 @@ const EventList = () => {
             </span>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Upcoming Events Grid */}
       {upcomingEvents.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {upcomingEvents.map((event, index) => (
             <EventCard key={event._id} motionkey={index} eventId={event._id} />
           ))}
-        </div>
+        </section>
       ) : (
         <div className="bg-gray-50 rounded-lg p-12 text-center mb-12">
           <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -75,7 +75,7 @@ const EventList = () => {
 
       {/* Past Events Section */}
       {pastEvents.length > 0 && (
-        <>
+        <section>
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
             Past Events
           </h2>
@@ -88,7 +88,7 @@ const EventList = () => {
               />
             ))}
           </div>
-        </>
+        </section>
       )}
     </div>
   );
