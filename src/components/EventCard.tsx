@@ -19,8 +19,10 @@ import { useRouter } from "next/navigation";
 
 import PurchaseTicket from "@/components/PurchaseTicket";
 import { useStorageUrl } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
+import EventCardSkeleton from "./EventCardSkeleton";
 
 export default function EventCard({
   eventId,
@@ -32,6 +34,7 @@ export default function EventCard({
   const { user } = useUser();
   const router = useRouter();
   const event = useQuery(api.events.getById, { eventId });
+
   const availability = useQuery(api.events.getEventAvailability, { eventId });
   const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
     eventId,
@@ -41,12 +44,25 @@ export default function EventCard({
     eventId,
     userId: user?.id ?? "",
   });
+  const [delayedEvent, setDelayedEvent] = useState(true);
+
+  useEffect(() => {
+    if (event) {
+      // Introduce a delay before setting the state
+      const timeout = setTimeout(() => {
+        setDelayedEvent(false);
+      }, 10000); // 3 seconds delay
+
+      return () => clearTimeout(timeout); // Cleanup timeout on unmount
+    }
+  }, [event]);
 
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
   if (!event || !availability) {
-    return null;
+    return <EventCardSkeleton />;
   }
+
   const isPastEvent = event.eventDate < Date.now();
 
   const isEventOwner = user?.id === event?.userId;
