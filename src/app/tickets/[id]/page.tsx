@@ -74,14 +74,14 @@ export default function TicketPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8 space-y-8">
           {/* Navigation and Actions */}
           <div className="flex items-center justify-between">
             <Link
               href="/tickets"
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center text-foreground hover:text-foreground/90 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to My Tickets
@@ -89,12 +89,12 @@ export default function TicketPage() {
             <div className="flex items-center gap-4">
               <button
                 onClick={saveTicketAsPDF}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100"
+                className="flex items-center gap-2 px-4 py-2 text-foreground hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100"
               >
                 <Download className="w-4 h-4" />
                 <span className="text-sm">Save</span>
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">
+              <button className="flex items-center gap-2 px-4 py-2 text-foreground hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">
                 <Share2 className="w-4 h-4" />
                 <span className="text-sm">Share</span>
               </button>

@@ -31,9 +31,9 @@ export default function EventPage() {
     );
   }
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="border border-primary-foreground rounded-xl shadow-sm overflow-hidden">
           {imageUrl && (
             <div className="aspect-[21/9] relative w-full">
               <Image
@@ -51,10 +51,10 @@ export default function EventPage() {
               {/* Left Column - Event Details */}
               <div className="space-y-8">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  <h1 className="text-4xl font-bold text-primary mb-4">
                     {event.name}
                   </h1>
-                  <p className="text-lg text-gray-600">{event.description}</p>
+                  <p className="text-lg text-primary">{event.description}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
@@ -124,7 +124,7 @@ export default function EventPage() {
                     />
                   ) : (
                     <SignInButton mode="modal">
-                      <Button className="w-full bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+                      <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
                         Sign in to buy tickets
                       </Button>
                     </SignInButton>

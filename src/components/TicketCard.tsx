@@ -16,7 +16,12 @@ import Spinner from "./Spinner";
 export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
   const ticket = useQuery(api.tickets.getTicketWithDetails, { ticketId });
 
-  if (!ticket || !ticket.event) return <Spinner />;
+  if (!ticket || !ticket.event)
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
 
   const isPastEvent = ticket.event.eventDate < Date.now();
 

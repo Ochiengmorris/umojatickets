@@ -50,7 +50,11 @@ export default function SellerDashboard() {
   }, [stripeConnectId, fetchAccountStatus]);
 
   if (stripeConnectId === undefined) {
-    return <Spinner />;
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
   }
 
   const handleManageAccount = async () => {
@@ -67,9 +71,9 @@ export default function SellerDashboard() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="rounded-xl border bg-card text-card-foreground shadow overflow-hidden">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-green-600 to-green-800 px-6 py-8 text-white">
+        <div className="bg-gradient-to-r from-green-600 to-green-800 px-6 py-8 text-white rounded-b-xl mb-4">
           <h2 className="text-2xl font-bold">Seller Dashboard</h2>
           <p className="text-blue-100 mt-2 text-sm md:text-base">
             Manage your seller profile and payment settings
@@ -106,7 +110,8 @@ export default function SellerDashboard() {
               </div>
             </div>
 
-            <hr className="my-8" />
+            {/* <hr className="my-8" /> */}
+            <div className="py-4"></div>
           </>
         )}
 
@@ -137,7 +142,7 @@ export default function SellerDashboard() {
                     setAccountCreatePending(false);
                   }
                 }}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
               >
                 Create Seller Account
               </button>
@@ -162,7 +167,7 @@ export default function SellerDashboard() {
                           : "bg-yellow-500"
                       }`}
                     />
-                    <span className="text-lg font-semibold">
+                    <span className="text-lg font-semibold text-gray-800">
                       {accountStatus.isActive ? "Active" : "Pending Setup"}
                     </span>
                   </div>
@@ -190,7 +195,7 @@ export default function SellerDashboard() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="ml-2">
+                      <span className="ml-2 text-gray-800">
                         {accountStatus.chargesEnabled
                           ? "Can accept payments"
                           : "Cannot accept payments yet"}
@@ -212,7 +217,7 @@ export default function SellerDashboard() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="ml-2">
+                      <span className="ml-2 text-gray-800">
                         {accountStatus.payoutsEnabled
                           ? "Can receive payouts"
                           : "Cannot receive payouts yet"}

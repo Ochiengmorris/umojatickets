@@ -18,11 +18,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import PurchaseTicket from "@/components/PurchaseTicket";
-import { useStorageUrl } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { cn, useStorageUrl } from "@/lib/utils";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import EventCardSkeleton from "./EventCardSkeleton";
+import { Card } from "./ui/card";
 
 export default function EventCard({
   eventId,
@@ -44,18 +44,6 @@ export default function EventCard({
     eventId,
     userId: user?.id ?? "",
   });
-  const [delayedEvent, setDelayedEvent] = useState(true);
-
-  useEffect(() => {
-    if (event) {
-      // Introduce a delay before setting the state
-      const timeout = setTimeout(() => {
-        setDelayedEvent(false);
-      }, 10000); // 3 seconds delay
-
-      return () => clearTimeout(timeout); // Cleanup timeout on unmount
-    }
-  }, [event]);
 
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
@@ -123,7 +111,7 @@ export default function EventCard({
               e.stopPropagation();
               router.push(`/seller/events/${eventId}/edit`);
             }}
-            className="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200 shadow-sm flex items-center justify-center gap-2"
+            className="w-full bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200 shadow-sm flex items-center justify-center gap-2"
           >
             <PencilIcon className="w-5 h-5" />
             Edit Event
@@ -174,110 +162,117 @@ export default function EventCard({
   };
 
   return (
-    <motion.div
-      onClick={() => router.push(`/event/${eventId}`)}
-      className={`bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 cursor-pointer overflow-hidden relative ${
-        isPastEvent ? "opacity-75 hover:opacity-100" : ""
-      }`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{
-        delay: motionkey * 0.2, // Delay depends on the index
-        duration: 0.5, // Duration of the animation
-      }}
-    >
-      {/* Event Image */}
-      {imageUrl && (
-        <div className="relative w-full h-48">
-          <Image
-            src={imageUrl}
-            alt={event.name}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-        </div>
+    <Card
+      className={cn(
+        " relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:bg-accent/80 transition-all duration-300 border overflow-hidden border-primary-foreground cursor-pointer"
       )}
+    >
+      <motion.div
+        onClick={() => router.push(`/event/${eventId}`)}
+        className={`relative ${
+          isPastEvent ? "opacity-75 hover:opacity-100" : ""
+        }`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          delay: motionkey * 0.2, // Delay depends on the index
+          duration: 0.5, // Duration of the animation
+        }}
+      >
+        {/* Event Image */}
+        {imageUrl && (
+          <div className="relative w-full h-48">
+            <Image
+              src={imageUrl}
+              alt={event.name}
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          </div>
+        )}
 
-      <div className={`p-6 ${imageUrl ? "relative" : ""}`}>
-        <div className="flex justify-between items-start">
-          <div>
-            <div className="flex flex-col items-start gap-2">
-              {isEventOwner && (
-                <span className="inline-flex items-center gap-1 bg-green-600/90 text-white px-2 py-1 rounded-full text-xs font-medium">
-                  <StarIcon className="w-3 h-3" />
-                  Your Event
+        <div className={`p-6 ${imageUrl ? "relative" : ""}`}>
+          <div className="flex justify-between items-start">
+            <div>
+              <div className="flex flex-col items-start gap-2">
+                {isEventOwner && (
+                  <span className="inline-flex items-center gap-1 bg-green-600/90 text-white px-2 py-1 rounded-full text-xs font-medium">
+                    <StarIcon className="w-3 h-3" />
+                    Your Event
+                  </span>
+                )}
+
+                <h2 className="text-xl md:text-2xl font-bold text-card-foreground">
+                  {event.name}
+                </h2>
+              </div>
+              {isPastEvent && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-primary-foreground shadow mt-2">
+                  Past Event
                 </span>
               )}
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-                {event.name}
-              </h2>
             </div>
-            {isPastEvent && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 mt-2">
-                Past Event
+
+            {/* Price Tag */}
+            <div className="flex flex-col items-end gap-2 ml-4">
+              <span
+                className={`px-4 py-1.5 font-semibold rounded-full ${
+                  isPastEvent
+                    ? "bg-gray-200 text-gray-500"
+                    : "bg-green-50 text-green-700"
+                }`}
+              >
+                £{event.price.toFixed(2)}
               </span>
-            )}
-          </div>
-
-          {/* Price Tag */}
-          <div className="flex flex-col items-end gap-2 ml-4">
-            <span
-              className={`px-4 py-1.5 font-semibold rounded-full ${
-                isPastEvent
-                  ? "bg-gray-50 text-gray-500"
-                  : "bg-green-50 text-green-700"
-              }`}
-            >
-              £{event.price.toFixed(2)}
-            </span>
-            {availability.purchasedCount >= availability.totalTickets && (
-              <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
-                Sold Out
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center text-gray-600">
-            <MapPin className="w-4 h-4 mr-2" />
-            <span className="text-sm md:text-base">{event.location}</span>
-          </div>
-
-          <div className="flex items-center text-gray-600">
-            <CalendarDays className="w-4 h-4 mr-2" />
-            <span className="text-sm md:text-base">
-              {new Date(event.eventDate).toLocaleDateString()}{" "}
-              {isPastEvent && "(Ended)"}
-            </span>
-          </div>
-
-          <div className="flex items-center text-gray-600">
-            <Ticket className="w-4 h-4 mr-2" />
-            <span className="text-sm md:text-base">
-              {availability.totalTickets - availability.purchasedCount} /{" "}
-              {availability.totalTickets} available
-              {!isPastEvent && availability.activeOffers > 0 && (
-                <span className="text-amber-600 text-sm ml-2">
-                  ({availability.activeOffers}{" "}
-                  {availability.activeOffers === 1 ? "person" : "people"} trying
-                  to buy)
+              {availability.purchasedCount >= availability.totalTickets && (
+                <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
+                  Sold Out
                 </span>
               )}
-            </span>
+            </div>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            <div className="flex items-center text-card-foreground">
+              <MapPin className="w-4 h-4 mr-2" />
+              <span className="text-sm md:text-base">{event.location}</span>
+            </div>
+
+            <div className="flex items-center text-card-foreground">
+              <CalendarDays className="w-4 h-4 mr-2" />
+              <span className="text-sm md:text-base">
+                {new Date(event.eventDate).toLocaleDateString()}{" "}
+                {isPastEvent && "(Ended)"}
+              </span>
+            </div>
+
+            <div className="flex items-center text-card-foreground">
+              <Ticket className="w-4 h-4 mr-2" />
+              <span className="text-sm md:text-base">
+                {availability.totalTickets - availability.purchasedCount} /{" "}
+                {availability.totalTickets} available
+                {!isPastEvent && availability.activeOffers > 0 && (
+                  <span className="text-amber-600 text-sm ml-2">
+                    ({availability.activeOffers}{" "}
+                    {availability.activeOffers === 1 ? "person" : "people"}{" "}
+                    trying to buy)
+                  </span>
+                )}
+              </span>
+            </div>
+          </div>
+
+          <p className="mt-4 text-card-foreground text-sm line-clamp-2">
+            {event.description}
+          </p>
+
+          <div onClick={(e) => e.stopPropagation()}>
+            {!isPastEvent && renderTicketStatus()}
           </div>
         </div>
-
-        <p className="mt-4 text-gray-600 text-sm line-clamp-2">
-          {event.description}
-        </p>
-
-        <div onClick={(e) => e.stopPropagation()}>
-          {!isPastEvent && renderTicketStatus()}
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </Card>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Spinner from "@/components/Spinner";
 import TicketCard from "@/components/TicketCard";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
@@ -12,7 +13,12 @@ export default function MyTicketsPage() {
     userId: user?.id ?? "",
   });
 
-  if (!tickets) return null;
+  if (!tickets)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
 
   const validTickets = tickets.filter((t) => t.status === "valid");
   const otherTickets = tickets.filter((t) => t.status !== "valid");
@@ -25,12 +31,12 @@ export default function MyTicketsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="w-full">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
                 My Tickets
               </h1>
               <div className="bg-white md:hidden px-4 py-2 rounded-lg shadow-sm border border-gray-100">
@@ -84,7 +90,7 @@ export default function MyTicketsPage() {
 
         {otherTickets.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-fpreground mb-4">
               Other Tickets
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -98,7 +104,7 @@ export default function MyTicketsPage() {
         {tickets.length === 0 && (
           <div className="text-center py-12">
             <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-500">
               No tickets yet
             </h3>
             <p className="text-gray-600 mt-1">

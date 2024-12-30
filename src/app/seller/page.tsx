@@ -7,7 +7,7 @@ export default async function SellerPage() {
   if (!userId) redirect("/");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <SellerDashboard />
     </div>
   );

@@ -76,3 +76,18 @@ body {
     display: initial;
   }
 }
+
+@keyframes spinner-fade {
+  0% {
+    background-color: #69717d;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@layer utilities {
+  .animate-spinner-fade {
+    animation: spinner-fade 1s infinite linear;
+  }
+}

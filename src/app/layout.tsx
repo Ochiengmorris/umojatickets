@@ -1,6 +1,7 @@
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import Header from "@/components/Header";
 import SyncUserWithConvex from "@/components/SyncUserWithConvex";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
@@ -28,18 +29,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ConvexClientProvider>
-          <ClerkProvider>
-            <Header />
-            <SyncUserWithConvex />
-            {children}
-            <Toaster />
-          </ClerkProvider>
-        </ConvexClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ConvexClientProvider>
+            <ClerkProvider>
+              <Header />
+              <SyncUserWithConvex />
+              {children}
+              <Toaster />
+            </ClerkProvider>
+          </ConvexClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

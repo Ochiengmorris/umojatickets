@@ -2,32 +2,22 @@
 
 import { Search } from "lucide-react";
 import Form from "next/form";
+import { Input } from "./ui/input";
 
 export default function SearchBar() {
-  // const router = useRouter();
-  // const [query, setQuery] = useState("");
-
-  // const handleSearch = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (query.trim()) {
-  //     router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-  //   }
-  // };
-
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <Form action={"/search"} className="relative">
-        <input
+    <div className="grow max-w-4xl mx-auto">
+      <Form action={"/search"} className="relative flex gap-1">
+        <Input
           type="text"
-          name="q" // query
-          // onChange={(e) => setQuery(e.target.value)}
+          name="q"
           placeholder="Search for events..."
-          className="w-full py-3 px-4 pl-12 bg-white rounded-xl border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+          className="w-full pr-4 pl-12 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
         />
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
         <button
           type="submit"
-          className="absolute right-3 top-1/2 -translate-y-1/2 bg-green-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors duration-200"
+          className=" bg-primary text-primary-foreground shadow hover:bg-primary/90  px-4 py-1.5 rounded-lg text-sm font-semibold  transition-colors duration-200"
         >
           Search
         </button>

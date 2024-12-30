@@ -4,11 +4,11 @@ import Link from "next/link";
 
 function Header() {
   return (
-    <div className="border-b">
-      <div className="flex flex-col lg:flex-row items-center gap-4 p-4">
-        <div className="flex items-center justify-between w-full lg:w-auto">
+    <div className="border-b bg-background">
+      <div className="flex max-w-[1900px] m-auto flex-col lg:flex-row items-center gap-4 p-4">
+        <div className="flex items-center justify-between w-full lg:w-auto ">
           <Link href="/" className="shrink-0">
-            <h1 className="text-xl" style={{ fontWeight: 1000 }}>
+            <h1 className="text-2xl " style={{ fontWeight: 1000 }}>
               <span className=" text-green-600">Tuka</span>
               <span>Tickets</span>
             </h1>
@@ -29,21 +29,21 @@ function Header() {
         </div>
 
         {/* Search Bar - Full width on mobile */}
-        <div className="w-full lg:max-w-2xl">
+        <div className="w-full lg:w-fit lg:grow lg:max-w-2xl">
           <SearchBar />
         </div>
 
-        <div className="hidden lg:block ml-auto">
+        <div className="hidden lg:flex ml-auto">
           <SignedIn>
             <div className="flex items-center gap-3">
-              <Link href="/seller">
-                <button className="bg-green-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-green-700 transition">
+              <Link href="/seller" className="shrink-0">
+                <button className="bg-green-600 text-white px-3 py-2 text-sm rounded-lg hover:bg-green-700 transition font-semibold">
                   Sell Tickets
                 </button>
               </Link>
 
-              <Link href="/tickets">
-                <button className="bg-gray-100 text-gray-800 px-3 py-1.5 text-sm rounded-lg hover:bg-gray-200 transition border border-gray-300">
+              <Link href="/tickets" className="shrink-0">
+                <button className="bg-primary text-primary-foreground shadow hover:bg-primary/90 px-3 py-2 text-sm rounded-lg font-semibold transition">
                   My Tickets
                 </button>
               </Link>
@@ -53,7 +53,7 @@ function Header() {
 
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="bg-gray-100 text-gray-800 px-3 py-1.5 text-sm rounded-lg hover:bg-gray-200 transition border border-gray-300">
+              <button className="bg-primary text-primary-foreground shadow hover:bg-primary/90 px-3 py-2 text-sm rounded-lg font-semibold transition  ">
                 Sign In
               </button>
             </SignInButton>
@@ -64,13 +64,13 @@ function Header() {
         <div className="lg:hidden w-full flex justify-center gap-3">
           <SignedIn>
             <Link href="/seller" className="flex-1">
-              <button className="w-full bg-green-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-green-700 transition">
+              <button className="w-full bg-green-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-green-700 transition font-semibold">
                 Sell Tickets
               </button>
             </Link>
 
             <Link href="/tickets" className="flex-1">
-              <button className="w-full bg-gray-100 text-gray-800 px-3 py-1.5 text-sm rounded-lg hover:bg-gray-200 transition border border-gray-300">
+              <button className="w-full bg-primary text-primary-foreground shadow hover:bg-primary/90 font-semibold px-3 py-1.5 text-sm rounded-lg  transition">
                 My Tickets
               </button>
             </Link>

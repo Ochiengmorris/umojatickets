@@ -320,7 +320,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
 
           {/* Image Upload */}
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-primary">
               Event Image
             </label>
             <div className="mt-1 flex items-center gap-4">
@@ -368,7 +368,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full  font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
         >
           {isPending ? (
             <>

@@ -102,11 +102,9 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
         <button
           onClick={handlePurchase}
           disabled={isExpired || isLoading}
-          className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-8 py-4 rounded-lg font-bold shadow-md hover:from-amber-600 hover:to-amber-700 transform hover:scale-[1.02] transition-all duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100 text-lg"
+          className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-8 py-4 rounded-lg font-bold shadow-md hover:from-amber-600 hover:to-amber-700 transform hover:scale-[1.02] transition-all duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
-          {isLoading
-            ? "Redirecting to checkout..."
-            : "Purchase Your Ticket Now →"}
+          {isLoading ? "Redirecting to checkout..." : "Purchase Ticket Now →"}
         </button>
 
         <div className="mt-4">
