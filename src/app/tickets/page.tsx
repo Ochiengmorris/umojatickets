@@ -48,7 +48,7 @@ export default function MyTicketsPage() {
                 </div>
               </div>
             </div>
-            <p className="mt-2 text-gray-600 text-sm md:text-base">
+            <p className="mt-2 text-foreground/70 text-sm md:text-base">
               Manage and view all your tickets in one place
             </p>
           </div>
@@ -64,9 +64,7 @@ export default function MyTicketsPage() {
 
         {upcomingTickets.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Upcoming Events
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">Upcoming Events</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingTickets.map((ticket) => (
                 <TicketCard key={ticket._id} ticketId={ticket._id} />
@@ -90,9 +88,7 @@ export default function MyTicketsPage() {
 
         {otherTickets.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold text-fpreground mb-4">
-              Other Tickets
-            </h2>
+            <h2 className="text-xl font-semibold  mb-4">Other Tickets</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {otherTickets.map((ticket) => (
                 <TicketCard key={ticket._id} ticketId={ticket._id} />

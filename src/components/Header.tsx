@@ -1,6 +1,7 @@
 import SearchBar from "@/components/SearchBar";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
+import UserButton from "./UserButton";
 
 function Header() {
   return (
@@ -47,6 +48,7 @@ function Header() {
                   My Tickets
                 </button>
               </Link>
+              {/* <UserButton /> */}
               <UserButton />
             </div>
           </SignedIn>

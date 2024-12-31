@@ -103,12 +103,12 @@ export default function TicketPage() {
 
           {/* Event Info Summary */}
           <div
-            className={`bg-white p-6 rounded-lg shadow-sm border ${ticket.event.is_cancelled ? "border-red-200" : "border-gray-100"}`}
+            className={`border bg-card text-card-foreground p-6 rounded-lg shadow-sm ${ticket.event.is_cancelled ? "border-red-800/50" : ""}`}
           >
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+            <h1 className="text-xl md:text-2xl font-bold">
               {ticket.event.name}
             </h1>
-            <p className="mt-1 text-gray-600 text-sm md:text-base">
+            <p className="mt-1 text-foreground/70 text-sm md:text-base">
               {new Date(ticket.event.eventDate).toLocaleDateString()} at{" "}
               {ticket.event.location}
             </p>
@@ -122,12 +122,12 @@ export default function TicketPage() {
               >
                 {ticket.event.is_cancelled ? "Cancelled" : "Valid Ticket"}
               </span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-foreground/70">
                 Purchased on {new Date(ticket.purchasedAt).toLocaleDateString()}
               </span>
             </div>
             {ticket.event.is_cancelled && (
-              <p className="mt-4 text-sm text-red-600">
+              <p className="mt-4 text-sm text-red-600/70">
                 This event has been cancelled. A refund will be processed if it
                 hasn&apos;t been already.
               </p>
@@ -143,26 +143,26 @@ export default function TicketPage() {
         {/* Additional Information */}
         <div
           className={`mt-8 rounded-lg p-4 ${
-            ticket.event.is_cancelled
-              ? "bg-red-50 border-red-100 border"
-              : "bg-blue-50 border-blue-100 border"
+            ticket.event.is_cancelled ? "  border" : "border"
           }`}
         >
           <h3
             className={`text-sm font-medium ${
-              ticket.event.is_cancelled ? "text-red-900" : "text-blue-900"
+              ticket.event.is_cancelled ? "" : "text-green-600"
             }`}
           >
             Need Help?
           </h3>
           <p
             className={`mt-1 text-sm ${
-              ticket.event.is_cancelled ? "text-red-700" : "text-blue-700"
+              ticket.event.is_cancelled
+                ? "text-foreground/70"
+                : "text-green-700"
             }`}
           >
             {ticket.event.is_cancelled
-              ? "For questions about refunds or cancellations, please contact our support team at team@mj-ticketr.com"
-              : "If you have any issues with your ticket, please contact our support team at team@mj-ticketr.com"}
+              ? "For questions about refunds or cancellations, please contact our support team at team@tukatickets.com"
+              : "If you have any issues with your ticket, please contact our support team at team@tukatickets.com"}
           </p>
         </div>
       </div>

@@ -330,7 +330,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     src={imagePreview || currentImageUrl!}
                     alt="Preview"
                     fill
-                    className="object-contain rounded-lg"
+                    className="object-cover rounded-lg"
                   />
                   <button
                     type="button"

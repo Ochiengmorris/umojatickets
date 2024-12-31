@@ -12,7 +12,7 @@ export default async function SellerEventsPage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div className="border bg-card text-card-foreground rounded-xl shadow-sm p-6 mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Link
@@ -22,7 +22,7 @@ export default async function SellerEventsPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">My Events</h1>
+                <h1 className="text-2xl font-bold">My Events</h1>
                 <p className="mt-1 text-gray-500">
                   Manage your event listings and track sales
                 </p>
@@ -39,7 +39,7 @@ export default async function SellerEventsPage() {
         </div>
 
         {/* Event List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="border bg-card text-card-foreground rounded-xl shadow-sm p-6">
           <SellerEventList />
         </div>
       </div>

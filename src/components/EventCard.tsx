@@ -164,7 +164,7 @@ export default function EventCard({
   return (
     <Card
       className={cn(
-        " relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:bg-accent/80 transition-all duration-300 border overflow-hidden border-primary-foreground cursor-pointer"
+        " relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:border-primary/30 transition-all duration-300 border overflow-hidden border-primary-foreground cursor-pointer"
       )}
     >
       <motion.div

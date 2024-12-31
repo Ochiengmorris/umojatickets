@@ -33,9 +33,7 @@ export default function SellerEventList() {
     <div className="mx-auto space-y-8">
       {/* Upcoming Events */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Upcoming Events
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
         <div className="grid grid-cols-1 gap-6">
           {upcomingEvents.map((event) => (
             <SellerEventCard key={event._id} event={event} />
@@ -49,7 +47,7 @@ export default function SellerEventList() {
       {/* Past Events */}
       {pastEvents.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Past Events</h2>
+          <h2 className="text-2xl font-bold mb-4">Past Events</h2>
           <div className="grid grid-cols-1 gap-6">
             {pastEvents.map((event) => (
               <SellerEventCard key={event._id} event={event} />
@@ -73,7 +71,7 @@ function SellerEventCard({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-sm border ${event.is_cancelled ? "border-red-200" : "border-gray-200"} overflow-hidden`}
+      className={`border bg-card text-card-foreground rounded-lg shadow-sm  ${event.is_cancelled ? "border-red-500/50" : ""} overflow-hidden`}
     >
       <div className="p-6 ">
         <div className="flex flex-col md:flex-row items-start gap-6">
@@ -94,7 +92,7 @@ function SellerEventCard({
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center">
-                  <h3 className="text-xl md:truncate font-semibold text-gray-900">
+                  <h3 className="text-xl md:truncate font-semibold ">
                     {event.name}
                   </h3>
 
@@ -195,7 +193,7 @@ function SellerEventCard({
             </div>
 
             {/* Action buttons on Mobile medium Screens */}
-            <div className="hidden md:flex lg:hidden justify-end w-full  items-center gap-2">
+            <div className="hidden mt-4 md:flex lg:hidden justify-end w-full  items-center gap-2">
               {!isPastEvent && !event.is_cancelled && (
                 <>
                   <Link

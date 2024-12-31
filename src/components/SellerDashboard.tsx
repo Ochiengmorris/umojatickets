@@ -9,6 +9,7 @@ import { createStripeConnectLoginLink } from "@/actions/createStripeConnectLogin
 import type { AccountStatus } from "@/actions/getStripeConnectAccountStatus";
 import { getStripeConnectAccountStatus } from "@/actions/getStripeConnectAccountStatus";
 import { CalendarDays, Cog, Plus } from "lucide-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -23,6 +24,7 @@ export default function SellerDashboard() {
   const [accountStatus, setAccountStatus] = useState<AccountStatus | null>(
     null
   );
+  const { theme } = useTheme();
   const router = useRouter();
   const { user } = useUser();
   const stripeConnectId = useQuery(api.users.getUsersStripeConnectId, {
@@ -71,9 +73,9 @@ export default function SellerDashboard() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <div className="rounded-xl border bg-card text-card-foreground shadow overflow-hidden">
+      <div className="rounded-xl text-card-foreground overflow-hidden">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-green-600 to-green-800 px-6 py-8 text-white rounded-b-xl mb-4">
+        <div className="bg-gradient-to-r from-green-600 to-green-800 px-6 py-8 text-white shadow rounded-b-xl mb-4">
           <h2 className="text-2xl font-bold">Seller Dashboard</h2>
           <p className="text-blue-100 mt-2 text-sm md:text-base">
             Manage your seller profile and payment settings
@@ -83,25 +85,29 @@ export default function SellerDashboard() {
         {/* Main Content */}
         {isReadyToAcceptPayments && (
           <>
-            <div className="bg-white p-8 rounded-lg">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            <div className="border bg-card text-card-foreground shadow p-8 rounded-xl">
+              <h2 className="text-2xl font-semibold mb-6">
                 Sell tickets for your events
               </h2>
-              <p className="text-gray-600 text-sm md:text-base mb-8">
+              <p className="text-secondary-foreground/60 text-sm md:text-base mb-8">
                 List your tickets for sale and manage your listings
               </p>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+              <div className="border bg-card text-card-foreground  rounded-xl shadow-sm  p-4">
                 <div className="flex justify-center gap-4">
                   <Link
                     href="/seller/new-event"
-                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     <Plus className="w-5 h-5" />
                     <span className="text-sm">Create Event</span>
                   </Link>
                   <Link
                     href="/seller/events"
-                    className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                    className={`flex items-center gap-2 ${
+                      theme === "dark"
+                        ? "text-gray-200 bg-gray-100/10 hover:bg-gray-100/20"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }  px-4 py-2 rounded-lg  transition-colors`}
                   >
                     <CalendarDays className="w-5 h-5" />
                     <span className="text-sm">View My Events</span>
@@ -111,18 +117,18 @@ export default function SellerDashboard() {
             </div>
 
             {/* <hr className="my-8" /> */}
-            <div className="py-4"></div>
+            <div className="my-4" />
           </>
         )}
 
-        <div className="p-6">
+        <div className="p-6 border rounded-xl">
           {/* Account Creation Section */}
           {!stripeConnectId && !accountCreatePending && (
             <div className="text-center py-8">
               <h3 className="text-xl font-semibold mb-4">
                 Start Accepting Payments
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-secondary-foreground/60 mb-6">
                 Create your seller account to start receiving payments securely
                 through Stripe
               </p>
@@ -155,10 +161,8 @@ export default function SellerDashboard() {
               {/* Status Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Account Status Card */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-gray-500">
-                    Account Status
-                  </h3>
+                <div className="border bg-card text-card-foreground shadow rounded-lg p-4">
+                  <h3 className="text-sm font-medium">Account Status</h3>
                   <div className="mt-2 flex items-center">
                     <div
                       className={`w-3 h-3 rounded-full mr-2 ${
@@ -167,17 +171,15 @@ export default function SellerDashboard() {
                           : "bg-yellow-500"
                       }`}
                     />
-                    <span className="text-lg font-semibold text-gray-800">
+                    <span className="text-lg font-semibold">
                       {accountStatus.isActive ? "Active" : "Pending Setup"}
                     </span>
                   </div>
                 </div>
 
                 {/* Payments Status Card */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-gray-500">
-                    Payment Capability
-                  </h3>
+                <div className="border bg-card text-card-foreground shadow rounded-lg p-4">
+                  <h3 className="text-sm font-medium">Payment Capability</h3>
                   <div className="mt-2 space-y-1">
                     <div className="flex items-center">
                       <svg
@@ -195,7 +197,7 @@ export default function SellerDashboard() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="ml-2 text-gray-800">
+                      <span className="ml-2 ">
                         {accountStatus.chargesEnabled
                           ? "Can accept payments"
                           : "Cannot accept payments yet"}
@@ -217,7 +219,7 @@ export default function SellerDashboard() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="ml-2 text-gray-800">
+                      <span className="ml-2">
                         {accountStatus.payoutsEnabled
                           ? "Can receive payouts"
                           : "Cannot receive payouts yet"}
@@ -293,7 +295,7 @@ export default function SellerDashboard() {
                 {accountStatus.isActive && (
                   <button
                     onClick={handleManageAccount}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
+                    className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
                   >
                     <Cog className="w-4 h-4 mr-2" />
                     Seller Dashboard
@@ -301,7 +303,11 @@ export default function SellerDashboard() {
                 )}
                 <button
                   onClick={fetchAccountStatus}
-                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                  className={`px-4 py-2 rounded-lg ${
+                    theme === "dark"
+                      ? "text-gray-200 bg-gray-100/10 hover:bg-gray-100/20"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }  transition-colors`}
                 >
                   Refresh Status
                 </button>
@@ -318,14 +324,12 @@ export default function SellerDashboard() {
 
           {/* Loading States */}
           {accountCreatePending && (
-            <div className="text-center py-4 text-gray-600">
+            <div className="text-center py-4">
               Creating your seller account...
             </div>
           )}
           {accountLinkCreatePending && (
-            <div className="text-center py-4 text-gray-600">
-              Preparing account setup...
-            </div>
+            <div className="text-center py-4">Preparing account setup...</div>
           )}
         </div>
       </div>
