@@ -28,7 +28,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
   const statusColors = {
     valid: isPastEvent
       ? "bg-gray-50 text-gray-600 border-gray-200"
-      : "bg-green-50 text-green-700 border-green-100",
+      : "bg-[#e8f3f1] text-[#00a184] border-green-100",
     used: "bg-gray-50 text-gray-600 border-gray-200",
     refunded: "bg-red-50 text-red-700 border-red-100",
     cancelled: "bg-red-50 text-red-700 border-red-100",
@@ -86,7 +86,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
         <div className="space-y-2">
           <div className="flex items-center text-gray-600">
             <CalendarDays
-              className={`w-4 h-4 mr-2 ${ticket.event.is_cancelled ? "text-red-600" : "text-green-600"}`}
+              className={`w-4 h-4 mr-2 ${ticket.event.is_cancelled ? "text-red-600" : "text-[#00c9aa]"}`}
             />
             <span className="text-sm text-foreground/70">
               {new Date(ticket.event.eventDate).toLocaleDateString()}
@@ -94,7 +94,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
           </div>
           <div className="flex items-center">
             <MapPin
-              className={`w-4 h-4 mr-2 ${ticket.event.is_cancelled ? "text-red-600" : "text-green-600"}`}
+              className={`w-4 h-4 mr-2 ${ticket.event.is_cancelled ? "text-red-600" : "text-[#00c9aa]"}`}
             />
             <span className="text-sm text-foreground/70">
               {ticket.event.location}
@@ -109,7 +109,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
                 ? "text-red-600"
                 : isPastEvent
                   ? "text-foreground/70"
-                  : "text-green-600"
+                  : "text-[#00a184]"
             }`}
           >
             £{ticket.event.price.toFixed(2)}

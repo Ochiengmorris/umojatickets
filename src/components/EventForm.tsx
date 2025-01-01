@@ -357,8 +357,8 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-full file:border-0
                     file:text-sm file:font-semibold
-                    file:bg-green-50 file:text-green-700
-                    hover:file:bg-blue-100"
+                    file:bg-[#00c9aa] file:text-gray-950 
+                    hover:file:cursor-pointer hover:file:bg-[#00a184]/80  transition-colors"
                 />
               )}
             </div>

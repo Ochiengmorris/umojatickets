@@ -60,7 +60,7 @@ export default function EventPage() {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                     <div className="flex items-center text-gray-600 mb-1">
-                      <CalendarDays className="w-5 h-5 mr-2 text-green-600" />
+                      <CalendarDays className="w-5 h-5 mr-2 text-[#00a184]" />
                       <span className="text-sm font-medium">Date</span>
                     </div>
                     <p className="text-gray-900">
@@ -70,7 +70,7 @@ export default function EventPage() {
 
                   <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                     <div className="flex items-center text-gray-600 mb-1">
-                      <MapPin className="w-5 h-5 mr-2 text-green-600" />
+                      <MapPin className="w-5 h-5 mr-2 text-[#00a184]" />
                       <span className="text-sm font-medium">Location</span>
                     </div>
                     <p className="text-gray-900">{event.location}</p>
@@ -78,7 +78,7 @@ export default function EventPage() {
 
                   <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                     <div className="flex items-center text-gray-600 mb-1">
-                      <Ticket className="w-5 h-5 mr-2 text-green-600" />
+                      <Ticket className="w-5 h-5 mr-2 text-[#00a184]" />
                       <span className="text-sm font-medium">Price</span>
                     </div>
                     <p className="text-gray-900">£{event.price.toFixed(2)}</p>
@@ -86,7 +86,7 @@ export default function EventPage() {
 
                   <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                     <div className="flex items-center text-gray-600 mb-1">
-                      <Users className="w-5 h-5 mr-2 text-green-600" />
+                      <Users className="w-5 h-5 mr-2 text-[#00a184]" />
                       <span className="text-sm font-medium">Availability</span>
                     </div>
                     <p className="text-gray-900">
@@ -97,11 +97,11 @@ export default function EventPage() {
                 </div>
 
                 {/* Additional Event Information */}
-                <div className="bg-green-50 border border-green-100 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-green-900 mb-2">
+                <div className="bg-[#e8f3f1] border border-[#e8f3f1] rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-[#00a184] mb-2">
                     Event Information
                   </h3>
-                  <ul className="space-y-2 text-green-700">
+                  <ul className="space-y-2 text-[#00a184]">
                     <li>• Please arrive 30 minutes before the event starts</li>
                     <li>• Tickets are non-refundable</li>
                     <li>• Age restriction: 18+</li>

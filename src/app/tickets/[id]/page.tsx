@@ -148,7 +148,7 @@ export default function TicketPage() {
         >
           <h3
             className={`text-sm font-medium ${
-              ticket.event.is_cancelled ? "" : "text-green-600"
+              ticket.event.is_cancelled ? "" : ""
             }`}
           >
             Need Help?
@@ -157,7 +157,7 @@ export default function TicketPage() {
             className={`mt-1 text-sm ${
               ticket.event.is_cancelled
                 ? "text-foreground/70"
-                : "text-green-700"
+                : "text-foreground/70"
             }`}
           >
             {ticket.event.is_cancelled

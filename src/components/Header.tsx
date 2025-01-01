@@ -10,7 +10,7 @@ function Header() {
         <div className="flex items-center justify-between w-full lg:w-auto ">
           <Link href="/" className="shrink-0">
             <h1 className="text-2xl " style={{ fontWeight: 1000 }}>
-              <span className=" text-green-600">Tuka</span>
+              <span className=" text-[#00c9AA]">Tuka</span>
               <span>Tickets</span>
             </h1>
           </Link>
@@ -38,7 +38,7 @@ function Header() {
           <SignedIn>
             <div className="flex items-center gap-3">
               <Link href="/seller" className="shrink-0">
-                <button className="bg-green-600 text-white px-3 py-2 text-sm rounded-lg hover:bg-green-700 transition font-semibold">
+                <button className="bg-[#00c9AA] text-gray-950 px-3 py-2 text-sm rounded-lg hover:bg-[#00c9AA]/90 transition font-semibold">
                   Sell Tickets
                 </button>
               </Link>
@@ -66,7 +66,7 @@ function Header() {
         <div className="lg:hidden w-full flex justify-center gap-3">
           <SignedIn>
             <Link href="/seller" className="flex-1">
-              <button className="w-full bg-green-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-green-700 transition font-semibold">
+              <button className="w-full bg-[#00c9AA] text-gray-950 px-3 py-1.5 text-sm rounded-lg hover:bg-[#00c9AA] transition font-semibold">
                 Sell Tickets
               </button>
             </Link>

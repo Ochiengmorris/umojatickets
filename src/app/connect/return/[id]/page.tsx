@@ -3,13 +3,15 @@
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
+//TODO: fix colors for background and other green colors
+
 export default function Return() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {/* Success Header */}
-          <div className="bg-gradient-to-r from-green-500 to-green-600 p-6 text-white text-center">
+          <div className="bg-gradient-to-r from-[#00c9aa] to-[#00a184] p-6 text-gray-950 text-center">
             <div className="mb-4 flex justify-center">
               <CheckCircle2 className="w-16 h-16" />
             </div>

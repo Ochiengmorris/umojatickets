@@ -122,16 +122,16 @@ export default function EventCard({
 
     if (userTicket) {
       return (
-        <div className="mt-4 flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
+        <div className="mt-4 flex items-center justify-between p-3 bg-[#e8f3f1] rounded-lg border border-green-100">
           <div className="flex items-center">
-            <Check className="w-5 h-5 text-green-600 mr-2" />
-            <span className="text-green-700 font-medium">
+            <Check className="w-5 h-5 text-[#00a184] mr-2" />
+            <span className="text-[#00a184] font-medium">
               You have a ticket!
             </span>
           </div>
           <button
             onClick={() => router.push(`/tickets/${userTicket._id}`)}
-            className="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-full font-medium shadow-sm transition-colors duration-200 flex items-center gap-1"
+            className="text-sm bg-[#00c9aa]/50 hover:bg-[#00a184]/70 text-black px-3 py-1.5 rounded-full font-medium shadow-sm transition-colors duration-200 flex items-center gap-1"
           >
             View your ticket
           </button>
@@ -198,7 +198,7 @@ export default function EventCard({
             <div>
               <div className="flex flex-col items-start gap-2">
                 {isEventOwner && (
-                  <span className="inline-flex items-center gap-1 bg-green-600/90 text-white px-2 py-1 rounded-full text-xs font-medium">
+                  <span className="inline-flex items-center gap-1 bg-[#00c9aa]/90 text-gray-950 px-2 py-1 rounded-full text-xs font-medium">
                     <StarIcon className="w-3 h-3" />
                     Your Event
                   </span>

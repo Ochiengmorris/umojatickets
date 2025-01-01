@@ -75,9 +75,9 @@ export default function SellerDashboard() {
     <div className="max-w-3xl mx-auto p-6">
       <div className="rounded-xl text-card-foreground overflow-hidden">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-green-600 to-green-800 px-6 py-8 text-white shadow rounded-b-xl mb-4">
+        <div className="bg-gradient-to-r from-[#00c9aa] to-[#00a184] px-6 py-8 text-black shadow rounded-b-xl mb-4">
           <h2 className="text-2xl font-bold">Seller Dashboard</h2>
-          <p className="text-blue-100 mt-2 text-sm md:text-base">
+          <p className="text-black mt-2 text-sm md:text-base">
             Manage your seller profile and payment settings
           </p>
         </div>
@@ -148,7 +148,7 @@ export default function SellerDashboard() {
                     setAccountCreatePending(false);
                   }
                 }}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                className="bg-[#00c9aa] text-white px-6 py-2 rounded-lg hover:bg-[#00c9aa] transition-colors"
               >
                 Create Seller Account
               </button>
@@ -167,7 +167,7 @@ export default function SellerDashboard() {
                     <div
                       className={`w-3 h-3 rounded-full mr-2 ${
                         accountStatus.isActive
-                          ? "bg-green-500"
+                          ? "bg-[#00c9aa]"
                           : "bg-yellow-500"
                       }`}
                     />
@@ -185,7 +185,7 @@ export default function SellerDashboard() {
                       <svg
                         className={`w-5 h-5 ${
                           accountStatus.chargesEnabled
-                            ? "text-green-500"
+                            ? "text-[#00c9aa]"
                             : "text-gray-400"
                         }`}
                         fill="currentColor"
@@ -207,7 +207,7 @@ export default function SellerDashboard() {
                       <svg
                         className={`w-5 h-5 ${
                           accountStatus.payoutsEnabled
-                            ? "text-green-500"
+                            ? "text-[#00c9aa]"
                             : "text-gray-400"
                         }`}
                         fill="currentColor"
