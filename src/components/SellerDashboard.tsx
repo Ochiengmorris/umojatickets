@@ -8,13 +8,13 @@ import { useQuery } from "convex/react";
 import { createStripeConnectLoginLink } from "@/actions/createStripeConnectLoginLink";
 import type { AccountStatus } from "@/actions/getStripeConnectAccountStatus";
 import { getStripeConnectAccountStatus } from "@/actions/getStripeConnectAccountStatus";
+import Spinner from "@/components/Spinner";
 import { CalendarDays, Cog, Plus } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
-import Spinner from "./Spinner";
 
 export default function SellerDashboard() {
   const [accountCreatePending, setAccountCreatePending] = useState(false);
@@ -53,7 +53,7 @@ export default function SellerDashboard() {
 
   if (stripeConnectId === undefined) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className=" absolute top-1/2 right-1/2">
         <Spinner />
       </div>
     );

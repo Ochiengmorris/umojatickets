@@ -15,7 +15,7 @@ export default function MyTicketsPage() {
 
   if (!tickets)
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className=" absolute top-1/2 right-1/2">
         <Spinner />
       </div>
     );

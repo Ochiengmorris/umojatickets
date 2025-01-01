@@ -161,8 +161,8 @@ export default function TicketPage() {
             }`}
           >
             {ticket.event.is_cancelled
-              ? "For questions about refunds or cancellations, please contact our support team at team@tukatickets.com"
-              : "If you have any issues with your ticket, please contact our support team at team@tukatickets.com"}
+              ? "For questions about refunds or cancellations, please contact our support team at team@umojatickets.com"
+              : "If you have any issues with your ticket, please contact our support team at team@umojatickets.com"}
           </p>
         </div>
       </div>

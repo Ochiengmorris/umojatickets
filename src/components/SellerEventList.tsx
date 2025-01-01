@@ -112,7 +112,9 @@ function SellerEventCard({
                     )}
                   </div>
                 </div>
-                <p className="mt-1 text-gray-500">{event.description}</p>
+                <p className="mt-1 text-gray-500 line-clamp-2 lg:line-clamp-1">
+                  {event.description}
+                </p>
                 {event.is_cancelled && (
                   <div className="mt-2 flex items-center gap-2 text-red-600">
                     <Ban className="w-4 h-4" />

@@ -10,7 +10,7 @@ function Header() {
         <div className="flex items-center justify-between w-full lg:w-auto ">
           <Link href="/" className="shrink-0">
             <h1 className="text-2xl " style={{ fontWeight: 1000 }}>
-              <span className=" text-[#00c9AA]">Tuka</span>
+              <span className=" text-[#00c9AA]">Umoja</span>
               <span>Tickets</span>
             </h1>
           </Link>

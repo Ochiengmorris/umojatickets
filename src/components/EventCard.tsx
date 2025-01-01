@@ -216,7 +216,7 @@ export default function EventCard({
             </div>
 
             {/* Price Tag */}
-            <div className="flex flex-col items-end gap-2 ml-4">
+            <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
               <span
                 className={`px-4 py-1.5 font-semibold rounded-full ${
                   isPastEvent

@@ -1,17 +1,17 @@
 "use client";
 
+import EventCard from "@/components/EventCard";
 import Spinner from "@/components/Spinner";
 import { useQuery } from "convex/react";
 import { CalendarDays, Ticket } from "lucide-react";
 import { api } from "../../convex/_generated/api";
-import EventCard from "./EventCard";
 
 const EventList = () => {
   const events = useQuery(api.events.get);
 
   if (!events) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
+      <div className=" absolute top-1/2 right-1/2">
         <Spinner />
       </div>
     );
