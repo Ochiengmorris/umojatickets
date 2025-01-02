@@ -54,4 +54,21 @@ export default defineSchema({
   })
     .index("by_user_id", ["userId"])
     .index("by_email", ["email"]),
+
+  mpesaTransactions: defineTable({
+    checkoutRequestId: v.string(),
+    metadata: v.string(), // JSON string of MpesaCallbackMetaData
+    amount: v.number(),
+    expiresAt: v.string(), // ISO date string
+    status: v.union(
+      v.literal("pending"),
+      v.literal("completed"),
+      v.literal("failed")
+    ),
+    resultCode: v.optional(v.number()),
+    resultDesc: v.optional(v.string()),
+    mpesaReceiptNumber: v.optional(v.string()),
+    transactionDate: v.optional(v.string()),
+    phoneNumber: v.optional(v.string()),
+  }).index("by_checkoutRequestId", ["checkoutRequestId"]),
 });
