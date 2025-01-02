@@ -73,7 +73,7 @@ export async function queryTransactionCheck({
 
       await convex.mutation(api.mpesaTransactions.updateStatus, {
         checkoutRequestId: data.CheckoutRequestID,
-        status: data.ResultCode === "0" ? "completed" : "failed",
+        status: "completed",
         resultCode: Number(data.ResultCode),
         resultDesc: data.ResultDesc,
       });
@@ -108,19 +108,23 @@ export async function queryTransactionCheck({
           status: "failed",
           message: data.ResultDesc,
         };
-      } catch (error) {
-        console.error("Error updating ticket payment status:", error);
+      } catch (updateError) {
+        console.error("Error updating ticket payment status:", updateError);
         return { message: "Error updating ticket payment status", status: 500 };
       }
     }
-  } catch (error: any) {
-    console.error(
-      "Error querying transaction:",
-      error.response?.data || error.message
-    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error querying transaction:", error.message);
+      return {
+        status: 500,
+        message: error.message || "Query failed",
+      };
+    }
+    console.error("Unexpected error:", error);
     return {
       status: 500,
-      message: error.response?.data || "Query failed",
+      message: "Query failed",
     };
   }
 }

@@ -5,7 +5,6 @@ import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { CalendarDays, MapPin, StarIcon, Ticket } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 import { cn, useStorageUrl } from "@/lib/utils";
 import { api } from "../../convex/_generated/api";
@@ -21,18 +20,18 @@ const EventCardCheckout = ({
   motionkey: number;
 }) => {
   const { user } = useUser();
-  const router = useRouter();
+  // const router = useRouter();
   const event = useQuery(api.events.getById, { eventId });
 
   const availability = useQuery(api.events.getEventAvailability, { eventId });
-  const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
-    eventId,
-    userId: user?.id ?? "",
-  });
-  const queuePosition = useQuery(api.waitingList.getQueuePosition, {
-    eventId,
-    userId: user?.id ?? "",
-  });
+  // const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
+  //   eventId,
+  //   userId: user?.id ?? "",
+  // });
+  // const queuePosition = useQuery(api.waitingList.getQueuePosition, {
+  //   eventId,
+  //   userId: user?.id ?? "",
+  // });
 
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
