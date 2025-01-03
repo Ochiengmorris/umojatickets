@@ -1,8 +1,6 @@
 "use server";
 
 import { getAccessToken } from "@/middleware";
-
-// import { MpesaCredentials } from "../types/mpesa";
 export interface MpesaCredentials {
   consumerKey: string;
   consumerSecret: string;
@@ -53,12 +51,12 @@ const mpesaCredentials: MpesaCredentials = {
 //   }
 // }
 
-export async function sendStkPush(phoneNumber: string) {
+export async function sendStkPush(phoneNumber: string, amount: number) {
   const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
 
   // const accessToken = await generateAccessToken(auth);
   const accessToken = await getAccessToken();
-  console.log(accessToken);
+  // console.log(accessToken);
 
   const timestamp = new Date()
     .toISOString()
@@ -70,7 +68,7 @@ export async function sendStkPush(phoneNumber: string) {
 
   const callbackUrl = process.env.MPESA_CALLBACK_URL;
 
-  console.log(callbackUrl);
+  // console.log(callbackUrl);
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -83,7 +81,7 @@ export async function sendStkPush(phoneNumber: string) {
         Password: password,
         Timestamp: timestamp,
         TransactionType: "CustomerPayBillOnline",
-        Amount: "1",
+        Amount: amount,
         PartyA: phoneNumber,
         PartyB: mpesaCredentials.shortcode,
         PhoneNumber: phoneNumber,

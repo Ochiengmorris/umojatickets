@@ -51,7 +51,7 @@ export async function createMpesaPaymentRequest({
 
   // Create Mpesa STK Push request
   try {
-    const stkPushResponse = await sendStkPush(phoneNumber);
+    const stkPushResponse = await sendStkPush(phoneNumber, event.price);
 
     if (!stkPushResponse || !stkPushResponse.CheckoutRequestID) {
       throw new Error("Failed to initiate Mpesa payment");
