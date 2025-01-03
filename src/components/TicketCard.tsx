@@ -112,7 +112,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
                   : "text-[#00a184]"
             }`}
           >
-            £{ticket.event.price.toFixed(2)}
+            Ksh {ticket.event.price.toFixed(2)}
           </span>
           <span className="text-foreground/70 flex items-center">
             View Ticket <ArrowRight className="w-4 h-4 ml-1" />

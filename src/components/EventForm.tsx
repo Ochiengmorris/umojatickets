@@ -278,8 +278,8 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                 <FormLabel>Price per Ticket</FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <span className="absolute left-2 top-1/2 -translate-y-1/2">
-                      £
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm">
+                      Ksh
                     </span>
                     <Input
                       type="number"
@@ -291,7 +291,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                             e.target.value === "" ? 0 : Number(e.target.value)
                           ) // Update to 0 if input is empty
                       }
-                      className="pl-6"
+                      className="pl-10"
                     />
                   </div>
                 </FormControl>
@@ -310,6 +310,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                   <Input
                     type="number"
                     {...field}
+                    value={field.value === 0 ? "" : field.value}
                     onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>

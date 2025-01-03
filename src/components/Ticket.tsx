@@ -48,7 +48,7 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
           className={`px-6 py-4 ${imageUrl ? "absolute bottom-0 left-0 right-0" : ticket.event.is_cancelled ? "bg-red-600/50" : "bg-[#00c9aa]"} `}
         >
           <h2
-            className={`text-xl md:text-2xl font-bold ${imageUrl || !imageUrl ? "text-white" : "text-black"}`}
+            className={`text-xl md:text-2xl font-bold ${imageUrl || !imageUrl ? "text-black" : "text-black"}`}
           >
             {ticket.event.name}
           </h2>
@@ -70,8 +70,8 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
                 className={`w-5 h-5 mr-3 ${ticket.event.is_cancelled ? "text-red-800/50" : "text-[#00c9aa]"}`}
               />
               <div>
-                <p className="text-sm text-gray-500">Date</p>
-                <p className="font-medium">
+                <p className="text-sm text-muted-foreground/80">Date</p>
+                <p className="font-medium text-primary/80">
                   {new Date(ticket.event.eventDate).toLocaleDateString()}
                 </p>
               </div>
@@ -82,8 +82,10 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
                 className={`w-5 h-5 mr-3 ${ticket.event.is_cancelled ? "text-red-800/50" : "text-[#00c9aa]"}`}
               />
               <div>
-                <p className="text-sm text-gray-500">Location</p>
-                <p className="font-medium">{ticket.event.location}</p>
+                <p className="text-sm text-muted-foreground/80">Location</p>
+                <p className="font-medium text-primary/80">
+                  {ticket.event.location}
+                </p>
               </div>
             </div>
 
@@ -92,9 +94,11 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
                 className={`w-5 h-5 mr-3 ${ticket.event.is_cancelled ? "text-red-800/50" : "text-[#00c9aa]"}`}
               />
               <div>
-                <p className="text-sm text-gray-500">Ticket Holder</p>
-                <p className="font-medium">{user.name}</p>
-                <p className="text-sm text-gray-500">{user.email}</p>
+                <p className="text-sm text-muted-foreground/80">
+                  Ticket Holder
+                </p>
+                <p className="font-medium text-primary/80">{user.name}</p>
+                {/* <p className="text-sm">{user.email}</p> */}
               </div>
             </div>
 
@@ -103,8 +107,10 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
                 className={`w-5 h-5 mr-3 ${ticket.event.is_cancelled ? "text-red-800/50" : "text-[#00c9aa]"}`}
               />
               <div>
-                <p className="text-sm text-gray-500">Ticket Holder ID</p>
-                <p className="font-medium">{user.userId}</p>
+                <p className="text-sm text-muted-foreground/80">
+                  Ticket Holder Email
+                </p>
+                <p className="font-medium text-primary/80">{user.email}</p>
               </div>
             </div>
 
@@ -113,8 +119,11 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
                 className={`w-5 h-5 mr-3 ${ticket.event.is_cancelled ? "text-red-800/50" : "text-[#00c9aa]"}`}
               />
               <div>
-                <p className="text-sm text-gray-500">Ticket Price</p>
-                <p className="font-medium">£{ticket.event.price.toFixed(2)}</p>
+                <p className="text-sm text-muted-foreground/80">Ticket Price</p>
+                <p className="font-medium text-primary/80">
+                  <span className="text-sm">Ksh</span>{" "}
+                  {ticket.event.price.toFixed(2)}
+                </p>
               </div>
             </div>
           </div>

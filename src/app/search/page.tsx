@@ -30,7 +30,7 @@ export default function SearchPage() {
     .sort((a, b) => b.eventDate - a.eventDate);
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="h-full bg-background py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Search Results Header */}
         <div className="flex items-center gap-3 mb-8">
@@ -47,12 +47,10 @@ export default function SearchPage() {
 
         {/* No Results State */}
         {searchResults.length === 0 && (
-          <div className="text-center py-12 bg-gray-100 rounded-xl shadow-sm">
-            <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">
-              No events found
-            </h3>
-            <p className="text-gray-600 mt-1">
+          <div className="text-center border py-12 bg-card shadow-lg text-card-foreground rounded-xl">
+            <Search className="w-12 h-12  mx-auto mb-4" />
+            <h3 className="text-lg font-medium">No events found</h3>
+            <p className="text-muted-foreground mt-1">
               Try adjusting your search terms or browse all events
             </p>
           </div>

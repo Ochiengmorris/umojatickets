@@ -105,7 +105,7 @@ const EventCardCheckout = ({
                     : "bg-green-50 text-green-700"
                 }`}
               >
-                £{event.price.toFixed(2)}
+                <span className="text-xs">Ksh </span> {event.price.toFixed(2)}
               </span>
               {availability.purchasedCount >= availability.totalTickets && (
                 <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">

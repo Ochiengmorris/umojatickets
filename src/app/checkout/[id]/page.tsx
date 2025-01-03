@@ -137,6 +137,7 @@ const CheckOut = () => {
           title: "Query Failed",
           description: result.message || "Unable to query transaction status.",
         });
+        setIsStkPushSent(false);
       }
     } catch (error) {
       toast({

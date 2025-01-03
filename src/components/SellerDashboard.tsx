@@ -103,14 +103,12 @@ export default function SellerDashboard() {
                   </Link>
                   <Link
                     href="/seller/events"
-                    className={`flex items-center gap-2 ${
-                      theme === "dark"
-                        ? "text-gray-200 bg-gray-100/10 hover:bg-gray-100/20"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }  px-4 py-2 rounded-lg  transition-colors`}
+                    className={`flex items-center gap-2 text-foreground bg-foreground/10 hover:bg-foreground/20 px-4 py-2 rounded-lg transition-colors`}
                   >
                     <CalendarDays className="w-5 h-5" />
-                    <span className="text-sm">View My Events</span>
+                    <span className="text-sm text-foreground">
+                      View My Events
+                    </span>
                   </Link>
                 </div>
               </div>
@@ -303,11 +301,7 @@ export default function SellerDashboard() {
                 )}
                 <button
                   onClick={fetchAccountStatus}
-                  className={`px-4 py-2 rounded-lg ${
-                    theme === "dark"
-                      ? "text-gray-200 bg-gray-100/10 hover:bg-gray-100/20"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }  transition-colors`}
+                  className={`px-4 py-2 rounded-lg text-foreground bg-foreground/10 hover:bg-foreground/20 transition-colors`}
                 >
                   Refresh Status
                 </button>

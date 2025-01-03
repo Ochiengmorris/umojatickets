@@ -25,13 +25,13 @@ export default function EventPage() {
 
   if (!event || !availability) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <Spinner />
       </div>
     );
   }
   return (
-    <div className="min-h-screen">
+    <div className="h-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="border border-primary-foreground rounded-xl shadow-sm overflow-hidden">
           {imageUrl && (
@@ -58,38 +58,47 @@ export default function EventPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div className="flex items-center text-gray-600 mb-1">
+                  {/* TODO: Change this background colors for dark mode */}
+                  <div className=" p-4 rounded-lg border text-card-foreground bg-card">
+                    <div className="flex items-center mb-1">
                       <CalendarDays className="w-5 h-5 mr-2 text-[#00a184]" />
-                      <span className="text-sm font-medium">Date</span>
+                      <span className="text-sm font-medium text-muted-foreground">
+                        Date
+                      </span>
                     </div>
-                    <p className="text-gray-900">
+                    <p className="">
                       {new Date(event.eventDate).toLocaleDateString()}
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div className="flex items-center text-gray-600 mb-1">
+                  <div className="text-card-foreground bg-card p-4 rounded-lg border">
+                    <div className="flex items-center mb-1">
                       <MapPin className="w-5 h-5 mr-2 text-[#00a184]" />
-                      <span className="text-sm font-medium">Location</span>
+                      <span className="text-sm text-muted-foreground font-medium">
+                        Location
+                      </span>
                     </div>
-                    <p className="text-gray-900">{event.location}</p>
+                    <p className="">{event.location}</p>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div className="flex items-center text-gray-600 mb-1">
+                  <div className="text-card-foreground bg-card p-4 rounded-lg border">
+                    <div className="flex items-center  mb-1">
                       <Ticket className="w-5 h-5 mr-2 text-[#00a184]" />
-                      <span className="text-sm font-medium">Price</span>
+                      <span className="text-sm text-muted-foreground font-medium">
+                        Price
+                      </span>
                     </div>
-                    <p className="text-gray-900">£{event.price.toFixed(2)}</p>
+                    <p className="">Ksh {event.price.toFixed(2)}</p>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div className="flex items-center text-gray-600 mb-1">
+                  <div className="text-card-foreground bg-card p-4 rounded-lg border">
+                    <div className="flex items-center mb-1">
                       <Users className="w-5 h-5 mr-2 text-[#00a184]" />
-                      <span className="text-sm font-medium">Availability</span>
+                      <span className="text-sm text-muted-foreground font-medium">
+                        Availability
+                      </span>
                     </div>
-                    <p className="text-gray-900">
+                    <p className="">
                       {availability.totalTickets - availability.purchasedCount}{" "}
                       / {availability.totalTickets} left
                     </p>
@@ -97,7 +106,7 @@ export default function EventPage() {
                 </div>
 
                 {/* Additional Event Information */}
-                <div className="bg-[#e8f3f1] border border-[#e8f3f1] rounded-lg p-6">
+                <div className="text-card-foreground bg-card border rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-[#00a184] mb-2">
                     Event Information
                   </h3>

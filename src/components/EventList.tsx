@@ -64,12 +64,12 @@ const EventList = () => {
           ))}
         </section>
       ) : (
-        <div className="bg-gray-50 rounded-lg p-12 text-center mb-12">
-          <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">
-            No upcoming events
-          </h3>
-          <p className="text-gray-600 mt-1">Check back later for new events</p>
+        <div className="border bg-card text-card-foreground rounded-xl shadow-lg p-12 text-center mb-12">
+          <Ticket className="w-12 h-12 mx-auto mb-4" />
+          <h3 className="text-lg font-medium">No upcoming events</h3>
+          <p className="text-muted-foreground mt-1">
+            Check back later for new events
+          </p>
         </div>
       )}
 

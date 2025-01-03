@@ -198,7 +198,7 @@ export default function EventCard({
             <div>
               <div className="flex flex-col items-start gap-2">
                 {isEventOwner && (
-                  <span className="inline-flex items-center gap-1 bg-[#00c9aa]/90 text-gray-950 px-2 py-1 rounded-full text-xs font-medium">
+                  <span className="inline-flex items-center gap-1 bg-[#00c9aa]/90 text-gray-950 px-2 py-1 rounded-full text-xs font-semibold">
                     <StarIcon className="w-3 h-3" />
                     Your Event
                   </span>
@@ -224,7 +224,8 @@ export default function EventCard({
                     : "bg-green-50 text-green-700"
                 }`}
               >
-                £{event.price.toFixed(2)}
+                <span className="text-xs font-normal">Ksh </span>
+                {event.price.toFixed(2)}
               </span>
               {availability.purchasedCount >= availability.totalTickets && (
                 <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
