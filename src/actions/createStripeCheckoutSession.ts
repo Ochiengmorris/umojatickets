@@ -59,6 +59,8 @@ export async function createStripeCheckoutSession({
     waitingListId: queuePosition._id,
   };
 
+  const exchangeRateKESToGBP = 0.0056; // Example: 1 KES = 0.0056 GBP
+
   // Create Stripe Checkout Session
   const session = await stripe.checkout.sessions.create(
     {
@@ -71,8 +73,7 @@ export async function createStripeCheckoutSession({
               name: event.name,
               description: event.description,
             },
-            unit_amount: Math.round(event.price * 100),
-          },
+            unit_amount: Math.round(event.price * 100 * exchangeRateKESToGBP),},
           quantity: 1,
         },
       ],

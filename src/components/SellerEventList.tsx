@@ -17,6 +17,7 @@ import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
 import { Metrics } from "../../convex/events";
 import CancelEventButton from "./CancelEventButton";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
 
 export default function SellerEventList() {
   const { user } = useUser();
@@ -112,7 +113,7 @@ function SellerEventCard({
                     )}
                   </div>
                 </div>
-                <p className="mt-1 text-gray-500 line-clamp-2 lg:line-clamp-1">
+                <p className="mt-1 text-muted-foreground line-clamp-2 lg:line-clamp-1">
                   {event.description}
                 </p>
                 {event.is_cancelled && (
@@ -127,18 +128,18 @@ function SellerEventCard({
             </div>
 
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+              <div className="border p-3 rounded-lg">
+                <div className="flex items-center gap-2  mb-1 text-primary/70">
                   <Ticket className="w-4 h-4" />
                   <span className="text-sm font-medium">
                     {event.is_cancelled ? "Tickets Refunded" : "Tickets Sold"}
                   </span>
                 </div>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-2xl font-semibold ">
                   {event.is_cancelled ? (
                     <>
                       {event.metrics.refundedTickets}
-                      <span className="text-sm text-gray-500 font-normal">
+                      <span className="text-sm font-normal">
                         {" "}
                         refunded
                       </span>
@@ -146,7 +147,7 @@ function SellerEventCard({
                   ) : (
                     <>
                       {event.metrics.soldTickets}
-                      <span className="text-sm text-gray-500 font-normal">
+                      <span className="text-sm  font-normal">
                         /{event.totalTickets}
                       </span>
                     </>
@@ -154,37 +155,37 @@ function SellerEventCard({
                 </p>
               </div>
 
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+              <div className="border p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-1 text-primary/70">
                   <Banknote className="w-4 h-4" />
                   <span className="text-sm font-medium">
                     {event.is_cancelled ? "Amount Refunded" : "Revenue"}
                   </span>
                 </div>
-                <p className="text-2xl font-semibold text-gray-900">
-                  £
+                <p className="text-2xl font-semibold ">
+                  <span className="text-sm font-normal">Ksh </span>
                   {event.is_cancelled
                     ? event.metrics.refundedTickets * event.price
                     : event.metrics.revenue}
                 </p>
               </div>
 
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+              <div className="border p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-1 text-primary/70">
                   <CalendarDays className="w-4 h-4" />
-                  <span className="text-sm font-medium">Date</span>
+                  <span className="text-sm font-medium ">Date</span>
                 </div>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium">
                   {new Date(event.eventDate).toLocaleDateString()}
                 </p>
               </div>
 
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+              <div className="border p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-1 text-primary/70">
                   <InfoIcon className="w-4 h-4" />
                   <span className="text-sm font-medium">Status</span>
                 </div>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium">
                   {event.is_cancelled
                     ? "Cancelled"
                     : isPastEvent

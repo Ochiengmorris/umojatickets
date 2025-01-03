@@ -43,15 +43,6 @@ export default function ReleaseTicket({
   };
 
   return (
-    // <button
-    //   onClick={handleRelease}
-    //   disabled={isReleasing}
-    //   className="mt-2 w-full flex items-center justify-center gap-2 py-2 px-4 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
-    // >
-    //   <XCircle className="w-4 h-4" />
-    //   {isReleasing ? "Releasing..." : "Release Ticket Offer"}
-    // </button>
-
     <AlertDialog>
       <AlertDialogTrigger
         className={cn(
@@ -66,8 +57,8 @@ export default function ReleaseTicket({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently release the
+            ticket offer.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -148,6 +148,7 @@ const CheckOut = () => {
       console.error(error);
     } finally {
       setIsLoading(false);
+      setIsStkPushSent(false);
     }
   };
 
