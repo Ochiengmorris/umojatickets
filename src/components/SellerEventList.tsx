@@ -17,8 +17,6 @@ import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
 import { Metrics } from "../../convex/events";
 import CancelEventButton from "./CancelEventButton";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
-
 export default function SellerEventList() {
   const { user } = useUser();
   const events = useQuery(api.events.getSellerEvents, {
@@ -53,7 +51,7 @@ export default function SellerEventList() {
             {pastEvents.map((event) => (
               <SellerEventCard key={event._id} event={event} />
             ))}
-          </div>
+           </div>
         </div>
       )}
     </div>

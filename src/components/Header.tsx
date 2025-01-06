@@ -21,7 +21,7 @@ function Header() {
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="bg-gray-100 text-gray-800 px-3 py-1.5 text-sm rounded-lg hover:bg-gray-200 transition border border-gray-300">
+                <button className="bg-primary text-primary-foreground shadow hover:bg-primary/90 px-3 py-2 text-sm rounded-lg font-semibold transition  ">
                   Sign In
                 </button>
               </SignInButton>
@@ -48,7 +48,6 @@ function Header() {
                   My Tickets
                 </button>
               </Link>
-              {/* <UserButton /> */}
               <UserButton />
             </div>
           </SignedIn>

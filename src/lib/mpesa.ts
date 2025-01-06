@@ -28,29 +28,6 @@ const mpesaCredentials: MpesaCredentials = {
   shortcode: process.env.MPESA_SHORTCODE!,
 };
 
-// async function generateAccessToken(auth: string) {
-//   const url =
-//     "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-
-//   const response = await fetch(url, {
-//     method: "GET",
-//     headers: {
-//       Authorization: `Basic ${auth}`,
-//     },
-//   });
-
-//   const data = await response.json();
-
-//   if (response.ok) {
-//     console.log("access_token", data.access_token);
-//     return data.access_token;
-//   } else {
-//     throw new Error(
-//       `Failed to generate access token: ${data.error_description}`
-//     );
-//   }
-// }
-
 export async function sendStkPush(phoneNumber: string, amount: number) {
   const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
 

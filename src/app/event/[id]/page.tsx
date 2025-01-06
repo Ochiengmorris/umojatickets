@@ -4,7 +4,7 @@ import EventCard from "@/components/EventCard";
 import JoinQueue from "@/components/JoinQueue";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
-import { useStorageUrl } from "@/lib/utils";
+import FormatMoney, { useStorageUrl } from "@/lib/utils";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { CalendarDays, MapPin, Ticket, Users } from "lucide-react";
@@ -58,7 +58,6 @@ export default function EventPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
-                  {/* TODO: Change this background colors for dark mode */}
                   <div className=" p-4 rounded-lg border text-card-foreground bg-card">
                     <div className="flex items-center mb-1">
                       <CalendarDays className="w-5 h-5 mr-2 text-[#00a184]" />
@@ -88,7 +87,9 @@ export default function EventPage() {
                         Price
                       </span>
                     </div>
-                    <p className="">Ksh {event.price.toFixed(2)}</p>
+                    <p className="">
+                      Ksh {FormatMoney(Number(event.price.toFixed(2)))}
+                    </p>
                   </div>
 
                   <div className="text-card-foreground bg-card p-4 rounded-lg border">

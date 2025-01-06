@@ -1,14 +1,8 @@
 "use client";
 
-import { useStorageUrl } from "@/lib/utils";
+import FormatMoney, { useStorageUrl } from "@/lib/utils";
 import { useQuery } from "convex/react";
-import {
-  CalendarDays,
-  IdCard,
-  MapPin,
-  Ticket as TicketIcon,
-  User,
-} from "lucide-react";
+import { CalendarDays, MapPin, Ticket as TicketIcon, User } from "lucide-react";
 import Image from "next/image";
 import QRCode from "react-qr-code";
 import { api } from "../../convex/_generated/api";
@@ -28,10 +22,10 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
 
   return (
     <div
-      className={`border bg-card text-card-foreground rounded-xl overflow-hidden shadow-xl ${ticket.event.is_cancelled ? "border-red-800/50" : ""}`}
+      className={`border max-w-md mx-auto bg-card text-card-foreground rounded-xl overflow-hidden shadow-xl ${ticket.event.is_cancelled ? "border-red-800/50" : ""}`}
     >
       {/* Event Header with Image */}
-      <div className="relative">
+      <div className="relative ">
         {imageUrl && (
           <div className="relative w-full aspect-[21/15] md:aspect-[21/10] ">
             <Image
@@ -48,7 +42,7 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
           className={`px-6 py-4 ${imageUrl ? "absolute bottom-0 left-0 right-0" : ticket.event.is_cancelled ? "bg-red-600/50" : "bg-[#00c9aa]"} `}
         >
           <h2
-            className={`text-xl md:text-2xl font-bold ${imageUrl || !imageUrl ? "text-black" : "text-black"}`}
+            className={`text-xl md:text-2xl font-bold ${imageUrl ? "text-white" : "text-foreground"}`}
           >
             {ticket.event.name}
           </h2>
@@ -64,7 +58,7 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
       <div className="p-6 border-b">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Column - Event Details */}
-          <div className="space-y-4">
+          <div className="grid grid-cols-2 md:grid-cols-1 items-center justify-center gap-2 md:gap-4">
             <div className="flex items-center text-gray-600">
               <CalendarDays
                 className={`w-5 h-5 mr-3 ${ticket.event.is_cancelled ? "text-red-800/50" : "text-[#00c9aa]"}`}
@@ -102,7 +96,7 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
               </div>
             </div>
 
-            <div className="flex items-center text-gray-600 break-all">
+            {/* <div className="flex border items-center text-gray-600 break-all">
               <IdCard
                 className={`w-5 h-5 mr-3 ${ticket.event.is_cancelled ? "text-red-800/50" : "text-[#00c9aa]"}`}
               />
@@ -112,7 +106,7 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
                 </p>
                 <p className="font-medium text-primary/80">{user.email}</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-center text-gray-600">
               <TicketIcon
@@ -122,7 +116,7 @@ export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
                 <p className="text-sm text-muted-foreground/80">Ticket Price</p>
                 <p className="font-medium text-primary/80">
                   <span className="text-sm">Ksh</span>{" "}
-                  {ticket.event.price.toFixed(2)}
+                  {FormatMoney(Number(ticket.event.price.toFixed(2)))}
                 </p>
               </div>
             </div>

@@ -10,7 +10,6 @@ import type { AccountStatus } from "@/actions/getStripeConnectAccountStatus";
 import { getStripeConnectAccountStatus } from "@/actions/getStripeConnectAccountStatus";
 import Spinner from "@/components/Spinner";
 import { CalendarDays, Cog, Plus } from "lucide-react";
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -24,7 +23,7 @@ export default function SellerDashboard() {
   const [accountStatus, setAccountStatus] = useState<AccountStatus | null>(
     null
   );
-  const { theme } = useTheme();
+
   const router = useRouter();
   const { user } = useUser();
   const stripeConnectId = useQuery(api.users.getUsersStripeConnectId, {

@@ -57,7 +57,7 @@ export default function ReleaseTicket({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently release the
+            This action cannot be undone. This will release the
             ticket offer.
           </AlertDialogDescription>
         </AlertDialogHeader>

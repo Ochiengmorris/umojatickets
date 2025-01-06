@@ -18,7 +18,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import PurchaseTicket from "@/components/PurchaseTicket";
-import { cn, useStorageUrl } from "@/lib/utils";
+import FormatMoney, { cn, formatCurrency, useStorageUrl } from "@/lib/utils";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import EventCardSkeleton from "./EventCardSkeleton";
@@ -225,7 +225,7 @@ export default function EventCard({
                 }`}
               >
                 <span className="text-xs font-normal">Ksh </span>
-                {event.price.toFixed(2)}
+                {FormatMoney(Number(event.price.toFixed(2)))}
               </span>
               {availability.purchasedCount >= availability.totalTickets && (
                 <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">

@@ -23,3 +23,22 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
   }
   throw new Error("Invalid phone number format"); // For invalid phone numbers
 };
+
+export function formatCurrency(amount: number): string {
+  return amount.toLocaleString("en-US", {
+    style: "currency",
+    // currency: "KES",
+  });
+}
+
+const FormatMoney: (amount?: number) => string = (amount) => {
+    if (amount === undefined) {
+      return ""; // Or return "0" or any other default value you prefer
+    }
+
+    return new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount);  };
+
+  export default FormatMoney;

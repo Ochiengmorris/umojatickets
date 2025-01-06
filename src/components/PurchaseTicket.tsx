@@ -8,8 +8,10 @@ import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import ReleaseTicket from "./ReleaseTicket";
+import TicketPurchaseDialog from "./TicketPurchaseDialog";
 
 export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const { user } = useUser();
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
@@ -18,7 +20,6 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
   });
 
   const [timeRemaining, setTimeRemaining] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const offerExpiresAt = queuePosition?.offerExpiresAt ?? 0;
   const isExpired = Date.now() > offerExpiresAt;
@@ -56,15 +57,7 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
 
   const handleRedirect = async () => {
     if (!user || !queuePosition) return;
-
-    try {
-      setIsLoading(true);
-      router.push(`/checkout/${eventId}`);
-    } catch (error) {
-      console.error("Error creating checkout session:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    setIsModalOpen(true);
   };
 
   return (
@@ -95,16 +88,23 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
 
         <button
           onClick={handleRedirect}
-          disabled={isExpired || isLoading}
-          className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-8 py-4 rounded-lg font-bold shadow-md hover:from-amber-600 hover:to-amber-700 transform hover:scale-[1.02] transition-all duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100"
+          disabled={isExpired || isModalOpen}
+          className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-8 py-4 rounded-lg font-bold shadow-md hover:from-amber-600 hover:to-amber-700 transform hover:scale-[1.02] transition-all text-sm sm:text-base duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
-          {isLoading ? "Redirecting to checkout..." : "Purchase Ticket Now →"}
+          {isModalOpen ? "Purchasing.." : "Purchase Ticket Now →"}
         </button>
 
         <div className="mt-4">
           <ReleaseTicket eventId={eventId} waitingListId={queuePosition._id} />
         </div>
       </div>
+
+      {/* Purchase modal */}
+      <TicketPurchaseDialog
+        open={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        eventId={eventId}
+      />
     </div>
   );
 }

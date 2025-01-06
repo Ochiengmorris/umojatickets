@@ -12,6 +12,7 @@ import Link from "next/link";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import Spinner from "./Spinner";
+import FormatMoney from "@/lib/utils";
 
 export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
   const ticket = useQuery(api.tickets.getTicketWithDetails, { ticketId });
@@ -112,7 +113,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
                   : "text-[#00a184]"
             }`}
           >
-            Ksh {ticket.event.price.toFixed(2)}
+            Ksh {FormatMoney(Number(ticket.event.price.toFixed(2)))}
           </span>
           <span className="text-foreground/70 flex items-center">
             View Ticket <ArrowRight className="w-4 h-4 ml-1" />
