@@ -13,7 +13,7 @@ export default async function SellerEventsPage() {
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="border bg-card text-card-foreground rounded-xl shadow-sm p-6 mb-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Link
                 href="/seller"
@@ -21,21 +21,20 @@ export default async function SellerEventsPage() {
               >
                 <ArrowLeft className="w-5 h-5" />
               </Link>
-              <div>
-                <h1 className="text-2xl font-bold">My Events</h1>
-                <p className="mt-1 text-gray-500">
-                  Manage your event listings and track sales
-                </p>
-              </div>
+
+              <h1 className="text-2xl font-bold">My Events</h1>
             </div>
             <Link
               href="/seller/new-event"
-              className="flex items-center justify-center gap-2 bg-[#00c9aa] text-black px-4 py-2 rounded-lg hover:bg-[#00a184]/90 transition-colors"
+              className="flex px-2.5 py-1.5 items-center justify-center gap-2 bg-[#00c9aa] text-black md:px-4 md:py-2 rounded-lg hover:bg-[#00a184]/90 transition-colors"
             >
               <Plus className="w-5 h-5" />
               Create Event
             </Link>
           </div>
+          <p className="ml-9 text-sm text-gray-500">
+            Manage your event listings and track sales
+          </p>
         </div>
 
         {/* Event List */}

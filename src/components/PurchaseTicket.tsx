@@ -3,7 +3,6 @@
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { Ticket } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
@@ -12,7 +11,6 @@ import TicketPurchaseDialog from "./TicketPurchaseDialog";
 
 export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
   const { user } = useUser();
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
     eventId,
@@ -70,16 +68,16 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
                 <Ticket className="w-6 h-6 text-amber-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-base md:text-lg font-semibold text-gray-900">
                   Ticket Reserved
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs md:text-sm text-gray-500">
                   Expires in {timeRemaining}
                 </p>
               </div>
             </div>
 
-            <div className="text-sm text-gray-600 leading-relaxed">
+            <div className="text-xs md:text-sm text-gray-600 leading-relaxed">
               A ticket has been reserved for you. Complete your purchase before
               the timer expires to secure your spot at this event.
             </div>
@@ -89,7 +87,7 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
         <button
           onClick={handleRedirect}
           disabled={isExpired || isModalOpen}
-          className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-8 py-4 rounded-lg font-bold shadow-md hover:from-amber-600 hover:to-amber-700 transform hover:scale-[1.02] transition-all text-sm sm:text-base duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-8 py-2 md:py-4 rounded-lg font-bold shadow-md hover:from-amber-600 hover:to-amber-700 transform hover:scale-[1.02] transition-all text-xs md:text-sm sm:text-base duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {isModalOpen ? "Purchasing.." : "Purchase Ticket Now →"}
         </button>

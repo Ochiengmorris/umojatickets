@@ -291,7 +291,8 @@ export default function SellerDashboard() {
               <div className="flex flex-wrap gap-3 mt-6">
                 {accountStatus.isActive && (
                   <button
-                    onClick={handleManageAccount}
+                    onClick={() => router.push("/admin/overview")}
+                    // onClick={handleManageAccount}
                     className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
                   >
                     <Cog className="w-4 h-4 mr-2" />

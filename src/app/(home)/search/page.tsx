@@ -6,7 +6,7 @@ import Spinner from "@/components/Spinner";
 import { useQuery } from "convex/react";
 import { Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();

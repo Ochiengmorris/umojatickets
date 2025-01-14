@@ -33,9 +33,7 @@ export default function TicketPurchaseDialog({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   eventId: Id<"events">;
 }) {
-  const [paymentMethod, setPaymentMethod] = useState<string | undefined>(
-    undefined
-  );
+  const [paymentMethod, setPaymentMethod] = useState<string>("mpesa");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isStkPushSent, setIsStkPushSent] = useState(false);
@@ -108,6 +106,7 @@ export default function TicketPurchaseDialog({
           title: "STK Push Sent",
           description: "Please check your phone to complete the transaction.",
         });
+      } else {
       }
     } catch (error) {
       toast({
@@ -173,6 +172,7 @@ export default function TicketPurchaseDialog({
           <RadioGroup
             onValueChange={handlePaymentMethodChange}
             className="grid grid-cols-2 gap-4"
+            defaultValue="mpesa"
           >
             <div>
               <RadioGroupItem

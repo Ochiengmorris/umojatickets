@@ -18,7 +18,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import PurchaseTicket from "@/components/PurchaseTicket";
-import FormatMoney, { cn, formatCurrency, useStorageUrl } from "@/lib/utils";
+import FormatMoney, { cn, useStorageUrl } from "@/lib/utils";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import EventCardSkeleton from "./EventCardSkeleton";

@@ -24,12 +24,12 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
   throw new Error("Invalid phone number format"); // For invalid phone numbers
 };
 
-export function formatCurrency(amount: number): string {
-  return amount.toLocaleString("en-US", {
-    style: "currency",
-    // currency: "KES",
-  });
-}
+// export function formatCurrency(amount: number): string {
+//   return amount.toLocaleString("en-US", {
+//     style: "currency",
+//     // currency: "KES",
+//   });
+// }
 
 const FormatMoney: (amount?: number) => string = (amount) => {
     if (amount === undefined) {

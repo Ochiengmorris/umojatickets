@@ -7,8 +7,8 @@ import { ArrowLeft, Download, Share2 } from "lucide-react";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
 import { useEffect } from "react";
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 export default function TicketPage() {
   const params = useParams();
@@ -106,7 +106,7 @@ export default function TicketPage() {
         {/* Ticket Component */}
         <div
           id="ticket-container"
-          className={`${ticket.event.eventDate < Date.now() ? "grayscale" : ""}`}
+          className={`${ticket.event.eventDate < Date.now() ? (ticket.event.is_cancelled ? "" : "grayscale") : ""}`}
         >
           <Ticket ticketId={ticket._id} />
         </div>

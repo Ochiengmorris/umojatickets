@@ -17,13 +17,14 @@ import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
 import { Metrics } from "../../convex/events";
 import CancelEventButton from "./CancelEventButton";
+import Spinner from "./Spinner";
 export default function SellerEventList() {
   const { user } = useUser();
   const events = useQuery(api.events.getSellerEvents, {
     userId: user?.id ?? "",
   });
 
-  if (!events) return null;
+  if (!events) return <Spinner />;
 
   const upcomingEvents = events.filter((e) => e.eventDate > Date.now());
   const pastEvents = events.filter((e) => e.eventDate <= Date.now());
@@ -38,7 +39,7 @@ export default function SellerEventList() {
             <SellerEventCard key={event._id} event={event} />
           ))}
           {upcomingEvents.length === 0 && (
-            <p className="text-gray-500">No upcoming events</p>
+            <p className="text-gray-500">You have No upcoming events</p>
           )}
         </div>
       </div>
@@ -51,7 +52,7 @@ export default function SellerEventList() {
             {pastEvents.map((event) => (
               <SellerEventCard key={event._id} event={event} />
             ))}
-           </div>
+          </div>
         </div>
       )}
     </div>
@@ -137,10 +138,7 @@ function SellerEventCard({
                   {event.is_cancelled ? (
                     <>
                       {event.metrics.refundedTickets}
-                      <span className="text-sm font-normal">
-                        {" "}
-                        refunded
-                      </span>
+                      <span className="text-sm font-normal"> refunded</span>
                     </>
                   ) : (
                     <>

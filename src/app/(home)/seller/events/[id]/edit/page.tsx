@@ -4,8 +4,8 @@ import EventForm from "@/components/EventForm";
 import { useQuery } from "convex/react";
 import { AlertCircle } from "lucide-react";
 import { useParams } from "next/navigation";
-import { api } from "../../../../../../convex/_generated/api";
-import { Id } from "../../../../../../convex/_generated/dataModel";
+import { api } from "../../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../../convex/_generated/dataModel";
 
 export default function EditEventPage() {
   const params = useParams();

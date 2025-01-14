@@ -51,7 +51,7 @@ export default function RootLayout({
         <meta property="og:url" content="https://mj-ticketr.vercel.app/" />
       </Head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <ThemeProvider
           attribute="class"
@@ -61,10 +61,8 @@ export default function RootLayout({
         >
           <ConvexClientProvider>
             <ClerkProvider>
-              <Header />
               <SyncUserWithConvex />
-              <main className="grow">{children}</main>
-              <Footer />
+              <main className="flex flex-col h-screen">{children}</main>
               <Toaster />
             </ClerkProvider>
           </ConvexClientProvider>

@@ -10,8 +10,9 @@ import { useQuery } from "convex/react";
 import { CalendarDays, MapPin, Ticket, Users } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import { api } from "../../../../../convex/_generated/api";
+
 export default function EventPage() {
   const { user } = useUser();
   const params = useParams();
@@ -51,10 +52,12 @@ export default function EventPage() {
               {/* Left Column - Event Details */}
               <div className="space-y-8">
                 <div>
-                  <h1 className="text-4xl font-bold text-primary mb-4">
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4">
                     {event.name}
                   </h1>
-                  <p className="text-lg text-primary">{event.description}</p>
+                  <p className="text-base md:text-lg text-primary">
+                    {event.description}
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
@@ -65,7 +68,7 @@ export default function EventPage() {
                         Date
                       </span>
                     </div>
-                    <p className="">
+                    <p className="text-sm md:text-base">
                       {new Date(event.eventDate).toLocaleDateString()}
                     </p>
                   </div>
@@ -77,7 +80,7 @@ export default function EventPage() {
                         Location
                       </span>
                     </div>
-                    <p className="">{event.location}</p>
+                    <p className="text-sm md:text-base">{event.location}</p>
                   </div>
 
                   <div className="text-card-foreground bg-card p-4 rounded-lg border">
@@ -87,7 +90,7 @@ export default function EventPage() {
                         Price
                       </span>
                     </div>
-                    <p className="">
+                    <p className="text-sm md:text-base">
                       Ksh {FormatMoney(Number(event.price.toFixed(2)))}
                     </p>
                   </div>
@@ -99,7 +102,7 @@ export default function EventPage() {
                         Availability
                       </span>
                     </div>
-                    <p className="">
+                    <p className="text-sm md:text-base">
                       {availability.totalTickets - availability.purchasedCount}{" "}
                       / {availability.totalTickets} left
                     </p>
@@ -111,7 +114,7 @@ export default function EventPage() {
                   <h3 className="text-lg font-semibold text-[#00a184] mb-2">
                     Event Information
                   </h3>
-                  <ul className="space-y-2 text-[#00a184]">
+                  <ul className="space-y-2 text-[#00a184] text-sm md:text-base">
                     <li>• Please arrive 30 minutes before the event starts</li>
                     <li>• Tickets are non-refundable</li>
                     <li>• Age restriction: 18+</li>

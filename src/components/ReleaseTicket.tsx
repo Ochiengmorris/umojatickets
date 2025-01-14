@@ -46,7 +46,7 @@ export default function ReleaseTicket({
     <AlertDialog>
       <AlertDialogTrigger
         className={cn(
-          "mt-2 w-full flex items-center justify-center gap-2 py-2 px-4 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          "mt-2 w-full flex items-center md:text-base text-xs justify-center gap-2 py-2 px-4 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
         )}
         disabled={isReleasing}
       >
@@ -57,8 +57,7 @@ export default function ReleaseTicket({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will release the
-            ticket offer.
+            This action cannot be undone. This will release the ticket offer.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

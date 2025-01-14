@@ -5,7 +5,7 @@ import TicketCard from "@/components/TicketCard";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { Ticket } from "lucide-react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 
 export default function MyTicketsPage() {
   const { user } = useUser();
