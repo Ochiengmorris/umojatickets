@@ -11,6 +11,8 @@ import {
 import { Separator } from "./ui/separator";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 
 const AdminSidebar = ({
   open,
@@ -19,7 +21,16 @@ const AdminSidebar = ({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
+  const [userName, setUserName] = useState<string | null>("");
+  const { user } = useUser();
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.firstName);
+    }
+  }, [user]);
+
   const basePath = pathname.split("/").slice(0, -1).join("/"); // Remove the last segment
   return (
     <Sheet open={open} onOpenChange={() => setOpen(false)}>
@@ -33,7 +44,7 @@ const AdminSidebar = ({
               </h1>
             </Link>
           </SheetTitle>
-          <SheetDescription>Seller JMORRIS</SheetDescription>
+          <SheetDescription>Seller {userName}</SheetDescription>
         </SheetHeader>
         <Separator className="my-4" />
         <div className="flex flex-col w-full gap-4">

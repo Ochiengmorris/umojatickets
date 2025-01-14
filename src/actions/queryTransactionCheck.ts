@@ -78,8 +78,12 @@ export async function queryTransactionCheck({
         resultDesc: data.ResultDesc,
       });
 
+      await convex.mutation(api.users.updateUserBalance, {
+        eventId: metadata.eventId,
+      });
+
       // Process the ticket purchase
-      const result = await convex.mutation(api.events.purchaseMpesaTicket, {
+      await convex.mutation(api.events.purchaseMpesaTicket, {
         eventId: metadata.eventId,
         userId: metadata.userId,
         waitingListId: metadata.waitingListId,
@@ -88,7 +92,6 @@ export async function queryTransactionCheck({
           checkoutRequestId: data.CheckoutRequestID,
         },
       });
-      console.log("Purchase ticket mutation completed:", result);
 
       return {
         status: "ok",
@@ -128,3 +131,47 @@ export async function queryTransactionCheck({
     };
   }
 }
+
+export const checkStatusTransaction = async ({
+  checkoutRequestId,
+}: {
+  checkoutRequestId: string | null;
+}) => {
+  if (!checkoutRequestId) {
+    console.error("CheckoutRequestId is required");
+    return { message: "CheckoutRequestId is required", status: 400 };
+  }
+  const convex = getConvexClient();
+
+  try {
+    const transaction = await convex.query(
+      api.mpesaTransactions.getByCheckoutRequestId,
+      {
+        checkoutRequestId,
+      }
+    );
+
+    if (!transaction) {
+      console.error(
+        "Transaction not found for CheckoutRequestID:",
+        checkoutRequestId
+      );
+      return { message: "Transaction not found", status: 404 };
+    }
+
+    return { transaction };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error querying transaction:", error.message);
+      return {
+        status: 500,
+        message: error.message || "Query failed",
+      };
+    }
+    console.error("Unexpected error:", error);
+    return {
+      status: 500,
+      message: "Query failed",
+    };
+  }
+};

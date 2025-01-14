@@ -60,10 +60,11 @@ export default function SellerDashboard() {
 
   const handleManageAccount = async () => {
     try {
-      if (stripeConnectId && accountStatus?.isActive) {
-        const loginUrl = await createStripeConnectLoginLink(stripeConnectId);
-        window.location.href = loginUrl;
-      }
+      //   if (stripeConnectId && accountStatus?.isActive) {
+      //     const loginUrl = await createStripeConnectLoginLink(stripeConnectId);
+      //     window.location.href = loginUrl;
+      //   }
+      router.push(`/admin/overview`);
     } catch (error) {
       console.error("Error accessing Stripe Connect portal:", error);
       setError(true);
@@ -291,8 +292,8 @@ export default function SellerDashboard() {
               <div className="flex flex-wrap gap-3 mt-6">
                 {accountStatus.isActive && (
                   <button
-                    onClick={() => router.push("/admin/overview")}
-                    // onClick={handleManageAccount}
+                    // onClick={() => router.push("/admin/overview")}
+                    onClick={handleManageAccount}
                     className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
                   >
                     <Cog className="w-4 h-4 mr-2" />

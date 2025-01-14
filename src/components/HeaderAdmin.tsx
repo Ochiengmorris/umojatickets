@@ -1,13 +1,28 @@
 "use client";
 
-import { SignInButton, SignedIn, UserButton, SignedOut } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignedIn,
+  UserButton,
+  SignedOut,
+  useUser,
+} from "@clerk/nextjs";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import AdminSidebar from "./AdminSidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function HeaderAdmin() {
   const [open, setOpen] = useState(false);
+  const [userName, setUserName] = useState<string | null>("");
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.firstName);
+    }
+  }, [user]);
+
   return (
     <div className="border-b bg-background sticky z-50 top-0 ">
       <div className="flex max-w-[1900px] justify-center m-auto w-full flex-row items-center gap-4 px-4 py-2 md:py-4">
@@ -29,7 +44,7 @@ function HeaderAdmin() {
                 /
               </span>
               <span className="md:hidden text-sm md:text-xl text-[#00c9AA] uppercase">
-                Jmorris
+                {userName}
               </span>
             </h1>
           </Link>

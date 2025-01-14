@@ -74,3 +74,28 @@ export const getUserById = query({
     return user;
   },
 });
+
+//mutation to update user balance by userId and eventId
+export const updateUserBalance = mutation({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, { eventId }) => {
+    const event = await ctx.db.get(eventId);
+
+    if (!event) {
+      throw new Error("Event not found");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_user_id", (q) => q.eq("userId", event.userId))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await ctx.db.patch(user._id, {
+      balance: user.balance ? user.balance + event.price : 0 + event.price,
+    });
+  },
+});

@@ -12,7 +12,9 @@ export default defineSchema({
     userId: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
     is_cancelled: v.optional(v.boolean()),
-  }),
+  })
+    .index("by_user_id", ["userId"])
+    .index("by_date", ["eventDate"]),
   tickets: defineTable({
     eventId: v.id("events"),
     userId: v.string(),
@@ -27,6 +29,7 @@ export default defineSchema({
     amount: v.optional(v.number()),
   })
     .index("by_event", ["eventId"])
+    .index("by_event_status", ["eventId", "status"])
     .index("by_user", ["userId"])
     .index("by_user_event", ["userId", "eventId"])
     .index("by_payment_intent", ["paymentIntentId"]),
@@ -51,6 +54,7 @@ export default defineSchema({
     email: v.string(),
     userId: v.string(),
     stripeConnectId: v.optional(v.string()),
+    balance: v.optional(v.number()),
   })
     .index("by_user_id", ["userId"])
     .index("by_email", ["email"]),

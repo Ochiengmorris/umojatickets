@@ -5,7 +5,7 @@ import UserButton from "./UserButton";
 
 function Header() {
   return (
-    <div className="border-b bg-background sticky top-0 z-50">
+    <div className="border-b bg-background">
       <div className="flex max-w-[1900px] m-auto flex-col lg:flex-row items-center gap-4 p-4">
         <div className="flex items-center justify-between w-full lg:w-auto ">
           <Link href="/" className="shrink-0">

@@ -88,6 +88,10 @@ export async function POST(req: Request) {
           phoneNumber,
         });
 
+        await convex.mutation(api.users.updateUserBalance, {
+          eventId: metadata.eventId,
+        });
+
         // Process the ticket purchase
         const result = await convex.mutation(api.events.purchaseMpesaTicket, {
           eventId: metadata.eventId,

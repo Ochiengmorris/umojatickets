@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreditCard, Loader, Loader2, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,10 @@ import { useToast } from "@/hooks/use-toast";
 import { createStripeCheckoutSession } from "@/actions/createStripeCheckoutSession";
 import { formatPhoneNumber } from "@/lib/utils";
 import { createMpesaPaymentRequest } from "@/actions/createMpesaPaymentRequest";
-import { queryTransactionCheck } from "@/actions/queryTransactionCheck";
+import {
+  checkStatusTransaction,
+  queryTransactionCheck,
+} from "@/actions/queryTransactionCheck";
 
 export default function TicketPurchaseDialog({
   open,
@@ -38,6 +41,7 @@ export default function TicketPurchaseDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [isStkPushSent, setIsStkPushSent] = useState(false);
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -50,6 +54,29 @@ export default function TicketPurchaseDialog({
   const handlePaymentMethodChange = (value: string) => {
     setPaymentMethod(value);
   };
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (isStkPushSent) {
+        const data = await checkStatusTransaction({
+          checkoutRequestId: checkoutId,
+        });
+
+        if (data.transaction && data.transaction.status === "completed") {
+          clearInterval(interval);
+          setIsStkPushSent(false);
+          setChecking(false);
+          router.replace("/tickets/purchase-success");
+        } else if (data.transaction && data.transaction.status === "failed") {
+          clearInterval(interval);
+          setIsStkPushSent(false);
+          setChecking(false);
+        }
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [checkoutId, router]);
 
   const handlePurchaseStripe = async () => {
     if (!user || !queuePosition || queuePosition.status !== "offered") {
@@ -79,6 +106,7 @@ export default function TicketPurchaseDialog({
 
   const handlePurchaseMpesa = async (e: React.FormEvent) => {
     e.preventDefault();
+    setChecking(false);
     if (!user || !queuePosition || queuePosition.status !== "offered") {
       toast({
         variant: "destructive",
@@ -102,6 +130,7 @@ export default function TicketPurchaseDialog({
       if (response.status === "ok") {
         setCheckoutId(response.data.checkoutRequestId);
         setIsStkPushSent(true);
+        setChecking(true);
         toast({
           title: "STK Push Sent",
           description: "Please check your phone to complete the transaction.",
@@ -224,6 +253,11 @@ export default function TicketPurchaseDialog({
             <form onSubmit={handlePurchaseMpesa} className="space-y-4">
               {isStkPushSent ? (
                 <div className="">
+                  {checking && (
+                    <p className="text-sm text-center mb-2 text-muted-foreground">
+                      wait while we are Checking...
+                    </p>
+                  )}
                   <Button
                     onClick={handleQueryTransaction}
                     className="w-full font-semibold"
