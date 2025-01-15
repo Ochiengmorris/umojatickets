@@ -67,28 +67,6 @@ const BalanceCard = () => {
             </div>
           </div>
         </div>
-
-        {/* Activities */}
-        {/* <div className="lg:mr-4">
-          <h1 className="font-semibold mt-8 mb-4 text-2xl">Activities</h1>
-
-          {payoutActivities.map((activity) => (
-            <div
-              key={activity.id}
-              className="flex items-center justify-between mb-4"
-            >
-              <div className="flex items-center">
-                <span className="mr-4 text-muted-foreground">
-                  {activity.date}
-                </span>
-                <span className="text-primary/80 font-semibold">
-                  {activity.amount}
-                </span>
-              </div>
-              <span className="text-muted-foreground">{activity.status}</span>
-            </div>
-          ))}
-        </div> */}
       </>
     );
   }

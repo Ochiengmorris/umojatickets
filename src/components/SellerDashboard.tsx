@@ -1,73 +1,61 @@
 "use client";
 
-import { createStripeConnectAccountLink } from "@/actions/createStripeConnectAccountLink";
-import { createStripeConnectCustomer } from "@/actions/createStripeConnectCustomer";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 
-import { createStripeConnectLoginLink } from "@/actions/createStripeConnectLoginLink";
-import type { AccountStatus } from "@/actions/getStripeConnectAccountStatus";
-import { getStripeConnectAccountStatus } from "@/actions/getStripeConnectAccountStatus";
 import Spinner from "@/components/Spinner";
-import { CalendarDays, Cog, Plus } from "lucide-react";
+import { CalendarDays, Cog, Plus, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "../../convex/_generated/api";
+import { becomeASeller } from "@/actions/becomeASeller";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SellerDashboard() {
-  const [accountCreatePending, setAccountCreatePending] = useState(false);
-  const [accountLinkCreatePending, setAccountLinkCreatePending] =
-    useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [accountStatus, setAccountStatus] = useState<AccountStatus | null>(
-    null
-  );
+  const { toast } = useToast();
 
   const router = useRouter();
   const { user } = useUser();
-  const stripeConnectId = useQuery(api.users.getUsersStripeConnectId, {
+
+  const userDetails = useQuery(api.users.getUserById, {
     userId: user?.id || "",
   });
 
-  const isReadyToAcceptPayments =
-    accountStatus?.isActive && accountStatus?.payoutsEnabled;
-
-  const fetchAccountStatus = useCallback(async () => {
-    if (stripeConnectId) {
-      try {
-        const status = await getStripeConnectAccountStatus(stripeConnectId);
-        setAccountStatus(status);
-      } catch (error) {
-        console.error("Error fetching account status:", error);
-      }
-    }
-  }, [stripeConnectId]);
-
-  useEffect(() => {
-    if (stripeConnectId) {
-      fetchAccountStatus();
-    }
-  }, [stripeConnectId, fetchAccountStatus]);
-
-  if (stripeConnectId === undefined) {
+  if (!userDetails) {
     return (
       <div className=" absolute top-1/2 right-1/2">
-        <Spinner />
+        <Spinner />;
       </div>
     );
   }
 
   const handleManageAccount = async () => {
     try {
-      //   if (stripeConnectId && accountStatus?.isActive) {
-      //     const loginUrl = await createStripeConnectLoginLink(stripeConnectId);
-      //     window.location.href = loginUrl;
-      //   }
       router.push(`/admin/overview`);
     } catch (error) {
       console.error("Error accessing Stripe Connect portal:", error);
       setError(true);
+    }
+  };
+
+  const handleBecomeSeller = async () => {
+    setIsLoading(true);
+    try {
+      const result = await becomeASeller();
+
+      if (result.status === "ok") {
+        toast({
+          title: "Hooray!",
+          description: "You have successfully become a seller!",
+        });
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error becoming a seller:", error);
+      setIsLoading(false);
     }
   };
 
@@ -83,16 +71,17 @@ export default function SellerDashboard() {
         </div>
 
         {/* Main Content */}
-        {isReadyToAcceptPayments && (
-          <>
-            <div className="border bg-card text-card-foreground shadow p-8 rounded-xl">
-              <h2 className="text-2xl font-semibold mb-6">
-                Sell tickets for your events
-              </h2>
-              <p className="text-secondary-foreground/60 text-sm md:text-base mb-8">
-                List your tickets for sale and manage your listings
-              </p>
-              <div className="border bg-card text-card-foreground  rounded-xl shadow-sm  p-4">
+
+        <>
+          <div className="border bg-card text-card-foreground shadow p-8 rounded-xl">
+            <h2 className="text-2xl font-semibold mb-6">
+              Sell tickets for your events
+            </h2>
+            <p className="text-secondary-foreground/60 text-sm md:text-base mb-8">
+              List your tickets for sale and manage your listings
+            </p>
+            <div className="border bg-card text-card-foreground  rounded-xl shadow-sm  p-4">
+              {userDetails?.isSeller ? (
                 <div className="flex justify-center gap-4">
                   <Link
                     href="/seller/new-event"
@@ -111,222 +100,74 @@ export default function SellerDashboard() {
                     </span>
                   </Link>
                 </div>
-              </div>
+              ) : (
+                <p className="text-red-600 text-center">You are not a seller</p>
+              )}
             </div>
+          </div>
 
-            {/* <hr className="my-8" /> */}
-            <div className="my-4" />
-          </>
-        )}
+          {/* <hr className="my-8" /> */}
+          <div className="my-4" />
+        </>
 
         <div className="p-6 border rounded-xl">
           {/* Account Creation Section */}
-          {!stripeConnectId && !accountCreatePending && (
-            <div className="text-center py-8">
-              <h3 className="text-xl font-semibold mb-4">
-                Start Accepting Payments
-              </h3>
-              <p className="text-secondary-foreground/60 mb-6">
-                Create your seller account to start receiving payments securely
-                through Stripe
-              </p>
-              <button
-                onClick={async () => {
-                  setAccountCreatePending(true);
-                  setError(false);
-                  try {
-                    await createStripeConnectCustomer();
-                    setAccountCreatePending(false);
-                  } catch (error) {
-                    console.error(
-                      "Error creating Stripe Connect customer:",
-                      error
-                    );
-                    setError(true);
-                    setAccountCreatePending(false);
-                  }
-                }}
-                className="bg-[#00c9aa] text-white px-6 py-2 rounded-lg hover:bg-[#00c9aa] transition-colors"
-              >
-                Create Seller Account
-              </button>
-            </div>
-          )}
-
-          {/* Account Status Section */}
-          {stripeConnectId && accountStatus && (
-            <div className="space-y-6">
-              {/* Status Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Account Status Card */}
-                <div className="border bg-card text-card-foreground shadow rounded-lg p-4">
-                  <h3 className="text-sm font-medium">Account Status</h3>
-                  <div className="mt-2 flex items-center">
-                    <div
-                      className={`w-3 h-3 rounded-full mr-2 ${
-                        accountStatus.isActive
-                          ? "bg-[#00c9aa]"
-                          : "bg-yellow-500"
-                      }`}
-                    />
-                    <span className="text-lg font-semibold">
-                      {accountStatus.isActive ? "Active" : "Pending Setup"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Payments Status Card */}
-                <div className="border bg-card text-card-foreground shadow rounded-lg p-4">
-                  <h3 className="text-sm font-medium">Payment Capability</h3>
-                  <div className="mt-2 space-y-1">
-                    <div className="flex items-center">
-                      <svg
-                        className={`w-5 h-5 ${
-                          accountStatus.chargesEnabled
-                            ? "text-[#00c9aa]"
-                            : "text-gray-400"
-                        }`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="ml-2 ">
-                        {accountStatus.chargesEnabled
-                          ? "Can accept payments"
-                          : "Cannot accept payments yet"}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <svg
-                        className={`w-5 h-5 ${
-                          accountStatus.payoutsEnabled
-                            ? "text-[#00c9aa]"
-                            : "text-gray-400"
-                        }`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="ml-2">
-                        {accountStatus.payoutsEnabled
-                          ? "Can receive payouts"
-                          : "Cannot receive payouts yet"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Requirements Section */}
-              {accountStatus.requiresInformation && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-yellow-800 mb-3">
-                    Required Information
-                  </h3>
-                  {accountStatus.requirements.currently_due.length > 0 && (
-                    <div className="mb-3">
-                      <p className="text-yellow-800 font-medium mb-2">
-                        Action Required:
-                      </p>
-                      <ul className="list-disc pl-5 text-yellow-700 text-sm">
-                        {accountStatus.requirements.currently_due.map((req) => (
-                          <li key={req}>{req.replace(/_/g, " ")}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {accountStatus.requirements.eventually_due.length > 0 && (
-                    <div>
-                      <p className="text-yellow-800 font-medium mb-2">
-                        Eventually Needed:
-                      </p>
-                      <ul className="list-disc pl-5 text-yellow-700 text-sm">
-                        {accountStatus.requirements.eventually_due.map(
-                          (req) => (
-                            <li key={req}>{req.replace(/_/g, " ")}</li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                  {/* Only show Add Information button if there are requirements */}
-                  {!accountLinkCreatePending && (
-                    <button
-                      onClick={async () => {
-                        setAccountLinkCreatePending(true);
-                        setError(false);
-                        try {
-                          const { url } =
-                            await createStripeConnectAccountLink(
-                              stripeConnectId
-                            );
-                          router.push(url);
-                        } catch (error) {
-                          console.error(
-                            "Error creating Stripe Connect account link:",
-                            error
-                          );
-                          setError(true);
-                        }
-                        setAccountLinkCreatePending(false);
-                      }}
-                      className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors"
-                    >
-                      Complete Requirements
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-3 mt-6">
-                {accountStatus.isActive && (
-                  <button
-                    // onClick={() => router.push("/admin/overview")}
-                    onClick={handleManageAccount}
-                    className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
-                  >
-                    <Cog className="w-4 h-4 mr-2" />
-                    Seller Dashboard
-                  </button>
-                )}
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 mt-6">
+            {userDetails?.isSeller ? (
+              <>
                 <button
-                  onClick={fetchAccountStatus}
+                  // onClick={() => router.push("/admin/overview")}
+                  onClick={handleManageAccount}
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
+                >
+                  <Cog className="w-4 h-4 mr-2" />
+                  Seller Dashboard
+                </button>
+
+                <button
+                  onClick={async () => {}}
                   className={`px-4 py-2 rounded-lg text-foreground bg-foreground/10 hover:bg-foreground/20 transition-colors`}
                 >
                   Refresh Status
                 </button>
-              </div>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleBecomeSeller}
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
+                >
+                  {isLoading ? (
+                    <Spinner />
+                  ) : (
+                    <>
+                      <UsersIcon className="w-4 h-4 mr-2" />
+                      Become a Seller
+                    </>
+                  )}
+                </button>
+              </>
+            )}
+          </div>
 
-              {error && (
-                <div className="mt-4 bg-red-50 text-green-600 p-3 rounded-lg">
-                  Unable to access Stripe dashboard. Please complete all
-                  requirements first.
-                </div>
-              )}
+          {error && (
+            <div className="mt-4 bg-red-50 text-green-600 p-3 rounded-lg">
+              Unable to access Stripe dashboard. Please complete all
+              requirements first.
             </div>
           )}
+        </div>
 
-          {/* Loading States */}
-          {accountCreatePending && (
+        {/* Loading States */}
+        {/* {accountCreatePending && (
             <div className="text-center py-4">
               Creating your seller account...
             </div>
           )}
           {accountLinkCreatePending && (
             <div className="text-center py-4">Preparing account setup...</div>
-          )}
-        </div>
+          )} */}
       </div>
     </div>
   );

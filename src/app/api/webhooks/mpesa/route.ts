@@ -74,7 +74,14 @@ export async function POST(req: Request) {
       const amount = getItemValue("Amount") as number;
       const mpesaReceiptNumber = getItemValue("MpesaReceiptNumber") as string;
       const transactionDate = getItemValue("TransactionDate") as string;
-      const phoneNumber = getItemValue("PhoneNumber") as string;
+      const phoneNumber = String(getItemValue("PhoneNumber"));
+
+      console.log("Transaction details:", {
+        amount,
+        mpesaReceiptNumber,
+        transactionDate,
+        phoneNumber,
+      });
 
       try {
         // Update the transaction status

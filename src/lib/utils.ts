@@ -15,7 +15,7 @@ export function useStorageUrl(storageId: Id<"_storage"> | undefined) {
 export const formatPhoneNumber = (phoneNumber: string): string => {
   // Remove non-digit characters
   const cleanPhoneNumber = phoneNumber.replace(/\D/g, "");
-  if (cleanPhoneNumber.startsWith("07")) {
+  if (cleanPhoneNumber.startsWith("07") || cleanPhoneNumber.startsWith("01")) {
     return `254${cleanPhoneNumber.slice(1)}`; // Convert to Kenyan international format
   }
   if (cleanPhoneNumber.startsWith("254") && cleanPhoneNumber.length === 12) {
@@ -24,21 +24,15 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
   throw new Error("Invalid phone number format"); // For invalid phone numbers
 };
 
-// export function formatCurrency(amount: number): string {
-//   return amount.toLocaleString("en-US", {
-//     style: "currency",
-//     // currency: "KES",
-//   });
-// }
-
 const FormatMoney: (amount?: number) => string = (amount) => {
-    if (amount === undefined) {
-      return ""; // Or return "0" or any other default value you prefer
-    }
+  if (amount === undefined) {
+    return ""; // Or return "0" or any other default value you prefer
+  }
 
-    return new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(amount);  };
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
 
-  export default FormatMoney;
+export default FormatMoney;

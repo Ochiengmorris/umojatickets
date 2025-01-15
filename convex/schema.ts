@@ -54,6 +54,7 @@ export default defineSchema({
     email: v.string(),
     userId: v.string(),
     stripeConnectId: v.optional(v.string()),
+    isSeller: v.optional(v.boolean()),
     balance: v.optional(v.number()),
   })
     .index("by_user_id", ["userId"])

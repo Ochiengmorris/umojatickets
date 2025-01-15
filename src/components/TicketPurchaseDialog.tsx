@@ -19,7 +19,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { createStripeCheckoutSession } from "@/actions/createStripeCheckoutSession";
+
 import { formatPhoneNumber } from "@/lib/utils";
 import { createMpesaPaymentRequest } from "@/actions/createMpesaPaymentRequest";
 import {
@@ -41,6 +41,7 @@ export default function TicketPurchaseDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [isStkPushSent, setIsStkPushSent] = useState(false);
   const [checkoutId, setCheckoutId] = useState<string | null>(null);
+  const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [checking, setChecking] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -73,7 +74,7 @@ export default function TicketPurchaseDialog({
           setChecking(false);
         }
       }
-    }, 5000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [checkoutId, router]);
@@ -88,20 +89,10 @@ export default function TicketPurchaseDialog({
       router.back();
       return;
     }
-
-    try {
-      setIsLoading(true);
-      const { sessionUrl } = await createStripeCheckoutSession({
-        eventId,
-      });
-      if (sessionUrl) {
-        router.push(sessionUrl);
-      }
-    } catch (error) {
-      console.error("Error creating checkout session:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    toast({
+      title: "Payment Processor - Stripe",
+      description: "Coming soon...",
+    });
   };
 
   const handlePurchaseMpesa = async (e: React.FormEvent) => {
@@ -135,7 +126,12 @@ export default function TicketPurchaseDialog({
           title: "STK Push Sent",
           description: "Please check your phone to complete the transaction.",
         });
-      } else {
+
+        // Delay showing the confirm button
+        setShowConfirmButton(false); // Reset visibility
+        setTimeout(() => {
+          setShowConfirmButton(true);
+        }, 12000); // Show the button after 12 seconds
       }
     } catch (error) {
       toast({
@@ -254,24 +250,27 @@ export default function TicketPurchaseDialog({
               {isStkPushSent ? (
                 <div className="">
                   {checking && (
-                    <p className="text-sm text-center mb-2 text-muted-foreground">
+                    <p className="text-sm text-center mb-2 text-muted-foreground flex items-center justify-center gap-2">
+                      <Loader className=" h-4 w-4 animate-spin" />
                       wait while we are Checking...
                     </p>
                   )}
-                  <Button
-                    onClick={handleQueryTransaction}
-                    className="w-full font-semibold"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <p>Confirming...</p>
-                      </>
-                    ) : (
-                      "Confirm Transaction"
-                    )}
-                  </Button>
+                  {showConfirmButton && (
+                    <Button
+                      onClick={handleQueryTransaction}
+                      className="w-full font-semibold"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <p>Confirming...</p>
+                        </>
+                      ) : (
+                        "Confirm Transaction"
+                      )}
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <>

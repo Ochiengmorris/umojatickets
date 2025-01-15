@@ -269,7 +269,7 @@ export default function EventCard({
             {event.description}
           </p>
 
-          <div onClick={(e) => e.stopPropagation()}>
+          <div onClick={(e) => e.stopPropagation()} className="">
             {!isPastEvent && renderTicketStatus()}
           </div>
         </div>

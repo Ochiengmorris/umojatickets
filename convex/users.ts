@@ -63,6 +63,22 @@ export const updateUser = mutation({
   },
 });
 
+export const updateSeller = mutation({
+  args: { userId: v.string(), isSeller: v.boolean() },
+  handler: async (ctx, { userId, isSeller }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await ctx.db.patch(user._id, { isSeller });
+  },
+});
+
 export const getUserById = query({
   args: { userId: v.string() },
   handler: async (ctx, { userId }) => {

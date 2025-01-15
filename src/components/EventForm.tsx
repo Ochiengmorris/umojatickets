@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useStorageUrl } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -66,6 +66,10 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
   const { toast } = useToast();
   const currentImageUrl = useStorageUrl(initialData?.imageStorageId);
 
+  const userDetails = useQuery(api.users.getUserById, {
+    userId: user?.id || "",
+  });
+
   // Image upload
   const imageInput = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -90,6 +94,17 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
 
   async function onSubmit(values: FormData) {
     if (!user?.id) return;
+
+    if (!userDetails) return;
+
+    if (userDetails.isSeller !== true) {
+      toast({
+        variant: "destructive",
+        title: "Oops! Sorry",
+        description: "Only sellers can create or update events.",
+      });
+      return;
+    }
 
     startTransition(async () => {
       try {
@@ -358,7 +373,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-full file:border-0
                     file:text-sm file:font-semibold
-                    file:bg-[#00c9aa] file:text-gray-950 
+                    file:bg-[#00c9aa] file:text-gray-950
                     hover:file:cursor-pointer hover:file:bg-[#00a184]/80  transition-colors"
                 />
               )}
