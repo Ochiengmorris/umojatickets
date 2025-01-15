@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, InfoIcon, LoaderIcon } from "lucide-react";
+import { CalendarDays, LoaderIcon } from "lucide-react";
 import BalanceCard from "./BalanceCard";
 import EarningsChart from "./EarningsChart";
 import RecentTrstionsCard from "./RecentTrstionsCard";

@@ -77,7 +77,7 @@ export default function TicketPurchaseDialog({
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [checkoutId, router]);
+  }, [checkoutId, router, isStkPushSent]);
 
   const handlePurchaseStripe = async () => {
     if (!user || !queuePosition || queuePosition.status !== "offered") {

@@ -7,26 +7,6 @@ import { api } from "../../convex/_generated/api";
 import FormatMoney from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 
-const payoutActivities = [
-  {
-    id: 1,
-    date: "2023-08-25",
-    amount: "KSH 5000.00",
-    status: "Completed",
-  },
-  {
-    id: 2,
-    date: "2023-08-25",
-    amount: "KSH 5000.00",
-    status: "Completed",
-  },
-  {
-    id: 3,
-    date: "2023-08-25",
-    amount: "KSH 5000.00",
-    status: "Completed",
-  },
-];
 const BalanceCard = () => {
   const pathname = usePathname();
   const { user } = useUser();

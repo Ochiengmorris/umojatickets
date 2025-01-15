@@ -1,6 +1,5 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import SyncUserWithConvex from "@/components/SyncUserWithConvex";
 
 export default function UserLayout({
   children,

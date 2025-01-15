@@ -1,6 +1,4 @@
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import SyncUserWithConvex from "@/components/SyncUserWithConvex";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -9,6 +7,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Head from "next/head";
 import "./globals.css";
+import NProgressHandler from "@/components/NProgress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,6 +60,7 @@ export default function RootLayout({
         >
           <ConvexClientProvider>
             <ClerkProvider>
+              <NProgressHandler />
               <SyncUserWithConvex />
               <main className="flex flex-col h-screen">{children}</main>
               <Toaster />
