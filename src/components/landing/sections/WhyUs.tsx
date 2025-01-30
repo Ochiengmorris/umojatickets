@@ -9,7 +9,7 @@ import Image from "next/image";
 
 const WhyUs = () => {
   return (
-    <section className=" p-8 mt-12">
+    <section className=" p-8 mt-14">
       <motion.div className="flex flex-col items-center">
         <p className="sm:text-[18px] text-[14px] text-landingsecondary uppercase tracking-wider">
           Why us
@@ -49,7 +49,7 @@ const WhyUs = () => {
           </div>
         </div>
       </div>
-      <div className="bg-landingprimary/10 rounded-xl p-6 lg:mt-4 mt-8">
+      <div className="bg-landingprimary/10 rounded-xl p-6 pb-12 lg:mt-4 mt-8">
         <p className="text-landingprimary text-xl md:text-3xl lg:text-4xl font-[1000]">
           Auto Queue System
         </p>
@@ -57,7 +57,7 @@ const WhyUs = () => {
           <p className="text-lg xl:text-xl mt-6 text-landingsecondary">
             This system makes it easy for event organizers to manage their
             tickets and ensures that tickets are sold in a first-come,
-            first-served basis.
+            first-serve basis.
           </p>
 
           <div className="max-w-[400px] mx-auto">
