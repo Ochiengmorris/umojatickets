@@ -218,7 +218,7 @@ export default function EventCard({
             {/* Price Tag */}
             <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
               <span
-                className={`px-4 py-1.5 font-semibold rounded-full ${
+                className={`px-4 py-1.5 font-semibold text-sm md:text-base rounded-full ${
                   isPastEvent
                     ? "bg-gray-200 text-gray-500"
                     : "bg-green-50 text-green-700"
@@ -228,7 +228,7 @@ export default function EventCard({
                 {FormatMoney(Number(event.price.toFixed(2)))}
               </span>
               {availability.purchasedCount >= availability.totalTickets && (
-                <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
+                <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-xs md:text-sm">
                   Sold Out
                 </span>
               )}

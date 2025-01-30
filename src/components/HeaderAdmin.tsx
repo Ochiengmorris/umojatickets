@@ -53,7 +53,7 @@ function HeaderAdmin() {
             href="/admin/events"
             className="hidden text-md md:inline-flex text-[#00c9AA] uppercase"
           >
-            <span style={{ fontWeight: 1000 }}>Jmorris</span>
+            <span style={{ fontWeight: 1000 }}>{userName}</span>
           </Link>
 
           <div className="">

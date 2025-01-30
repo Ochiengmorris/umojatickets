@@ -76,4 +76,26 @@ export default defineSchema({
     transactionDate: v.optional(v.string()),
     phoneNumber: v.optional(v.string()),
   }).index("by_checkoutRequestId", ["checkoutRequestId"]),
+
+  withdrawals: defineTable({
+    userId: v.string(),
+    amount: v.number(),
+    requestedAt: v.number(), // Timestamp of when the withdrawal was requested
+    status: v.union(
+      v.literal("pending"),
+      v.literal("completed"),
+      v.literal("failed")
+    ),
+    transactionId: v.optional(v.string()), // External payment system transaction ID
+    method: v.union(
+      v.literal("mpesa"),
+      v.literal("stripe"),
+      v.literal("bank_transfer")
+    ), // Withdrawal method
+    processedAt: v.optional(v.number()), // Timestamp of when the withdrawal was processed
+    metadata: v.optional(v.string()), // JSON string for any additional metadata
+  })
+    .index("by_user", ["userId"])
+    .index("by_status", ["status"])
+    .index("by_transaction_id", ["transactionId"]),
 });

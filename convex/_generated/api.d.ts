@@ -16,6 +16,7 @@ import type * as storage from "../storage.js";
 import type * as tickets from "../tickets.js";
 import type * as users from "../users.js";
 import type * as waitingList from "../waitingList.js";
+import type * as withdrawals from "../withdrawals.js";
 
 import type {
   ApiFromModules,
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   tickets: typeof tickets;
   users: typeof users;
   waitingList: typeof waitingList;
+  withdrawals: typeof withdrawals;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

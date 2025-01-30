@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <div className="h-full flex flex-col">
       <HeaderAdmin />
-      <section className="w-full flex-1 max-w-[1380px] mx-auto overflow-y-hidden flex">
+      <section className="w-full flex-1 max-w-[1380px] mx-auto md:overflow-y-hidden flex">
         <AdminSheet />
         <main
           className="grow overflow-y-auto"

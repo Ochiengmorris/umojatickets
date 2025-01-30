@@ -26,14 +26,14 @@ const BalancePageComp = () => {
             )}
           </h2>
         </div>
-        <div className="px-4 lg:px-0 lg:flex lg:justify-between  border-r lg:border-none border-primary/30">
+        <div className="px-4   border-r border-primary/30">
           <p className="mb-2 text-muted-foreground">Total payouts</p>
           <h2 className="text-primary/80 font-semibold">
             <span className="text-xs font-normal text-primary/50">KSH</span>{" "}
             5,000.00
           </h2>
         </div>
-        <div className="px-4 lg:px-0 lg:flex lg:justify-between  border-r lg:border-none border-primary/30">
+        <div className="px-4 border-r lg:border-none border-primary/30">
           <p className="mb-2 text-muted-foreground">On the way</p>
           <h2 className="text-primary/80 font-semibold">
             <span className="text-xs font-normal text-primary/50">KSH</span>{" "}
