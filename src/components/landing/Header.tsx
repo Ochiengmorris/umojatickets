@@ -3,17 +3,10 @@
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
-const Navlinks = [
-  { label: "Home", href: "#" },
-  { label: "About", href: "#" },
-  { label: "Services", href: "#" },
-  { label: "Contact", href: "#" },
-  // Add more links as needed...
-];
-
 const Header = () => {
   return (
-    <>
+    // make this sticky top-0
+    <div className="">
       <p className="text-sm text-landingsecondary/50 text-center border-b border-landingsecondary/20">
         This page is still under constuction. Please come back later!
       </p>
@@ -35,7 +28,7 @@ const Header = () => {
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 export default Header;

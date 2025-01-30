@@ -1,5 +1,7 @@
 "use client";
 
+import { fadeIn, textVariant } from "@/constants/motion";
+import { SectionWrapper } from "@/hoc";
 import bank from "@/images/bank.png";
 import exchange from "@/images/exchange.png";
 import queue2 from "@/images/queue2.png";
@@ -10,7 +12,10 @@ import Image from "next/image";
 const WhyUs = () => {
   return (
     <section className=" p-8 mt-14">
-      <motion.div className="flex flex-col items-center">
+      <motion.div
+        variants={textVariant({ delay: 0 })}
+        className="flex flex-col items-center"
+      >
         <p className="sm:text-[18px] text-[14px] text-landingsecondary uppercase tracking-wider">
           Why us
         </p>
@@ -25,15 +30,31 @@ const WhyUs = () => {
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-        <div className="bg-landingprimary/10 rounded-xl p-6">
+        <motion.div
+          variants={fadeIn({
+            direction: "right",
+            type: "spring",
+            delay: 0.5,
+            duration: 0.75,
+          })}
+          className="bg-landingprimary/10 rounded-xl p-6"
+        >
           <p className="text-landingprimary text-xl md:text-3xl lg:text-4xl font-[1000]">
             Refunds
           </p>
           <p className="text-lg xl:text-xl text-landingsecondary mt-6">
             Automated refunds for canceled events and tickets.
           </p>
-        </div>
-        <div className="bg-landingprimary/10 rounded-xl p-6">
+        </motion.div>
+        <motion.div
+          variants={fadeIn({
+            direction: "left",
+            type: "spring",
+            delay: 0.5,
+            duration: 0.75,
+          })}
+          className="bg-landingprimary/10 rounded-xl p-6"
+        >
           <p className="text-lg xl:text-xl text-landingsecondary mt-2">
             Instant Withdraw your funds at any time. (no hidden fees)
           </p>
@@ -47,9 +68,17 @@ const WhyUs = () => {
             <Image src={exchange} alt="exchange" className="w-12 h-12" />
             <Image src={bank} alt="bank" className="w-12 h-12" />
           </div>
-        </div>
+        </motion.div>
       </div>
-      <div className="bg-landingprimary/10 rounded-xl p-6 pb-12 lg:mt-4 mt-8">
+      <motion.div
+        variants={fadeIn({
+          direction: "up",
+          type: "spring",
+          delay: 1,
+          duration: 0.75,
+        })}
+        className="bg-landingprimary/10 rounded-xl p-6 pb-12 lg:mt-4 mt-8"
+      >
         <p className="text-landingprimary text-xl md:text-3xl lg:text-4xl font-[1000]">
           Auto Queue System
         </p>
@@ -68,8 +97,8 @@ const WhyUs = () => {
             />
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
-export default WhyUs;
+export default SectionWrapper({ Component: WhyUs, idName: "why-us" });

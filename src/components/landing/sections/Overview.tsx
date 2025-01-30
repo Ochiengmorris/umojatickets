@@ -1,12 +1,14 @@
 "use client";
 
+import { fadeIn, textVariant } from "@/constants/motion";
+import { SectionWrapper } from "@/hoc";
 import { motion } from "framer-motion";
 import { EqualSquareIcon, ShieldCheckIcon, TimerIcon } from "lucide-react";
 
 const Overview = () => {
   return (
     <section className="bg-white/50 rounded-2xl p-8 ">
-      <motion.div>
+      <motion.div variants={textVariant({ delay: 0 })}>
         <p className="sm:text-[18px] text-[14px] text-landingsecondary uppercase tracking-wider">
           Transactional
         </p>
@@ -28,7 +30,15 @@ const Overview = () => {
       </motion.div>
 
       <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 mb-2">
-        <div className="shadow-md p-6 rounded-lg flex flex-col">
+        <motion.div
+          variants={fadeIn({
+            direction: "up",
+            type: "spring",
+            delay: 0.5,
+            duration: 0.75,
+          })}
+          className="shadow-md p-6 rounded-lg flex flex-col"
+        >
           <div className="mb-4">
             <ShieldCheckIcon className="w-16 h-16 text-landingprimary" />
           </div>
@@ -39,9 +49,17 @@ const Overview = () => {
             Umoja Tickets uses trusted and secure payment gateways to ensure all
             your transactions are protected with the highest security standards.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="shadow-md p-6 rounded-lg flex flex-col">
+        <motion.div
+          variants={fadeIn({
+            direction: "up",
+            type: "spring",
+            delay: 1,
+            duration: 0.75,
+          })}
+          className="shadow-md p-6 rounded-lg flex flex-col"
+        >
           <div className="mb-4">
             <EqualSquareIcon className="w-16 h-16 text-landingprimary" />
           </div>
@@ -52,9 +70,17 @@ const Overview = () => {
             We offer a variety of payment options, making it easy for you to
             securely complete your ticket purchase.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="p-6 rounded-lg flex flex-col shadow-md">
+        <motion.div
+          variants={fadeIn({
+            direction: "up",
+            type: "spring",
+            delay: 1.5,
+            duration: 0.75,
+          })}
+          className="p-6 rounded-lg flex flex-col shadow-md"
+        >
           <div className="mb-4">
             <TimerIcon className="w-16 h-16 text-landingprimary" />
           </div>
@@ -65,9 +91,9 @@ const Overview = () => {
             Get instant confirmation of your ticket purchase, ensuring you’re
             all set for your event right away.
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 };
-export default Overview;
+export default SectionWrapper({ Component: Overview, idName: "overview" });

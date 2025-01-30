@@ -1,11 +1,16 @@
 "use client";
 
+import { textVariant } from "@/constants/motion";
+import { SectionWrapper } from "@/hoc";
 import { motion } from "framer-motion";
 
 const Mission = () => {
   return (
     <section className=" p-8 mt-14 bg-landingsecondary">
-      <motion.div className="flex flex-col items-center">
+      <motion.div
+        variants={textVariant({ delay: 0 })}
+        className="flex flex-col items-center"
+      >
         {/* section subheading */}
         <p className="sm:text-[18px] text-[14px] text-landingprimary uppercase tracking-wider">
           Our Mission
@@ -23,4 +28,4 @@ const Mission = () => {
     </section>
   );
 };
-export default Mission;
+export default SectionWrapper({ Component: Mission, idName: "mission" });

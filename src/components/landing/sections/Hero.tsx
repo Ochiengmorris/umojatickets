@@ -1,6 +1,8 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { fadeIn } from "@/constants/motion";
+import { SectionWrapper } from "@/hoc";
 import image1 from "@/images/landing_card_event.png";
 import image2 from "@/images/landing_ticket.png";
 import mike from "@/images/mike.png";
@@ -13,12 +15,22 @@ const Hero = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    console.log(eventName);
     // Your logic to search events goes here
   };
   return (
     <section className="mb-24">
       <div className=" px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-1 md:grid-cols-2 gap-1">
-        <div className="">
+        <motion.div
+          variants={fadeIn({
+            direction: "right",
+            type: "spring",
+            delay: 0,
+            duration: 2.5,
+          })}
+          className=""
+        >
           <h1 className=" text-4xl xl:text-6xl text-landingsecondary font-extrabold mb-4">
             Unlock Seamless Event Experiences with Umoja Tickets
           </h1>
@@ -53,15 +65,23 @@ const Hero = () => {
               </p>
             ))}
           </div>
-        </div>
-        <div className="border p-2 relative bg-black rounded-xl">
+        </motion.div>
+        <motion.div
+          variants={fadeIn({
+            direction: "left",
+            type: "spring",
+            delay: 0,
+            duration: 2.5,
+          })}
+          className="border p-2 relative bg-black rounded-xl"
+        >
           <div className="w-fit h-full rounded-4xl overflow-hidden">
             <Image src={image1} alt="event image" className="object-contain" />
           </div>
           <div className="absolute top-2/3 left-1/2 hidden lg:block  rounded-2xl overflow-hidden">
             <Image src={image2} alt="event image" className="object-contain" />
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="mt-2 border-l px-4 p-6 border-landingsecondary/10 w-full md:w-3/5">
@@ -72,8 +92,14 @@ const Hero = () => {
             duration: 10, // Duration of one full cycle (adjust as needed)
             ease: "easeInOut", // Smooth easing effect
           }}
-          animate={{ x: [0, "60%"] }}
+          animate={{ x: ["0%", "60%"] }}
           className=""
+          variants={fadeIn({
+            direction: "up",
+            type: "spring",
+            delay: 0,
+            duration: 2.5,
+          })}
         >
           <Image
             src={mike}
@@ -86,4 +112,4 @@ const Hero = () => {
     </section>
   );
 };
-export default Hero;
+export default SectionWrapper({ Component: Hero, idName: "hero" });
