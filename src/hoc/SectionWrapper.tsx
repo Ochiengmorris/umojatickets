@@ -7,6 +7,7 @@ type StarWrapperProps = {
 };
 
 const StarWrapper = ({ Component, idName }: StarWrapperProps) => {
+  console.log(idName);
   const HOC: React.FC = () => {
     return (
       <motion.section

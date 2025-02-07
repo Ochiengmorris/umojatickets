@@ -471,6 +471,17 @@ export const search = query({
   },
 });
 
+export const getByUserId = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    return await ctx.db
+      .query("events")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("is_cancelled"), undefined))
+      .collect();
+  },
+});
+
 export const getSellerEvents = query({
   args: { userId: v.string() },
   handler: async (ctx, { userId }) => {
