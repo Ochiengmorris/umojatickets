@@ -58,13 +58,30 @@ UmojaTickets is a web-based ticketing service developed using Next.js, Convex, a
    - Sign up for a Clerk account at [Clerk.dev](https://clerk.dev/).
    - Obtain your Clerk API keys and configure them in your environment variables.
 
-5. **Start the Application**:
+5. **Set Up Environment Variables**:
 
    ```bash
-   npm run dev
+       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+    # convex keys
+    # Deployment used by `npx convex dev`
+      CONVEX_DEPLOYMENT=
+      NEXT_PUBLIC_CONVEX_URL=
+      CONVEX_DEPLOY_KEY=
+    # mpesa keys
+      MPESA_CONSUMER_KEY=
+      MPESA_CONSUMER_SECRET=
+      MPESA_PASSKEY=
+      MPESA_CALLBACK_URL=
+      MPESA_SHORTCODE=
    ```
 
-   This will start the Next.js development server. You can then access the app at `http://localhost:3000`.
+6. **Start the Application**:
+
+```bash
+npm run dev
+```
+
+This will start the Next.js development server. You can then access the app at `http://localhost:3000`.
 
 ## Project Structure
 
@@ -109,7 +126,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact
 
 For questions or support, please contact [Ochieng Morris](mailto:ochiengmorris@example.com).
-
-```
-
-```
