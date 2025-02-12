@@ -71,10 +71,11 @@ UmojaTickets is a web-based ticketing service developed using Next.js, Convex, a
 - **`/convex`**: Convex backend functions and configuration.
 - **`/public`**: Public assets such as images and icons.
 - **`/src`**: Contains the main application source code.
-  - **`/pages`**: Next.js pages and API routes.
+  - **`/app`**: Next.js pages and API routes.
   - **`/components`**: Reusable components used throughout the app.
-  - **`/styles`**: Global and component-specific styles.
-  - **`/utils`**: Utility functions and helpers.
+  - **`/constants`**: Constants for the project.
+  - **`/lib`**: Utility functions and helpers.
+  - **`/actiions`**: Server Actions
 
 ## Contributing
 
