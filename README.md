@@ -1,6 +1,3 @@
-Certainly! Here's the README file for your `umojatickets` repository:
-
-````markdown
 # UmojaTickets
 
 UmojaTickets is a web-based ticketing service developed using Next.js, Convex, and Clerk. It provides a seamless platform for event organizers to manage ticket sales and for attendees to purchase tickets online.
@@ -27,7 +24,6 @@ UmojaTickets is a web-based ticketing service developed using Next.js, Convex, a
    git clone https://github.com/Ochiengmorris/umojatickets.git
    cd umojatickets
    ```
-````
 
 2. **Install Dependencies**:
 
@@ -115,5 +111,4 @@ For questions or support, please contact [Ochieng Morris](mailto:ochiengmorris@e
 
 ```
 
-Feel free to customize this README to better fit the specifics of your project.
 ```
