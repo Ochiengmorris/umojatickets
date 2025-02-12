@@ -62,24 +62,24 @@ UmojaTickets is a web-based ticketing service developed using Next.js, Convex, a
 
    ```bash
        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-    # convex keys
-    # Deployment used by `npx convex dev`
-      CONVEX_DEPLOYMENT=
-      NEXT_PUBLIC_CONVEX_URL=
-      CONVEX_DEPLOY_KEY=
-    # mpesa keys
-      MPESA_CONSUMER_KEY=
-      MPESA_CONSUMER_SECRET=
-      MPESA_PASSKEY=
-      MPESA_CALLBACK_URL=
-      MPESA_SHORTCODE=
+     # convex keys
+     # Deployment used by `npx convex dev`
+       CONVEX_DEPLOYMENT=
+       NEXT_PUBLIC_CONVEX_URL=
+       CONVEX_DEPLOY_KEY=
+     # mpesa keys
+       MPESA_CONSUMER_KEY=
+       MPESA_CONSUMER_SECRET=
+       MPESA_PASSKEY=
+       MPESA_CALLBACK_URL=
+       MPESA_SHORTCODE=
    ```
 
 6. **Start the Application**:
 
-```bash
-npm run dev
-```
+   ```bash
+   npm run dev
+   ```
 
 This will start the Next.js development server. You can then access the app at `http://localhost:3000`.
 
