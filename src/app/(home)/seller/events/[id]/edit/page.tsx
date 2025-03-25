@@ -1,6 +1,6 @@
 "use client";
 
-import EventForm from "@/components/EventForm";
+import EventForm from "@/components/events/EventForm";
 import { useQuery } from "convex/react";
 import { AlertCircle } from "lucide-react";
 import { useParams } from "next/navigation";

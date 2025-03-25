@@ -13,10 +13,10 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Id } from "../../convex/_generated/dataModel";
+import { Id } from "../../../convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
@@ -131,7 +131,7 @@ export default function TicketPurchaseDialog({
         setShowConfirmButton(false); // Reset visibility
         setTimeout(() => {
           setShowConfirmButton(true);
-        }, 12000); // Show the button after 12 seconds
+        }, 6000); // Show the button after 6 seconds
       }
     } catch (error) {
       toast({
@@ -251,8 +251,8 @@ export default function TicketPurchaseDialog({
                 <div className="">
                   {checking && (
                     <p className="text-sm text-center mb-2 text-muted-foreground flex items-center justify-center gap-2">
-                      <Loader className=" h-4 w-4 animate-spin" />
-                      wait while we are Checking...
+                      {/* <Loader className=" h-4 w-4 animate-spin" /> */}
+                      Click below after paying to confirm your purchase
                     </p>
                   )}
                   {showConfirmButton && (
@@ -263,7 +263,7 @@ export default function TicketPurchaseDialog({
                     >
                       {isLoading ? (
                         <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader className="h-4 w-4 animate-spin" />
                           <p>Confirming...</p>
                         </>
                       ) : (

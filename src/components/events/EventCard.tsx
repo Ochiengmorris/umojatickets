@@ -17,12 +17,12 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import PurchaseTicket from "@/components/PurchaseTicket";
+import PurchaseTicket from "@/components//tickets/PurchaseTicket";
 import FormatMoney, { cn, useStorageUrl } from "@/lib/utils";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
+import { Id } from "../../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
 import EventCardSkeleton from "./EventCardSkeleton";
-import { Card } from "./ui/card";
+import { Card } from "../ui/card";
 
 export default function EventCard({
   eventId,
@@ -265,9 +265,9 @@ export default function EventCard({
             </div>
           </div>
 
-          <p className="mt-4 text-card-foreground text-sm line-clamp-2">
+          {/* <p className="mt-4 text-card-foreground text-sm line-clamp-2">
             {event.description}
-          </p>
+          </p> */}
 
           <div onClick={(e) => e.stopPropagation()} className="">
             {!isPastEvent && renderTicketStatus()}

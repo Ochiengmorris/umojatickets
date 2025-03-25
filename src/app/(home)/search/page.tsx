@@ -1,7 +1,6 @@
 "use client";
 
-// import { api } from "@/convex/_generated/api";
-import EventCard from "@/components/EventCard";
+import EventCard from "@/components/events/EventCard";
 import Spinner from "@/components/Spinner";
 import { useQuery } from "convex/react";
 import { Search } from "lucide-react";

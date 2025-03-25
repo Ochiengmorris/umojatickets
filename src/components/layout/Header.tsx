@@ -1,19 +1,17 @@
 import SearchBar from "@/components/SearchBar";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
-import UserButton from "./UserButton";
+import UserButton from "../UserButton";
+import Image from "next/image";
+import logo from "@/images/logo/logo.png";
+import Logo from "./Logo";
 
 function Header() {
   return (
     <div className="border-b bg-background">
       <div className="flex max-w-[1600px] m-auto flex-col lg:flex-row items-center gap-4 p-4">
         <div className="flex items-center justify-between w-full lg:w-auto ">
-          <Link href="/" className="shrink-0">
-            <h1 className="text-2xl " style={{ fontWeight: 1000 }}>
-              <span className=" text-[#00c9AA]">Umoja</span>
-              <span>Tickets</span>
-            </h1>
-          </Link>
+          <Logo />
 
           <div className="lg:hidden">
             <SignedIn>

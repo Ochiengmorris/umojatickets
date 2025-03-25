@@ -1,6 +1,6 @@
 "use client";
 
-import EventCard from "@/components/EventCard";
+import EventCard from "@/components/events/EventCard";
 import JoinQueue from "@/components/JoinQueue";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
@@ -55,9 +55,9 @@ export default function EventPage() {
                   <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4">
                     {event.name}
                   </h1>
-                  <p className="text-base md:text-lg text-primary">
+                  {/* <p className="text-base md:text-lg text-primary">
                     {event.description}
-                  </p>
+                  </p> */}
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
@@ -112,13 +112,14 @@ export default function EventPage() {
                 {/* Additional Event Information */}
                 <div className="text-card-foreground bg-card border rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-[#00a184] mb-2">
-                    Event Information
+                    Event Description
                   </h3>
-                  <ul className="space-y-2 text-[#00a184] text-sm md:text-base">
-                    <li>• Please arrive 30 minutes before the event starts</li>
+                  <p className="space-y-2 text-[#00a184] text-sm md:text-base">
+                    {/* <li>• Please arrive 30 minutes before the event starts</li>
                     <li>• Tickets are non-refundable</li>
-                    <li>• Age restriction: 18+</li>
-                  </ul>
+                    <li>• Age restriction: 18+</li> */}
+                    {event.description}
+                  </p>
                 </div>
               </div>
 

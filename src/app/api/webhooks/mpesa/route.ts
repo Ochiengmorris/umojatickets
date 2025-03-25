@@ -143,5 +143,8 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ message: "Callback received successfully" });
+  return NextResponse.json({
+    message: "Callback received successfully",
+    status: 200,
+  });
 }

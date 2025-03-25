@@ -1,10 +1,10 @@
-import Footer from "@/components/Footer";
+import Footer from "@/components/layout/Footer";
 
 import type { Metadata } from "next";
 
 import "../globals.css";
-import HeaderAdmin from "@/components/HeaderAdmin";
-import AdminSheet from "@/components/AdminSheet";
+import HeaderAdmin from "@/components/layout/HeaderAdmin";
+import AdminSheet from "@/components/admin/AdminSheet";
 import BalanceCard from "@/components/BalanceCard";
 
 export const metadata: Metadata = {

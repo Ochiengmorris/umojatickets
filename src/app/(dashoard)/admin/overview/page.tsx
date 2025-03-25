@@ -1,4 +1,4 @@
-import AdmnBalance from "@/components/AdmnBalance";
+import AdmnBalance from "@/components/admin/AdmnBalance";
 import React from "react";
 
 const Overview = () => {

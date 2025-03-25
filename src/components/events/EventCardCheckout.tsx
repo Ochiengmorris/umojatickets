@@ -7,10 +7,10 @@ import { CalendarDays, MapPin, StarIcon, Ticket } from "lucide-react";
 import Image from "next/image";
 
 import { cn, useStorageUrl } from "@/lib/utils";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 import EventCardSkeleton from "./EventCardSkeleton";
-import { Card } from "./ui/card";
+import { Card } from "@/components/ui/card";
 
 const EventCardCheckout = ({
   eventId,

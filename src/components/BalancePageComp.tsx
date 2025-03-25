@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "convex/react";
-import AdminWithdrawForm from "./AdminWithdrawForm";
+import AdminWithdrawForm from "./admin/AdminWithdrawForm";
 import { useUser } from "@clerk/nextjs";
 import { api } from "../../convex/_generated/api";
 import FormatMoney from "@/lib/utils";

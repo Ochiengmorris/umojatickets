@@ -1,6 +1,6 @@
 "use client";
 
-import Ticket from "@/components/Ticket";
+import Ticket from "@/components/tickets/Ticket";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { ArrowLeft, Download, Share2 } from "lucide-react";

@@ -4,8 +4,8 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { Ticket } from "lucide-react";
 import { useEffect, useState } from "react";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 import ReleaseTicket from "./ReleaseTicket";
 import TicketPurchaseDialog from "./TicketPurchaseDialog";
 

@@ -1,4 +1,4 @@
-import { EventSummary } from "@/components/EventSummary";
+import { EventSummary } from "@/components/events/EventSummary";
 import React from "react";
 
 const SellerDashboard = () => {

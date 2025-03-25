@@ -1,4 +1,4 @@
-import Ticket from "@/components/Ticket";
+import Ticket from "@/components/tickets/Ticket";
 import { getConvexClient } from "@/lib/convex";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";

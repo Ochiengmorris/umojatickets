@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "convex/react";
 import { XCircle } from "lucide-react";
 import { useState } from "react";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 
 export default function ReleaseTicket({
   eventId,
@@ -55,9 +55,10 @@ export default function ReleaseTicket({
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will release the ticket offer.
+            This action will release the ticket offer and there might be others
+            waiting inline for it!
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
