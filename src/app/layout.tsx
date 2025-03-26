@@ -1,13 +1,13 @@
-import { ConvexClientProvider } from "@/components/ConvexClientProvider";
-import SyncUserWithConvex from "@/components/SyncUserWithConvex";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ConvexClientProvider } from "@/components/other/ConvexClientProvider";
+import SyncUserWithConvex from "@/components/other/SyncUserWithConvex";
+import { ThemeProvider } from "@/components/other/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Head from "next/head";
 import "./globals.css";
-import NProgressHandler from "@/components/NProgress";
+import NProgressHandler from "@/components/other/NProgress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

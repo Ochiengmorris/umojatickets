@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CreditCard, Loader, Loader2, Phone } from "lucide-react";
+import { CreditCard, Loader, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

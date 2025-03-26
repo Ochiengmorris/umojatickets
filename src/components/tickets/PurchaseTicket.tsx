@@ -6,8 +6,8 @@ import { Ticket } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import ReleaseTicket from "./ReleaseTicket";
-import TicketPurchaseDialog from "./TicketPurchaseDialog";
+import ReleaseTicket from "@/components/tickets/ReleaseTicket";
+import TicketPurchaseDialog from "@/components/tickets/TicketPurchaseDialog";
 
 export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -3,9 +3,9 @@
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { usePathname } from "next/navigation";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import FormatMoney from "@/lib/utils";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BalanceCard = () => {
   const pathname = usePathname();

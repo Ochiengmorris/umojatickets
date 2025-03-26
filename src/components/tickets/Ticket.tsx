@@ -7,7 +7,7 @@ import Image from "next/image";
 import QRCode from "react-qr-code";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import Spinner from "../Spinner";
+import Spinner from "@/components/loaders/Spinner";
 
 export default function Ticket({ ticketId }: { ticketId: Id<"tickets"> }) {
   const ticket = useQuery(api.tickets.getTicketWithDetails, { ticketId });

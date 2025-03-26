@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import Form from "next/form";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 
 export default function SearchBar() {
   return (

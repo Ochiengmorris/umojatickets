@@ -12,9 +12,18 @@ export default defineSchema({
     userId: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
     is_cancelled: v.optional(v.boolean()),
+    ticketTypes: v.optional(v.array(v.id("ticketTypes"))),
   })
     .index("by_user_id", ["userId"])
     .index("by_date", ["eventDate"]),
+
+  ticketTypes: defineTable({
+    eventId: v.id("events"),
+    name: v.string(), // VIP, Normal etc
+    price: v.number(),
+    totalTickets: v.number(),
+  }).index("by_event", ["eventId"]),
+
   tickets: defineTable({
     eventId: v.id("events"),
     userId: v.string(),

@@ -11,7 +11,8 @@ export default {
     extend: {
       colors: {
         landingprimary: "#2a8e9e",
-        landingsecondary: "#180d39",
+        // landingsecondary: "#180d39",
+        landingsecondary: "#FF6F61",
         landingtertiary: "#101e20",
         landingwhite: "#e9f3f4",
         background: "hsl(var(--background))",

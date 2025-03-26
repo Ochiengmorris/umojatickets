@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   SignInButton,
   SignedIn,
@@ -9,8 +10,7 @@ import {
 } from "@clerk/nextjs";
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import AdminSidebar from "./AdminSidebar";
-import { useEffect, useState } from "react";
+import AdminSidebar from "@/components/admin/AdminSidebar";
 
 function HeaderAdmin() {
   const [open, setOpen] = useState(false);

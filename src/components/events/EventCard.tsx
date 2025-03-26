@@ -17,12 +17,12 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import PurchaseTicket from "@/components//tickets/PurchaseTicket";
-import FormatMoney, { cn, useStorageUrl } from "@/lib/utils";
 import { Id } from "../../../convex/_generated/dataModel";
 import { api } from "../../../convex/_generated/api";
-import EventCardSkeleton from "./EventCardSkeleton";
-import { Card } from "../ui/card";
+import FormatMoney, { cn, formatDate, useStorageUrl } from "@/lib/utils";
+import PurchaseTicket from "@/components//tickets/PurchaseTicket";
+import EventCardSkeleton from "@/components/events/EventCardSkeleton";
+import { Card } from "@/components/ui/card";
 
 export default function EventCard({
   eventId,
@@ -179,6 +179,13 @@ export default function EventCard({
           duration: 0.5, // Duration of the animation
         }}
       >
+        {/* 'PAST' Ribbon */}
+        {isPastEvent && (
+          <div className="absolute top-4 right-2 bg-landingprimary text-white text-xs font-extrabold uppercase py-1 px-10 transform rotate-45 translate-x-10 -translate-y-1 z-50">
+            PAST
+          </div>
+        )}
+
         {/* Event Image */}
         {imageUrl && (
           <div className="relative w-full h-48">
@@ -190,66 +197,70 @@ export default function EventCard({
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+
+            {/* Event Owner Ribbon */}
+            <div className="absolute bottom-[2px] left-[3px]">
+              {isEventOwner && (
+                <span className="inline-flex items-center gap-1 border border-landingprimary/20  bg-black/20 text-landingprimary px-2 py-1 rounded-md  text-xs font-semibold">
+                  <StarIcon className="w-3 h-3" />
+                  Your Event
+                </span>
+              )}
+            </div>
           </div>
         )}
 
         <div className={`p-6 ${imageUrl ? "relative" : ""}`}>
           <div className="flex justify-between items-start">
             <div>
-              <div className="flex flex-col items-start gap-2">
-                {isEventOwner && (
-                  <span className="inline-flex items-center gap-1 bg-[#00c9aa]/90 text-gray-950 px-2 py-1 rounded-full text-xs font-semibold">
-                    <StarIcon className="w-3 h-3" />
-                    Your Event
-                  </span>
-                )}
-
-                <h2 className="text-xl md:text-2xl font-bold text-card-foreground">
-                  {event.name}
-                </h2>
-              </div>
-              {isPastEvent && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-primary-foreground shadow mt-2">
-                  Past Event
+              <span className="text-xs text-card-foreground">
+                From{" "}
+                <span className="text-xl mr-2">
+                  {" "}
+                  KES {FormatMoney(Number(event.price))}
+                </span>{" "}
+                to{" "}
+                <span className="text-xl">
+                  {" "}
+                  KES {FormatMoney(Number("10000.00"))}
                 </span>
-              )}
+              </span>
             </div>
 
-            {/* Price Tag */}
-            <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
-              <span
-                className={`px-4 py-1.5 font-semibold text-sm md:text-base rounded-full ${
-                  isPastEvent
-                    ? "bg-gray-200 text-gray-500"
-                    : "bg-green-50 text-green-700"
-                }`}
-              >
-                <span className="text-xs font-normal">Ksh </span>
-                {FormatMoney(Number(event.price.toFixed(2)))}
-              </span>
+            {/* <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
               {availability.purchasedCount >= availability.totalTickets && (
                 <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-xs md:text-sm">
                   Sold Out
                 </span>
               )}
+            </div> */}
+          </div>
+
+          <div className="mt-4 flex gap-4">
+            <div className="w-20 h-20 rounded-lg flex items-center justify-start flex-col shadow-md shrink-0  overflow-hidden">
+              <div className="uppercase bg-card-foreground px-2 py-1 justify-center flex font-semibold  w-full text-card">
+                {new Intl.DateTimeFormat("en-US", { month: "short" }).format(
+                  new Date(event.eventDate)
+                )}
+              </div>
+              <div className="text-card-foreground flex-1 flex items-center justify-center text-3xl ">
+                {new Intl.DateTimeFormat("en-US", { day: "numeric" }).format(
+                  new Date(event.eventDate)
+                )}
+              </div>
+            </div>
+            <div>
+              <span className="text-sm md:text-base">{event.location}</span>
+              <h2 className="text-xl md:text-2xl font-bold text-card-foreground">
+                {event.name}
+              </h2>
             </div>
           </div>
 
           <div className="mt-4 space-y-3">
-            <div className="flex items-center text-card-foreground">
-              <MapPin className="w-4 h-4 mr-2" />
-              <span className="text-sm md:text-base">{event.location}</span>
-            </div>
+            {/* {isPastEvent && "(Ended)"} */}
 
-            <div className="flex items-center text-card-foreground">
-              <CalendarDays className="w-4 h-4 mr-2" />
-              <span className="text-sm md:text-base">
-                {new Date(event.eventDate).toLocaleDateString()}{" "}
-                {isPastEvent && "(Ended)"}
-              </span>
-            </div>
-
-            <div className="flex items-center text-card-foreground">
+            {/* <div className="flex items-center text-card-foreground">
               <Ticket className="w-4 h-4 mr-2" />
               <span className="text-sm md:text-base">
                 {availability.totalTickets - availability.purchasedCount} /{" "}
@@ -262,12 +273,8 @@ export default function EventCard({
                   </span>
                 )}
               </span>
-            </div>
+            </div> */}
           </div>
-
-          {/* <p className="mt-4 text-card-foreground text-sm line-clamp-2">
-            {event.description}
-          </p> */}
 
           <div onClick={(e) => e.stopPropagation()} className="">
             {!isPastEvent && renderTicketStatus()}

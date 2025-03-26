@@ -1,14 +1,14 @@
 "use client";
 
 import { CalendarDays, LoaderIcon } from "lucide-react";
-import BalanceCard from "./BalanceCard";
-import EarningsChart from "./EarningsChart";
-import RecentTrstionsCard from "./RecentTrstionsCard";
+import EarningsChart from "../seller/EarningsChart";
+import RecentTrstionsCard from "../seller/RecentTrstionsCard";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import FormatMoney from "@/lib/utils";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
+import BalanceCard from "../seller/BalanceCard";
 
 const AdmnBalance = () => {
   const { user } = useUser();

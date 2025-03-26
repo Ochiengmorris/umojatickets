@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import Spinner from "../Spinner";
+import Spinner from "@/components/loaders/Spinner";
 import FormatMoney from "@/lib/utils";
 
 export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {

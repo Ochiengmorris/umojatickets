@@ -1,4 +1,4 @@
-import SellerEventList from "@/components/SellerEventList";
+import SellerEventList from "@/components/seller/SellerEventList";
 import { auth } from "@clerk/nextjs/server";
 import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";

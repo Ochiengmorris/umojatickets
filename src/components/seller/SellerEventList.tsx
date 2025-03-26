@@ -13,11 +13,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { api } from "../../convex/_generated/api";
-import { Doc } from "../../convex/_generated/dataModel";
-import { Metrics } from "../../convex/events";
-import CancelEventButton from "./CancelEventButton";
-import Spinner from "./Spinner";
+import { api } from "../../../convex/_generated/api";
+import { Doc } from "../../../convex/_generated/dataModel";
+import { Metrics } from "../../../convex/events";
+import CancelEventButton from "@/components/events/CancelEventButton";
+import Spinner from "@/components/loaders/Spinner";
+
 export default function SellerEventList() {
   const { user } = useUser();
   const events = useQuery(api.events.getSellerEvents, {

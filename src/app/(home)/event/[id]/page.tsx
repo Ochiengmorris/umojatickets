@@ -1,8 +1,8 @@
 "use client";
 
 import EventCard from "@/components/events/EventCard";
-import JoinQueue from "@/components/JoinQueue";
-import Spinner from "@/components/Spinner";
+import JoinQueue from "@/components/tickets/JoinQueue";
+import Spinner from "@/components/loaders/Spinner";
 import { Button } from "@/components/ui/button";
 import FormatMoney, { useStorageUrl } from "@/lib/utils";
 import { SignInButton, useUser } from "@clerk/nextjs";

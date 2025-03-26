@@ -24,6 +24,19 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
   throw new Error("Invalid phone number format"); // For invalid phone numbers
 };
 
+export const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  };
+  return date.toLocaleDateString(undefined, options);
+};
+
+{
+  /* This formats money numbers to the international format  */
+}
 const FormatMoney: (amount?: number) => string = (amount) => {
   if (amount === undefined) {
     return ""; // Or return "0" or any other default value you prefer

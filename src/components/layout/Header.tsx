@@ -1,10 +1,8 @@
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/components/layout/SearchBar";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
-import UserButton from "../UserButton";
-import Image from "next/image";
-import logo from "@/images/logo/logo.png";
-import Logo from "./Logo";
+import UserButton from "@/components/other/UserButton";
+import Logo from "@/components/layout/Logo";
 
 function Header() {
   return (

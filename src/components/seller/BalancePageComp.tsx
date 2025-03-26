@@ -1,10 +1,11 @@
 "use client";
+
 import { useQuery } from "convex/react";
-import AdminWithdrawForm from "./admin/AdminWithdrawForm";
+import AdminWithdrawForm from "@/components/admin/AdminWithdrawForm";
 import { useUser } from "@clerk/nextjs";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import FormatMoney from "@/lib/utils";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BalancePageComp = () => {
   const { user } = useUser();

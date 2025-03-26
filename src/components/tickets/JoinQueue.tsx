@@ -4,10 +4,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { Clock, OctagonXIcon } from "lucide-react";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
-import { WAITING_LIST_STATUS } from "../../convex/constants";
-import Spinner from "./Spinner";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
+import { WAITING_LIST_STATUS } from "../../../convex/constants";
+import Spinner from "@/components/loaders/Spinner";
 
 export default function JoinQueue({
   eventId,

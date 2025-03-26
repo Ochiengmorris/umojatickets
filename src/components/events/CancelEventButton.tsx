@@ -6,10 +6,18 @@ import { useMutation } from "convex/react";
 import { Ban } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
-
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function CancelEventButton({
   eventId,
@@ -24,7 +32,7 @@ export default function CancelEventButton({
 
   const Konfirm = () => {
     setIsDialogOpen(true);
-  }
+  };
 
   const handleCancel = async () => {
     setIsDialogOpen(false);
@@ -51,33 +59,36 @@ export default function CancelEventButton({
 
   return (
     <>
-        <button
+      <button
         onClick={Konfirm}
         disabled={isCancelling}
         className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors "
-        >
+      >
         <Ban className="w-4 h-4" />
         <span className="text-sm">
-            {isCancelling ? "Processing..." : "Cancel Event"}
+          {isCancelling ? "Processing..." : "Cancel Event"}
         </span>
-        </button>
+      </button>
 
-    <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure you want to cancel this event?</AlertDialogTitle>
-          <AlertDialogDescription>
-            All tickets will be refunded and the event will be cancelled permanently.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleCancel}>
-            Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to cancel this event?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              All tickets will be refunded and the event will be cancelled
+              permanently.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCancel}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

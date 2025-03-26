@@ -1,7 +1,7 @@
 "use client";
 
 import EventCard from "@/components/events/EventCard";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/loaders/Spinner";
 import { useQuery } from "convex/react";
 import { Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";

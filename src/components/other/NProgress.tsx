@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import NProgress from "nprogress";
-import "../app/styles/nprogress.css";
+import "@/app/styles/nprogress.css";
 
 export default function NProgressHandler() {
   const pathname = usePathname();

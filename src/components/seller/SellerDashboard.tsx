@@ -3,12 +3,12 @@
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/loaders/Spinner";
 import { CalendarDays, Cog, Plus, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import { becomeASeller } from "@/actions/becomeASeller";
 import { useToast } from "@/hooks/use-toast";
 
