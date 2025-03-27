@@ -49,6 +49,24 @@ export const create = mutation({
     userId: v.string(),
   },
   handler: async (ctx, args) => {
+    const ticketTypes = [
+      {
+        name: "VIP",
+        price: 10,
+        totalTickets: 10,
+      },
+      {
+        name: "Normal",
+        price: 5,
+        totalTickets: 20,
+      },
+      {
+        name: "Student",
+        price: 3,
+        totalTickets: 15,
+      },
+    ];
+
     const eventId = await ctx.db.insert("events", {
       name: args.name,
       description: args.description,
@@ -58,6 +76,15 @@ export const create = mutation({
       totalTickets: args.totalTickets,
       userId: args.userId,
     });
+
+    for (const ticketType of ticketTypes) {
+      await ctx.db.insert("ticketTypes", {
+        eventId,
+        name: ticketType.name,
+        price: ticketType.price,
+        totalTickets: ticketType.totalTickets,
+      });
+    }
     return eventId;
   },
 });

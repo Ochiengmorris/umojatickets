@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import "../globals.css";
 import HeaderAdmin from "@/components/layout/HeaderAdmin";
 import AdminSheet from "@/components/admin/AdminSheet";
-import BalanceCard from "@/components/BalanceCard";
+import BalanceCard from "@/components/seller/BalanceCard";
 
 export const metadata: Metadata = {
   title: "UmojaTickets: Buy & Sell Tickets for Events & Concerts",

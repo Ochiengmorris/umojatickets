@@ -164,7 +164,7 @@ export default function EventCard({
   return (
     <Card
       className={cn(
-        " relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:border-primary/30 transition-all duration-300 border overflow-hidden border-primary-foreground cursor-pointer"
+        " relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:border-primary/30 transition-all duration-300 border overflow-hidden border-primary-foreground cursor-pointer max-w-2xl mx-auto"
       )}
     >
       <motion.div
@@ -181,18 +181,19 @@ export default function EventCard({
       >
         {/* 'PAST' Ribbon */}
         {isPastEvent && (
-          <div className="absolute top-4 right-2 bg-landingprimary text-white text-xs font-extrabold uppercase py-1 px-10 transform rotate-45 translate-x-10 -translate-y-1 z-50">
+          <div className="absolute top-4 right-2 bg-landingprimary text-white text-xs font-extrabold uppercase py-1 px-10 transform rotate-45 translate-x-10 -translate-y-1 z-20">
             PAST
           </div>
         )}
 
         {/* Event Image */}
         {imageUrl && (
-          <div className="relative w-full h-48">
+          <div className="relative w-full h-48 ">
             <Image
               src={imageUrl}
               alt={event.name}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover"
               priority
             />
@@ -257,10 +258,10 @@ export default function EventCard({
             </div>
           </div>
 
-          <div className="mt-4 space-y-3">
-            {/* {isPastEvent && "(Ended)"} */}
+          {/* <div className="mt-4 space-y-3"> */}
+          {/* {isPastEvent && "(Ended)"} */}
 
-            {/* <div className="flex items-center text-card-foreground">
+          {/* <div className="flex items-center text-card-foreground">
               <Ticket className="w-4 h-4 mr-2" />
               <span className="text-sm md:text-base">
                 {availability.totalTickets - availability.purchasedCount} /{" "}
@@ -274,7 +275,7 @@ export default function EventCard({
                 )}
               </span>
             </div> */}
-          </div>
+          {/* </div> */}
 
           <div onClick={(e) => e.stopPropagation()} className="">
             {!isPastEvent && renderTicketStatus()}

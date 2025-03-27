@@ -1,4 +1,4 @@
-import SellerDashboard from "@/components/SellerDashboard";
+import SellerDashboard from "@/components/seller/SellerDashboard";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 

@@ -1,4 +1,4 @@
-import BalancePageComp from "@/components/BalancePageComp";
+import BalancePageComp from "@/components/seller/BalancePageComp";
 import React from "react";
 
 const Balance = () => {
