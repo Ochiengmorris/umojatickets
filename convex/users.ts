@@ -93,8 +93,8 @@ export const getUserById = query({
 
 //mutation to update user balance by userId and eventId
 export const updateUserBalance = mutation({
-  args: { eventId: v.id("events") },
-  handler: async (ctx, { eventId }) => {
+  args: { eventId: v.id("events"), amount: v.number() },
+  handler: async (ctx, { eventId, amount }) => {
     const event = await ctx.db.get(eventId);
 
     if (!event) {
@@ -111,7 +111,7 @@ export const updateUserBalance = mutation({
     }
 
     await ctx.db.patch(user._id, {
-      balance: user.balance ? user.balance + event.price : 0 + event.price,
+      balance: user.balance ?? 0 + amount, // TODO: update this part of the code to add the actual amount.
     });
   },
 });

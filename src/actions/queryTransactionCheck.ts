@@ -78,10 +78,6 @@ export async function queryTransactionCheck({
         resultDesc: data.ResultDesc,
       });
 
-      await convex.mutation(api.users.updateUserBalance, {
-        eventId: metadata.eventId,
-      });
-
       // Process the ticket purchase
       await convex.mutation(api.events.purchaseMpesaTicket, {
         eventId: metadata.eventId,
@@ -91,6 +87,11 @@ export async function queryTransactionCheck({
           amount: transaction.amount,
           checkoutRequestId: data.CheckoutRequestID,
         },
+      });
+
+      await convex.mutation(api.users.updateUserBalance, {
+        eventId: metadata.eventId,
+        amount: transaction.amount,
       });
 
       return {

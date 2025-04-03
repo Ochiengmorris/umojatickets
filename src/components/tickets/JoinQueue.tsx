@@ -7,32 +7,49 @@ import { Clock, OctagonXIcon } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { WAITING_LIST_STATUS } from "../../../convex/constants";
-import Spinner from "@/components/loaders/Spinner";
+import { Skeleton } from "../ui/skeleton";
 
 export default function JoinQueue({
   eventId,
   userId,
+  ticketTypeId,
+  selectedCount,
 }: {
   eventId: Id<"events">;
   userId: string;
+  ticketTypeId: Id<"ticketTypes">;
+  selectedCount: number;
 }) {
   const { toast } = useToast();
   const joinWaitingList = useMutation(api.events.joinWaitingList);
+
+  // Prevent queries from running if ticketTypeId is invalid
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
     eventId,
     userId,
+    ticketTypeId,
   });
   const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
     eventId,
     userId,
   });
-  const availability = useQuery(api.events.getEventAvailability, { eventId });
+  const availability = useQuery(api.events.getEventAvailability, {
+    eventId,
+    ticketTypeId,
+  });
   const event = useQuery(api.events.getById, { eventId });
+
+  if (!ticketTypeId || !event) return null;
 
   const isEventOwner = userId === event?.userId;
   const handleJoinQueue = async () => {
     try {
-      const result = await joinWaitingList({ eventId, userId });
+      const result = await joinWaitingList({
+        eventId,
+        userId,
+        ticketTypeId,
+        selectedCount,
+      });
       if (result.success) {
         console.log("Successfully joined waiting list");
         toast({
@@ -63,7 +80,7 @@ export default function JoinQueue({
   };
 
   if (queuePosition === undefined || availability === undefined || !event) {
-    return <Spinner />;
+    return <Skeleton className="w-full h-12 " />;
   }
 
   if (userTicket) {
@@ -91,15 +108,14 @@ export default function JoinQueue({
               <span>Event has ended</span>
             </div>
           ) : availability.purchasedCount >= availability?.totalTickets ? (
-            <div className="text-center p-4">
-              <p className="text-lg font-semibold text-red-600">
-                Sorry, this event is sold out
+            <div className="text-center p-3">
+              <p className="text-md font-semibold text-red-600">
+                Sorry, this ticket type is sold out
               </p>
             </div>
           ) : (
             <button
               onClick={handleJoinQueue}
-              disabled={isPastEvent || isEventOwner}
               className="w-full px-6 py-3 rounded-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 shadow-md flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               Buy Ticket

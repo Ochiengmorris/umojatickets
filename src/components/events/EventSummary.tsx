@@ -8,19 +8,19 @@ const summaryItems = [
     title: "Total Events",
     value: "12",
     icon: CalendarDays,
-    color: "text-[#00a184]",
+    color: "text-jmprimary",
   },
   {
     title: "Upcoming Events",
     value: "3",
     icon: Ticket,
-    color: "text-[#00a184]",
+    color: "text-jmprimary",
   },
   {
     title: "Total Attendees",
     value: "1,234",
     icon: Users,
-    color: "text-[#00a184]",
+    color: "text-jmprimary",
   },
 ];
 

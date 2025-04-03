@@ -16,9 +16,11 @@ export type MpesaCallbackMetaData = {
 export async function createMpesaPaymentRequest({
   eventId,
   phoneNumber,
+  ticketTypeId,
 }: {
   eventId: Id<"events">;
   phoneNumber: string;
+  ticketTypeId: Id<"ticketTypes">;
 }) {
   const { userId } = await auth();
   if (!userId) throw new Error("Not authenticated");
@@ -29,10 +31,20 @@ export async function createMpesaPaymentRequest({
   const event = await convex.query(api.events.getById, { eventId });
   if (!event) throw new Error("Event not found");
 
+  // Get tickettype details
+  const ticketTypeDetails = await convex.query(api.tickets.getTicketType, {
+    ticketTypeId: ticketTypeId,
+  });
+
+  if (!ticketTypeDetails?.ticketType?.price) {
+    throw new Error("Invalid ticket type or price");
+  }
+
   // Get waiting list entry
   const queuePosition = await convex.query(api.waitingList.getQueuePosition, {
     eventId,
     userId,
+    ticketTypeId,
   });
 
   if (!queuePosition || queuePosition.status !== "offered") {
@@ -49,9 +61,11 @@ export async function createMpesaPaymentRequest({
     waitingListId: queuePosition._id,
   };
 
+  const amount = queuePosition.count * ticketTypeDetails?.ticketType?.price;
+
   // Create Mpesa STK Push request
   try {
-    const stkPushResponse = await sendStkPush(phoneNumber, event.price);
+    const stkPushResponse = await sendStkPush(phoneNumber, amount);
 
     if (!stkPushResponse || !stkPushResponse.CheckoutRequestID) {
       throw new Error("Failed to initiate Mpesa payment");
@@ -61,7 +75,7 @@ export async function createMpesaPaymentRequest({
     await convex.mutation(api.mpesaTransactions.create, {
       checkoutRequestId: stkPushResponse.CheckoutRequestID,
       metadata: JSON.stringify(metadata),
-      amount: event.price,
+      amount: amount,
       expiresAt: new Date(Date.now() + DURATIONS.TICKET_OFFER).toISOString(),
     });
 

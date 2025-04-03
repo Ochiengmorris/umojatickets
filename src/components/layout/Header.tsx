@@ -1,23 +1,33 @@
 import SearchBar from "@/components/layout/SearchBar";
-import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import Link from "next/link";
 import UserButton from "@/components/other/UserButton";
-import Logo from "@/components/layout/Logo";
+import full_logo from "@/images/logo/full-logo.png";
+import logo_blue from "@/images/logo/logo-blue.png";
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import Image from "next/image";
+import Link from "next/link";
 
 function Header() {
   return (
     <div className="border-b bg-background">
-      <div className="flex max-w-[1600px] m-auto flex-col lg:flex-row items-center gap-4 p-4">
-        <div className="flex items-center justify-between w-full lg:w-auto ">
-          <Logo />
+      <div className="flex max-w-[1600px] m-auto flex-col lg:flex-row items-center gap-4 p-4 relative">
+        <div className="flex lg:max-w-[100px] items-center w-full lg:mr-12">
+          <Link href="/" className="flex items-center">
+            <Image
+              src={logo_blue}
+              width={200}
+              height={200}
+              alt="logo"
+              className="object-contain w-[100px] h-[100px] md:w-[140px] md:h-[140px] absolute left-2"
+            />
+          </Link>
 
-          <div className="lg:hidden">
+          <div className="lg:hidden ml-auto">
             <SignedIn>
               <UserButton />
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="bg-primary text-primary-foreground shadow hover:bg-primary/90 px-3 py-2 text-sm rounded-lg font-semibold transition  ">
+                <button className="bg-primary text-primary-foreground shadow hover:bg-primary/90 px-3 py-2 text-sm rounded-lg font-semibold transition">
                   Sign In
                 </button>
               </SignInButton>
@@ -26,7 +36,7 @@ function Header() {
         </div>
 
         {/* Search Bar - Full width on mobile */}
-        <div className="w-full lg:w-fit lg:grow lg:max-w-2xl">
+        <div className="justify-start w-full lg:flex-1 lg:max-w-2xl ">
           <SearchBar />
         </div>
 
@@ -34,7 +44,7 @@ function Header() {
           <SignedIn>
             <div className="flex items-center gap-3">
               <Link href="/seller" className="shrink-0">
-                <button className="bg-[#00c9AA] text-gray-950 px-3 py-2 text-sm rounded-lg hover:bg-[#00c9AA]/90 transition font-semibold">
+                <button className="bg-primary/5 text-primary px-3 py-2 text-sm rounded-lg hover:bg-primary/20 transition-all duration-200 ease-in-out font-semibold">
                   Sell Tickets
                 </button>
               </Link>
@@ -61,7 +71,7 @@ function Header() {
         <div className="lg:hidden w-full flex justify-center gap-3">
           <SignedIn>
             <Link href="/seller" className="flex-1">
-              <button className="w-full bg-[#00c9AA] text-gray-950 px-3 py-1.5 text-sm rounded-lg hover:bg-[#00c9AA] transition font-semibold">
+              <button className="bg-[#ffcd08]/5 text-primary px-3 py-1.5 text-sm rounded-lg hover:bg-[#ffcd08]/50 transition-all duration-200 ease-in-out font-semibold w-full">
                 Sell Tickets
               </button>
             </Link>

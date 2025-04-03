@@ -6,13 +6,18 @@ import { useQuery } from "convex/react";
 import { ArrowLeft, Download, Share2 } from "lucide-react";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { formatDate } from "@/lib/utils";
 
 export default function TicketPage() {
   const params = useParams();
   const { user } = useUser();
+  const ticketRef = useRef<HTMLDivElement>(null);
+
   const ticket = useQuery(api.tickets.getTicketWithDetails, {
     ticketId: params.id as Id<"tickets">,
   });
@@ -35,6 +40,92 @@ export default function TicketPage() {
     return null;
   }
 
+  const exportAsPng = async () => {
+    if (!ticketRef.current) return;
+
+    try {
+      // Add a class temporarily for better rendering
+      ticketRef.current.classList.add("exporting");
+
+      const canvas = await html2canvas(ticketRef.current, {
+        scale: 2, // Higher scale for better quality
+        logging: false,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      });
+
+      // Remove the temporary class
+      ticketRef.current.classList.remove("exporting");
+
+      // Convert to PNG and download
+      const dataUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `ticket-${ticket.event?.name}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.error("Failed to export as PNG", error);
+      alert("Failed to export as PNG");
+    }
+  };
+  const exportAsPdf = async () => {
+    if (!ticketRef.current) return;
+
+    try {
+      // Add a class temporarily for better rendering
+      ticketRef.current.classList.add("exporting");
+
+      const canvas = await html2canvas(ticketRef.current, {
+        scale: 3, // Higher scale for better quality
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      });
+
+      // Remove the temporary class
+      ticketRef.current.classList.remove("exporting");
+
+      // Define padding
+      const padding = 10; // in mm
+
+      // Get image dimensions
+      const imgWidth = 210 - 2 * padding; // A4 width is 210mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // Create a new canvas with padding
+      const paddedCanvas = document.createElement("canvas");
+      paddedCanvas.width = canvas.width + 2 * padding;
+      paddedCanvas.height = canvas.height + 2 * padding;
+      const ctx = paddedCanvas.getContext("2d");
+      if (!ctx) return;
+
+      // Fill the background with white
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, paddedCanvas.width, paddedCanvas.height);
+
+      // Draw the original canvas onto the padded canvas
+      ctx.drawImage(canvas, padding, padding);
+
+      // Convert the padded canvas to an image
+      const imgData = paddedCanvas.toDataURL("image/png");
+
+      // Initialize jsPDF
+      const pdf = new jsPDF({
+        orientation: imgHeight > imgWidth ? "portrait" : "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      // Add the image to the PDF
+      pdf.addImage(imgData, "PNG", padding, padding, imgWidth, imgHeight);
+
+      // Save the PDF
+      pdf.save(`ticket-${ticket.event?.name}.pdf`);
+    } catch (error) {
+      console.error("Error exporting ticket as PDF:", error);
+      alert("Failed to export ticket as PDF. Please try again.");
+    }
+  };
+
   return (
     <div className="h-full bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -50,13 +141,16 @@ export default function TicketPage() {
             </Link>
             <div className="flex items-center gap-4">
               <button
-                // onClick={saveTicketAsPDF}
+                onClick={exportAsPdf}
                 className="flex items-center gap-2 px-4 py-2 text-foreground hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100"
               >
                 <Download className="w-4 h-4" />
                 <span className="text-sm">Save</span>
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 text-foreground hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">
+              <button
+                onClick={exportAsPng}
+                className="flex items-center gap-2 px-4 py-2 text-foreground hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100"
+              >
                 <Share2 className="w-4 h-4" />
                 <span className="text-sm">Share</span>
               </button>
@@ -71,7 +165,7 @@ export default function TicketPage() {
               {ticket.event.name}
             </h1>
             <p className="mt-1 text-foreground/70 text-sm md:text-base">
-              {new Date(ticket.event.eventDate).toLocaleDateString()} at{" "}
+              {formatDate(new Date(ticket.event.eventDate).toISOString())} at{" "}
               {ticket.event.location}
             </p>
             <div className="mt-4 flex items-center gap-4">
@@ -81,7 +175,7 @@ export default function TicketPage() {
                     ? "bg-red-50 text-red-700"
                     : ticket.event.eventDate < Date.now()
                       ? "bg-gray-50 text-gray-700"
-                      : "bg-green-50 text-green-700"
+                      : "bg-jmprimary/10 text-jmprimary"
                 }`}
               >
                 {ticket.event.is_cancelled
@@ -91,7 +185,8 @@ export default function TicketPage() {
                     : "Valid Ticket"}
               </span>
               <span className="text-sm text-foreground/70">
-                Purchased on {new Date(ticket.purchasedAt).toLocaleDateString()}
+                Purchased on{" "}
+                {formatDate(new Date(ticket.purchasedAt).toISOString())}
               </span>
             </div>
             {ticket.event.is_cancelled && (
@@ -105,7 +200,7 @@ export default function TicketPage() {
 
         {/* Ticket Component */}
         <div
-          id="ticket-container"
+          ref={ticketRef}
           className={`${ticket.event.eventDate < Date.now() ? (ticket.event.is_cancelled ? "" : "grayscale") : ""}`}
         >
           <Ticket ticketId={ticket._id} />
@@ -114,7 +209,7 @@ export default function TicketPage() {
         {/* Additional Information */}
         <div
           className={`mt-8 rounded-lg p-4 ${
-            ticket.event.is_cancelled ? "  border" : "border"
+            ticket.event.is_cancelled ? "border" : "border"
           }`}
         >
           <h3

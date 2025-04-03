@@ -1,6 +1,10 @@
 import { getConvexClient } from "@/lib/convex";
 import { NextResponse } from "next/server";
 import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
+
+// Initialize Convex client
+const convex = getConvexClient();
 
 interface MpesaCallback {
   Body: {
@@ -29,7 +33,7 @@ export async function POST(req: Request) {
   try {
     console.log("Attempting to parse Mpesa callback");
     mpesaCallback = JSON.parse(body);
-    console.log("Mpesa callback parsed successfully");
+    console.log("Mpesa callback parsed successfully", mpesaCallback);
   } catch (err) {
     console.error("Mpesa callback parsing failed:", err);
     return new Response(`Mpesa Callback Error: ${(err as Error).message}`, {
@@ -37,10 +41,9 @@ export async function POST(req: Request) {
     });
   }
 
-  const convex = getConvexClient();
-
   const { stkCallback } = mpesaCallback.Body;
-  const { ResultCode, ResultDesc, CheckoutRequestID } = stkCallback;
+  const { ResultCode, ResultDesc, CheckoutRequestID } =
+    mpesaCallback.Body.stkCallback;
 
   // Retrieve the stored transaction
   const transaction = await convex.query(
@@ -74,7 +77,7 @@ export async function POST(req: Request) {
       const amount = getItemValue("Amount") as number;
       const mpesaReceiptNumber = getItemValue("MpesaReceiptNumber") as string;
       const transactionDate = getItemValue("TransactionDate") as string;
-      const phoneNumber = String(getItemValue("PhoneNumber"));
+      const phoneNumber = getItemValue("PhoneNumber") as string;
 
       console.log("Transaction details:", {
         amount,
@@ -96,7 +99,8 @@ export async function POST(req: Request) {
         });
 
         await convex.mutation(api.users.updateUserBalance, {
-          eventId: metadata.eventId,
+          eventId: metadata.eventId as Id<"events">,
+          amount: amount,
         });
 
         // Process the ticket purchase

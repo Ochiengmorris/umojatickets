@@ -9,12 +9,19 @@ import { Id } from "../../../convex/_generated/dataModel";
 import ReleaseTicket from "@/components/tickets/ReleaseTicket";
 import TicketPurchaseDialog from "@/components/tickets/TicketPurchaseDialog";
 
-export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
+export default function PurchaseTicket({
+  eventId,
+  ticketTypeId,
+}: {
+  eventId: Id<"events">;
+  ticketTypeId: Id<"ticketTypes">;
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useUser();
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
     eventId,
     userId: user?.id ?? "",
+    ticketTypeId,
   });
 
   const [timeRemaining, setTimeRemaining] = useState("");
@@ -102,6 +109,7 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
         open={isModalOpen}
         setIsOpen={setIsModalOpen}
         eventId={eventId}
+        ticketTypeId={ticketTypeId}
       />
     </div>
   );

@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="flex items-center justify-between w-auto lg:w-auto ">
           <Link href="/" className="shrink-0">
             <h1 className="text-xl " style={{ fontWeight: 1000 }}>
-              <span className=" text-[#00c9AA]">Umoja</span>
+              <span className=" text-jmprimary">Umoja</span>
               <span>Tickets</span>
             </h1>
           </Link>
@@ -21,7 +21,7 @@ const Footer = () => {
 
         <div className="grow xl:grow-0 flex justify-end">
           <div className="bg-card text-card-foreground flex items-center border w-fit p-2 rounded-lg">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#00c9AA] mr-2" />
+            <div className="w-2.5 h-2.5 rounded-full bg-jmprimary mr-2" />
             <p className="text-sm text-muted-foreground">
               All Systems Operational
             </p>

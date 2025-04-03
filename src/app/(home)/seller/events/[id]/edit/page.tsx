@@ -12,13 +12,32 @@ export default function EditEventPage() {
   const event = useQuery(api.events.getById, {
     eventId: params.id as Id<"events">,
   });
+  const ticketTypes = useQuery(api.tickets.getTicketTypes, {
+    eventId: params.id as Id<"events">,
+  });
 
-  if (!event) return null;
+  if (!event || !ticketTypes) return null;
 
+  const eventWithTicketTypes = {
+    ...event,
+    ticketTypes: ticketTypes.map(
+      (t: {
+        _id: Id<"ticketTypes">;
+        name: string;
+        price: number;
+        totalTickets: number;
+      }) => ({
+        _id: t._id,
+        name: t.name,
+        price: t.price,
+        totalTickets: t.totalTickets,
+      })
+    ),
+  };
   return (
     <div className="max-w-3xl mx-auto p-6">
       <div className="border bg-card text-card-foreground rounded-lg shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-[#00c9aa] to-[#00a184] px-6 py-8 text-gray-950">
+        <div className="bg-jmprimary px-6 py-8 text-gray-950">
           <h2 className="text-2xl font-bold">Edit Event</h2>
           <p className="text-gray-600 mt-2">Update your event details</p>
         </div>
@@ -36,7 +55,7 @@ export default function EditEventPage() {
             </div>
           </div>
 
-          <EventForm mode="edit" initialData={event} />
+          <EventForm mode="edit" initialData={eventWithTicketTypes} />
         </div>
       </div>
     </div>

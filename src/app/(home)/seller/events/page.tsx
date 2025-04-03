@@ -26,7 +26,7 @@ export default async function SellerEventsPage() {
             </div>
             <Link
               href="/seller/new-event"
-              className="flex px-2.5 py-1.5 items-center justify-center gap-2 bg-[#00c9aa] text-black md:px-4 md:py-2 rounded-lg hover:bg-[#00a184]/90 transition-colors"
+              className="flex px-2.5 py-1.5 items-center justify-center gap-2 bg-jmprimary text-black md:px-4 md:py-2 rounded-lg hover:bg-jmprimary/90 transition-colors"
             >
               <Plus className="w-5 h-5" />
               Create Event

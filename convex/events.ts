@@ -44,36 +44,27 @@ export const create = mutation({
     description: v.string(),
     location: v.string(),
     eventDate: v.number(), // Store as timestamp
-    price: v.number(),
-    totalTickets: v.number(),
+    // price: v.number(),
+    // totalTickets: v.optional(v.number()),
     userId: v.string(),
+    ticketTypes: v.array(
+      v.object({
+        name: v.string(),
+        price: v.number(),
+        totalTickets: v.number(),
+      })
+    ),
   },
   handler: async (ctx, args) => {
-    const ticketTypes = [
-      {
-        name: "VIP",
-        price: 10,
-        totalTickets: 10,
-      },
-      {
-        name: "Normal",
-        price: 5,
-        totalTickets: 20,
-      },
-      {
-        name: "Student",
-        price: 3,
-        totalTickets: 15,
-      },
-    ];
+    const ticketTypes = args.ticketTypes;
 
     const eventId = await ctx.db.insert("events", {
       name: args.name,
       description: args.description,
       location: args.location,
       eventDate: args.eventDate,
-      price: args.price,
-      totalTickets: args.totalTickets,
+      // price: args.price,
+      // totalTickets: args.totalTickets,
       userId: args.userId,
     });
 
@@ -91,15 +82,23 @@ export const create = mutation({
 
 // Helper function to check ticket availability for an event
 export const checkAvailability = query({
-  args: { eventId: v.id("events") },
-  handler: async (ctx, { eventId }) => {
+  args: {
+    eventId: v.id("events"),
+    ticketType: v.id("ticketTypes"),
+  },
+  handler: async (ctx, { eventId, ticketType }) => {
     const event = await ctx.db.get(eventId);
     if (!event) throw new Error("Event not found");
+
+    const ticket = await ctx.db.get(ticketType);
+    if (!ticket) throw new Error("Ticket type not found");
 
     // Count total purchased tickets
     const purchasedCount = await ctx.db
       .query("tickets")
-      .withIndex("by_event", (q) => q.eq("eventId", eventId))
+      .withIndex("by_event_ticket_id", (q) =>
+        q.eq("eventId", eventId).eq("ticketTypeId", ticketType)
+      )
       .collect()
       .then(
         (tickets) =>
@@ -114,22 +113,31 @@ export const checkAvailability = query({
     const now = Date.now();
     const activeOffers = await ctx.db
       .query("waitingList")
-      .withIndex("by_event_status", (q) =>
-        q.eq("eventId", eventId).eq("status", WAITING_LIST_STATUS.OFFERED)
+      .withIndex("by_event_ticket_type_status", (q) =>
+        q
+          .eq("eventId", eventId)
+          .eq("ticketTypeId", ticketType)
+          .eq("status", WAITING_LIST_STATUS.OFFERED)
       )
       .collect()
-      .then(
-        (entries) => entries.filter((e) => (e.offerExpiresAt ?? 0) > now).length
-      );
+      .then((entries) => entries.filter((e) => (e.offerExpiresAt ?? 0) > now));
 
-    const availableSpots = event.totalTickets - (purchasedCount + activeOffers);
+    // sum up the count field of each entry in the active offers to get all tickets in active offers
+    const activeOffersLength = activeOffers.reduce(
+      (acc, cur) => acc + cur.count,
+      0
+    );
+
+    // Calculate available spots
+    const availableSpots =
+      (ticket.totalTickets ?? 0) - (purchasedCount + activeOffersLength);
 
     return {
       available: availableSpots > 0,
       availableSpots,
-      totalTickets: event.totalTickets,
+      totalTickets: ticket.totalTickets,
       purchasedCount,
-      activeOffers,
+      activeOffers: activeOffersLength,
     };
   },
 });
@@ -137,8 +145,13 @@ export const checkAvailability = query({
 // Join waiting list for an event
 export const joinWaitingList = mutation({
   // Function takes an event ID and user ID as arguments
-  args: { eventId: v.id("events"), userId: v.string() },
-  handler: async (ctx, { eventId, userId }) => {
+  args: {
+    eventId: v.id("events"),
+    userId: v.string(),
+    ticketTypeId: v.id("ticketTypes"),
+    selectedCount: v.number(),
+  },
+  handler: async (ctx, { eventId, userId, ticketTypeId, selectedCount }) => {
     // Rate limit check
     const status = await rateLimiter.limit(ctx, "queueJoin", { key: userId });
     if (!status.ok) {
@@ -168,8 +181,15 @@ export const joinWaitingList = mutation({
     const event = await ctx.db.get(eventId);
     if (!event) throw new Error("Event not found");
 
+    // Verify the ticket type exists and is available
+    const ticketType = await ctx.db.get(ticketTypeId);
+    if (!ticketType) throw new Error("Ticket type not found");
+
     // Check if there are any available tickets right now
-    const { available } = await checkAvailability(ctx, { eventId });
+    const { available } = await checkAvailability(ctx, {
+      eventId,
+      ticketType: ticketTypeId,
+    });
 
     const now = Date.now();
 
@@ -178,6 +198,8 @@ export const joinWaitingList = mutation({
       const waitingListId = await ctx.db.insert("waitingList", {
         eventId,
         userId,
+        ticketTypeId,
+        count: selectedCount,
         status: WAITING_LIST_STATUS.OFFERED, // Mark as offered
         offerExpiresAt: now + DURATIONS.TICKET_OFFER, // Set expiration time
       });
@@ -196,6 +218,8 @@ export const joinWaitingList = mutation({
       await ctx.db.insert("waitingList", {
         eventId,
         userId,
+        ticketTypeId,
+        count: selectedCount,
         status: WAITING_LIST_STATUS.WAITING, // Mark as waiting
       });
     }
@@ -277,6 +301,8 @@ export const purchaseTicket = mutation({
       await ctx.db.insert("tickets", {
         eventId,
         userId,
+        ticketTypeId: waitingListEntry.ticketTypeId,
+        count: waitingListEntry.count,
         purchasedAt: Date.now(),
         status: TICKET_STATUS.VALID,
         paymentIntentId: paymentInfo.paymentIntentId,
@@ -290,7 +316,10 @@ export const purchaseTicket = mutation({
 
       console.log("Processing queue for next person");
       // Process queue for next person
-      await processQueue(ctx, { eventId });
+      await processQueue(ctx, {
+        eventId,
+        ticketTypeId: waitingListEntry.ticketTypeId,
+      });
 
       console.log("Purchase ticket completed successfully");
     } catch (error) {
@@ -366,6 +395,8 @@ export const purchaseMpesaTicket = mutation({
       await ctx.db.insert("tickets", {
         eventId,
         userId,
+        ticketTypeId: waitingListEntry.ticketTypeId,
+        count: waitingListEntry.count,
         purchasedAt: Date.now(),
         status: TICKET_STATUS.VALID,
         paymentIntentId: paymentInfo.checkoutRequestId,
@@ -379,7 +410,10 @@ export const purchaseMpesaTicket = mutation({
 
       console.log("Processing queue for next person");
       // Process queue for next person
-      await processQueue(ctx, { eventId });
+      await processQueue(ctx, {
+        eventId,
+        ticketTypeId: waitingListEntry.ticketTypeId,
+      });
 
       console.log("Purchase ticket completed successfully");
     } catch (error) {
@@ -431,20 +465,48 @@ export const getUserWaitingList = query({
       })
     );
 
+    // console.log(entriesWithEvents);
+
     return entriesWithEvents;
   },
 });
 
+// // Get user's waiting list entry for an event
+// export const getUserWaitingListForEvent = query({
+//   args: { userId: v.string(), eventId: v.id("events") },
+//   handler: async (ctx, { userId, eventId }) => {
+//     const entrys = await ctx.db
+//       .query("waitingList")
+//       .withIndex("by_user_event", (q) =>
+//         q.eq("userId", userId).eq("eventId", eventId)
+//       )
+//       .collect()
+//       .then((waitingList) =>
+//         waitingList.filter(
+//           (e) =>
+//             e.status !== WAITING_LIST_STATUS.PURCHASED &&
+//             e.status !== WAITING_LIST_STATUS.EXPIRED
+//         )
+//       );
+//     return entrys;
+//   },
+// });
+
 export const getEventAvailability = query({
-  args: { eventId: v.id("events") },
-  handler: async (ctx, { eventId }) => {
+  args: { eventId: v.id("events"), ticketTypeId: v.id("ticketTypes") },
+  handler: async (ctx, { eventId, ticketTypeId }) => {
     const event = await ctx.db.get(eventId);
     if (!event) throw new Error("Event not found");
+
+    const ticket = await ctx.db.get(ticketTypeId);
+    if (!ticket) throw new Error("Ticket type not found");
 
     // Count total purchased tickets
     const purchasedCount = await ctx.db
       .query("tickets")
-      .withIndex("by_event", (q) => q.eq("eventId", eventId))
+      .withIndex("by_event_ticket_id", (q) =>
+        q.eq("eventId", eventId).eq("ticketTypeId", ticketTypeId)
+      )
       .collect()
       .then(
         (tickets) =>
@@ -459,22 +521,36 @@ export const getEventAvailability = query({
     const now = Date.now();
     const activeOffers = await ctx.db
       .query("waitingList")
-      .withIndex("by_event_status", (q) =>
-        q.eq("eventId", eventId).eq("status", WAITING_LIST_STATUS.OFFERED)
+      .withIndex("by_event_ticket_type_status", (q) =>
+        q
+          .eq("eventId", eventId)
+          .eq("ticketTypeId", ticketTypeId)
+          .eq("status", WAITING_LIST_STATUS.OFFERED)
       )
       .collect()
-      .then(
-        (entries) => entries.filter((e) => (e.offerExpiresAt ?? 0) > now).length
-      );
+      .then((entries) => entries.filter((e) => (e.offerExpiresAt ?? 0) > now));
 
-    const totalReserved = purchasedCount + activeOffers;
+    const activeOffersLength = activeOffers.reduce(
+      (acc, cur) => acc + cur.count,
+      0
+    );
+
+    const totalReserved = purchasedCount + activeOffersLength;
+
+    if (!event) {
+      throw new Error("Event not found");
+    }
+
+    if (!ticket.totalTickets) {
+      throw new Error("Event totalTickets is undefined");
+    }
 
     return {
-      isSoldOut: totalReserved >= event.totalTickets,
-      totalTickets: event.totalTickets,
+      isSoldOut: totalReserved >= ticket.totalTickets,
+      totalTickets: ticket.totalTickets,
       purchasedCount,
       activeOffers,
-      remainingTickets: Math.max(0, event.totalTickets - totalReserved),
+      remainingTickets: Math.max(0, ticket.totalTickets - totalReserved),
     };
   },
 });
@@ -532,12 +608,21 @@ export const getSellerEvents = query({
         const cancelledTickets = tickets.filter(
           (t) => t.status === "cancelled"
         );
+        // add all the amount in each ticket
+        const totalRevenue = validTickets.reduce(
+          (sum, ticket) => sum + (ticket.amount ?? 0),
+          0
+        );
+
+        // the revenue calculation is a placeholder and should be replaced with the actual formula
+        // const totalRevenue =
 
         const metrics: Metrics = {
           soldTickets: validTickets.length,
           refundedTickets: refundedTickets.length,
           cancelledTickets: cancelledTickets.length,
-          revenue: validTickets.length * event.price,
+          revenue: totalRevenue,
+          // revenue: 0, // this is just a test case.
         };
 
         return {
@@ -558,8 +643,14 @@ export const updateEvent = mutation({
     description: v.string(),
     location: v.string(),
     eventDate: v.number(),
-    price: v.number(),
-    totalTickets: v.number(),
+    ticketTypes: v.array(
+      v.object({
+        id: v.optional(v.id("ticketTypes")),
+        name: v.string(),
+        price: v.number(),
+        totalTickets: v.number(),
+      })
+    ),
   },
   handler: async (ctx, args) => {
     const { eventId, ...updates } = args;
@@ -576,14 +667,69 @@ export const updateEvent = mutation({
       )
       .collect();
 
-    // Ensure new total tickets is not less than sold tickets
-    if (updates.totalTickets < soldTickets.length) {
-      throw new Error(
-        `Cannot reduce total tickets below ${soldTickets.length} (number of tickets already sold)`
-      );
+    // Group sold tickets by ticket type
+    const soldByTicketType = await Promise.all(
+      soldTickets.map(async (ticket) => {
+        const ticketType = await ctx.db.get(ticket.ticketTypeId);
+        return { ticket, typeName: ticketType?.name };
+      })
+    ).then((tickets) =>
+      tickets.reduce((acc: { [key: string]: number }, { ticket, typeName }) => {
+        if (typeName) {
+          acc[typeName] = (acc[typeName] || 0) + ticket.count;
+        }
+        return acc;
+      }, {})
+    );
+
+    // Validate that new ticket type configurations don't reduce capacity below sold tickets
+    for (const ticketType of updates.ticketTypes) {
+      const soldCount = soldByTicketType[ticketType.name] || 0;
+      if (ticketType.totalTickets < soldCount) {
+        throw new Error(
+          `Cannot reduce "${ticketType.name}" tickets below ${soldCount} (number of tickets already sold)`
+        );
+      }
     }
 
-    await ctx.db.patch(eventId, updates);
+    // First update the event details without ticket types
+    const { ticketTypes, ...eventUpdates } = updates;
+    await ctx.db.patch(eventId, eventUpdates);
+
+    // Get existing ticket types
+    const existingTicketTypes = await ctx.db
+      .query("ticketTypes")
+      .withIndex("by_event", (q) => q.eq("eventId", eventId))
+      .collect();
+    // Update existing ticket types and track which ones we've handled
+    const handledTicketTypeIds = new Set<string>();
+
+    for (const ticketType of ticketTypes) {
+      if (ticketType.id) {
+        // Update existing ticket type
+        await ctx.db.patch(ticketType.id, {
+          price: ticketType.price,
+          totalTickets: ticketType.totalTickets,
+        });
+        handledTicketTypeIds.add(ticketType.id);
+      } else {
+        // Create new ticket type if no ID exists
+        await ctx.db.insert("ticketTypes", {
+          eventId,
+          name: ticketType.name,
+          price: ticketType.price,
+          totalTickets: ticketType.totalTickets,
+        });
+      }
+    }
+
+    // Delete only the ticket types that weren't updated (they were removed in the form)
+    for (const existingType of existingTicketTypes) {
+      if (!handledTicketTypeIds.has(existingType._id)) {
+        await ctx.db.delete(existingType._id);
+      }
+    }
+
     return eventId;
   },
 });

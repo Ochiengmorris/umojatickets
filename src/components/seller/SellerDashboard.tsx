@@ -63,7 +63,7 @@ export default function SellerDashboard() {
     <div className="max-w-3xl mx-auto p-6">
       <div className="rounded-xl text-card-foreground overflow-hidden">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-[#00c9aa] to-[#00a184] px-6 py-8 text-black shadow rounded-b-xl mb-4">
+        <div className="bg-jmprimary px-6 py-8 text-black shadow rounded-b-xl mb-4">
           <h2 className="text-2xl font-bold">Seller Dashboard</h2>
           <p className="text-black mt-2 text-sm md:text-base">
             Manage your seller profile and payment settings
@@ -88,7 +88,9 @@ export default function SellerDashboard() {
                     className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     <Plus className="w-5 h-5" />
-                    <span className="text-sm">Create Event</span>
+                    <span className="text-sm">
+                      Create <span className="hidden sm:inline">Event</span>
+                    </span>
                   </Link>
                   <Link
                     href="/seller/events"
@@ -96,7 +98,7 @@ export default function SellerDashboard() {
                   >
                     <CalendarDays className="w-5 h-5" />
                     <span className="text-sm text-foreground">
-                      View My Events
+                      View my Events
                     </span>
                   </Link>
                 </div>
@@ -116,7 +118,7 @@ export default function SellerDashboard() {
           <div className="flex flex-wrap gap-3 mt-6">
             {userDetails?.isSeller ? (
               <>
-                <button
+                {/* <button
                   // onClick={() => router.push("/admin/overview")}
                   onClick={handleManageAccount}
                   className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
@@ -130,7 +132,7 @@ export default function SellerDashboard() {
                   className={`px-4 py-2 rounded-lg text-foreground bg-foreground/10 hover:bg-foreground/20 transition-colors`}
                 >
                   Refresh Status
-                </button>
+                </button> */}
               </>
             ) : (
               <>

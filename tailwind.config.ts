@@ -11,9 +11,11 @@ export default {
     extend: {
       colors: {
         landingprimary: "#2a8e9e",
+        jmprimary: "#2F95DC",
         landingsecondary: "#180d39",
-        // landingsecondary: "#FF6F61",
+        jmaccent: "#fccc08",
         landingtertiary: "#101e20",
+        jmbackground: "#E5E5E5",
         landingwhite: "#e9f3f4",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

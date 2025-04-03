@@ -7,8 +7,8 @@ export default defineSchema({
     description: v.string(),
     location: v.string(),
     eventDate: v.number(),
-    price: v.number(),
-    totalTickets: v.number(),
+    // price: v.number(),
+    totalTickets: v.optional(v.number()),
     userId: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
     is_cancelled: v.optional(v.boolean()),
@@ -28,6 +28,8 @@ export default defineSchema({
     eventId: v.id("events"),
     userId: v.string(),
     purchasedAt: v.number(),
+    ticketTypeId: v.id("ticketTypes"),
+    count: v.number(),
     status: v.union(
       v.literal("valid"),
       v.literal("used"),
@@ -38,6 +40,7 @@ export default defineSchema({
     amount: v.optional(v.number()),
   })
     .index("by_event", ["eventId"])
+    .index("by_event_ticket_id", ["eventId", "ticketTypeId"])
     .index("by_event_status", ["eventId", "status"])
     .index("by_user", ["userId"])
     .index("by_user_event", ["userId", "eventId"])
@@ -45,6 +48,8 @@ export default defineSchema({
 
   waitingList: defineTable({
     eventId: v.id("events"),
+    ticketTypeId: v.id("ticketTypes"),
+    count: v.number(),
     userId: v.string(),
     status: v.union(
       v.literal("waiting"),
@@ -56,6 +61,8 @@ export default defineSchema({
   })
     .index("by_event_status", ["eventId", "status"])
     .index("by_user_event", ["userId", "eventId"])
+    .index("by_user_event_ticket_type", ["userId", "eventId", "ticketTypeId"])
+    .index("by_event_ticket_type_status", ["eventId", "ticketTypeId", "status"])
     .index("by_user", ["userId"]),
 
   users: defineTable({
@@ -71,6 +78,7 @@ export default defineSchema({
 
   mpesaTransactions: defineTable({
     checkoutRequestId: v.string(),
+    ticketId: v.optional(v.id("tickets")),
     metadata: v.string(), // JSON string of MpesaCallbackMetaData
     amount: v.number(),
     expiresAt: v.string(), // ISO date string

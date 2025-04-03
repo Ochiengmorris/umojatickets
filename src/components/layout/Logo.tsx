@@ -1,11 +1,10 @@
 "use client";
 
+import full_logo from "@/images/logo/full-logo.png";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import logo from "@/images/logo/logo.png";
-import dark_logo from "@/images/logo/logo-dark.png";
-import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 const Logo = () => {
   const { theme } = useTheme();
@@ -17,25 +16,8 @@ const Logo = () => {
 
   // if (!mounted) return null; // Prevents mismatched HTML before hydration
   return (
-    <Link href="/" className="shrink-0">
-      <h1
-        className="items-center justify-center flex"
-        style={{ fontWeight: 1000 }}
-      >
-        <span className="">
-          {/* Logo */}
-          {!mounted ? (
-            <Image src={logo} width={37} alt="logo" />
-          ) : (
-            <Image
-              src={theme === "dark" || theme === "system" ? dark_logo : logo}
-              width={37}
-              alt="logo"
-            />
-          )}
-        </span>
-        <span className="text-2xl">Tickets</span>
-      </h1>
+    <Link href="/" className="border border-gray-200 pr-4">
+      <Image src={full_logo} width={100} alt="logo" />
     </Link>
   );
 };

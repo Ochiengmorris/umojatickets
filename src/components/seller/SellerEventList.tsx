@@ -162,7 +162,7 @@ function SellerEventCard({
                 <p className="text-2xl font-semibold ">
                   <span className="text-sm font-normal">Ksh </span>
                   {event.is_cancelled
-                    ? event.metrics.refundedTickets * event.price
+                    ? event.metrics.refundedTickets // TODO: fix this initially it was * event.price
                     : event.metrics.revenue}
                 </p>
               </div>

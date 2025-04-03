@@ -4,25 +4,24 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import {
-  CalendarDays,
   Check,
   CircleArrowRight,
   LoaderCircle,
   MapPin,
   PencilIcon,
   StarIcon,
-  Ticket,
   XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { Id } from "../../../convex/_generated/dataModel";
-import { api } from "../../../convex/_generated/api";
-import FormatMoney, { cn, formatDate, useStorageUrl } from "@/lib/utils";
 import PurchaseTicket from "@/components//tickets/PurchaseTicket";
 import EventCardSkeleton from "@/components/events/EventCardSkeleton";
 import { Card } from "@/components/ui/card";
+import FormatMoney, { cn, useStorageUrl } from "@/lib/utils";
+import { useCallback, useMemo } from "react";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 
 export default function EventCard({
   eventId,
@@ -35,39 +34,99 @@ export default function EventCard({
   const router = useRouter();
   const event = useQuery(api.events.getById, { eventId });
 
-  const availability = useQuery(api.events.getEventAvailability, { eventId });
+  const ticketTypesQuery = useQuery(api.tickets.getTicketTypes, {
+    eventId: eventId,
+  });
   const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
     eventId,
     userId: user?.id ?? "",
   });
-  const queuePosition = useQuery(api.waitingList.getQueuePosition, {
-    eventId,
-    userId: user?.id ?? "",
-  });
+
+  const queuePosition = useQuery(
+    api.waitingList.getQueuePositions,
+    user?.id ? { eventId, userId: user.id } : { eventId, userId: "" }
+  );
 
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
-  if (!event || !availability) {
+  // Memoize expensive calculations
+  const {
+    minTicketPrice,
+    maxTicketPrice,
+    isSingleTicketType,
+    isPastEvent,
+    isEventOwner,
+  } = useMemo(() => {
+    if (!event || !ticketTypesQuery)
+      return {
+        minTicketPrice: 0,
+        maxTicketPrice: 0,
+        isSingleTicketType: false,
+        isPastEvent: false,
+        isEventOwner: false,
+      };
+
+    return {
+      minTicketPrice: Math.min(
+        ...ticketTypesQuery.map((ticketType) => ticketType.price)
+      ),
+      maxTicketPrice: Math.max(
+        ...ticketTypesQuery.map((ticketType) => ticketType.price)
+      ),
+      isSingleTicketType: ticketTypesQuery.length === 1,
+      isPastEvent: event.eventDate < Date.now(),
+      isEventOwner: user?.id === event?.userId,
+    };
+  }, [event, ticketTypesQuery, user?.id]);
+  // Memoize callbacks
+  const handleCardClick = useCallback(() => {
+    router.push(`/event/${eventId}`);
+  }, [router, eventId]);
+
+  const handleEditClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      router.push(`/seller/events/${eventId}/edit`);
+    },
+    [router, eventId]
+  );
+
+  const handleTicketClick = useCallback(() => {
+    if (userTicket) {
+      router.push(`/tickets/${userTicket._id}`);
+    }
+  }, [router, userTicket]);
+
+  if (!event) {
     return <EventCardSkeleton />;
   }
 
-  const isPastEvent = event.eventDate < Date.now();
+  // const minTicketPrice = ticketTypesQuery
+  //   ? Math.min(...ticketTypesQuery.map((ticketType) => ticketType.price))
+  //   : 0;
 
-  const isEventOwner = user?.id === event?.userId;
+  // const maxTicketPrice = ticketTypesQuery
+  //   ? Math.max(...ticketTypesQuery.map((ticketType) => ticketType.price))
+  //   : 0;
+
+  // const isPastEvent = event.eventDate < Date.now();
+  // const isSingleTicketType = ticketTypesQuery?.length === 1;
+
+  // const isEventOwner = user?.id === event?.userId;
 
   const renderQueuePosition = () => {
     if (!queuePosition || queuePosition.status !== "waiting") return null;
 
-    if (availability.purchasedCount >= availability.totalTickets) {
-      return (
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-          <div className="flex items-center">
-            <Ticket className="w-5 h-5 text-gray-400 mr-2" />
-            <span className="text-gray-600">Event is sold out</span>
-          </div>
-        </div>
-      );
-    }
+    // if (availability.purchasedCount >= availability.totalTickets) {
+    //   return (
+    //     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+    //       <div className="flex items-center">
+    //         <Ticket className="w-5 h-5 text-gray-400 mr-2" />
+    //         <span className="text-gray-600">Event is sold out</span>
+    //       </div>
+    //     </div>
+    //   );
+    // }
 
     if (queuePosition.position === 2) {
       return (
@@ -107,10 +166,7 @@ export default function EventCard({
       return (
         <div className="mt-4">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/seller/events/${eventId}/edit`);
-            }}
+            onClick={handleEditClick}
             className="w-full bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200 shadow-sm flex items-center justify-center gap-2"
           >
             <PencilIcon className="w-5 h-5" />
@@ -122,16 +178,16 @@ export default function EventCard({
 
     if (userTicket) {
       return (
-        <div className="mt-4 flex items-center justify-between p-3 bg-[#e8f3f1] rounded-lg border border-green-100">
+        <div className="mt-4 flex items-center justify-between p-3 bg-jmprimary/10 rounded-lg border border-jmprimary/5">
           <div className="flex items-center">
-            <Check className="w-5 h-5 text-[#00a184] mr-2" />
-            <span className="text-[#00a184] font-medium">
+            <Check className="w-5 h-5 text-jmprimary mr-2" />
+            <span className="text-jmprimary font-medium">
               You have a ticket!
             </span>
           </div>
           <button
-            onClick={() => router.push(`/tickets/${userTicket._id}`)}
-            className="text-sm bg-[#00c9aa]/50 hover:bg-[#00a184]/70 text-black px-3 py-1.5 rounded-full font-medium shadow-sm transition-colors duration-200 flex items-center gap-1"
+            onClick={handleTicketClick}
+            className="text-sm bg-jmprimary/50 hover:bg-jmprimary/70 text-black px-3 py-1.5 rounded-full font-medium shadow-sm transition-colors duration-200 flex items-center gap-1"
           >
             View your ticket
           </button>
@@ -143,7 +199,10 @@ export default function EventCard({
       return (
         <div className="mt-4">
           {queuePosition.status === "offered" && (
-            <PurchaseTicket eventId={eventId} />
+            <PurchaseTicket
+              eventId={eventId}
+              ticketTypeId={queuePosition.ticketTypeId}
+            />
           )}
           {renderQueuePosition()}
           {queuePosition.status === "expired" && (
@@ -164,11 +223,11 @@ export default function EventCard({
   return (
     <Card
       className={cn(
-        " relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:border-primary/30 transition-all duration-300 border overflow-hidden border-primary-foreground cursor-pointer max-w-2xl mx-auto"
+        "relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:border-primary/30 transition-all duration-300 border overflow-hidden  border-primary-foreground cursor-pointer max-w-xl"
       )}
     >
       <motion.div
-        onClick={() => router.push(`/event/${eventId}`)}
+        onClick={handleCardClick}
         className={`relative ${
           isPastEvent ? "opacity-75 hover:opacity-100" : ""
         }`}
@@ -181,14 +240,17 @@ export default function EventCard({
       >
         {/* 'PAST' Ribbon */}
         {isPastEvent && (
-          <div className="absolute top-4 right-2 bg-landingprimary text-white text-xs font-extrabold uppercase py-1 px-10 transform rotate-45 translate-x-10 -translate-y-1 z-20">
-            PAST
-          </div>
+          <>
+            <div className="absolute top-4 right-2 bg-jmprimary text-white text-xs font-extrabold uppercase py-1 px-10 transform rotate-45 translate-x-10 -translate-y-1 z-20">
+              PAST
+            </div>
+            {/* <div className="absolute h-10 w-10 z-10 bg-jmaccent right-4 top-2 transform translate-x-1/2 " /> */}
+          </>
         )}
 
         {/* Event Image */}
         {imageUrl && (
-          <div className="relative w-full h-48 ">
+          <div className="relative w-full h-48 overflow-hidden">
             <Image
               src={imageUrl}
               alt={event.name}
@@ -197,12 +259,12 @@ export default function EventCard({
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
 
             {/* Event Owner Ribbon */}
             <div className="absolute bottom-[2px] left-[3px]">
               {isEventOwner && (
-                <span className="inline-flex items-center gap-1 border border-landingprimary/20  bg-black/20 text-landingprimary px-2 py-1 rounded-md  text-xs font-semibold">
+                <span className="inline-flex items-center gap-1 border border-jmprimary/10 bg-black/40 backdrop-blur-sm text-jmprimary px-2 py-1 rounded-md text-xs font-semibold">
                   <StarIcon className="w-3 h-3" />
                   Your Event
                 </span>
@@ -214,18 +276,28 @@ export default function EventCard({
         <div className={`p-6 ${imageUrl ? "relative" : ""}`}>
           <div className="flex justify-between items-start">
             <div>
-              <span className="text-xs text-card-foreground">
-                From{" "}
-                <span className="text-xl mr-2">
-                  {" "}
-                  KES {FormatMoney(Number(event.price))}
-                </span>{" "}
-                to{" "}
-                <span className="text-xl">
-                  {" "}
-                  KES {FormatMoney(Number("10000.00"))}
+              {isSingleTicketType ? (
+                <span className="text-xs text-card-foreground">
+                  At{" "}
+                  <span className="text-xl mr-2">
+                    {" "}
+                    KES {FormatMoney(minTicketPrice)}
+                  </span>
                 </span>
-              </span>
+              ) : (
+                <span className="text-xs text-card-foreground">
+                  From{" "}
+                  <span className="text-xl mr-2">
+                    {" "}
+                    KES {FormatMoney(minTicketPrice)}
+                  </span>{" "}
+                  to{" "}
+                  <span className="text-xl">
+                    {" "}
+                    KES {FormatMoney(maxTicketPrice)}
+                  </span>
+                </span>
+              )}
             </div>
 
             {/* <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
@@ -244,15 +316,18 @@ export default function EventCard({
                   new Date(event.eventDate)
                 )}
               </div>
-              <div className="text-card-foreground flex-1 flex items-center justify-center text-3xl ">
+              <div className="text-card-foreground flex-1 flex items-center justify-center text-3xl font-bold">
                 {new Intl.DateTimeFormat("en-US", { day: "numeric" }).format(
                   new Date(event.eventDate)
                 )}
               </div>
             </div>
             <div>
-              <span className="text-sm md:text-base">{event.location}</span>
-              <h2 className="text-xl md:text-2xl font-bold text-card-foreground">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                <span className="text-sm">{event.location}</span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-bold text-card-foreground line-clamp-2">
                 {event.name}
               </h2>
             </div>

@@ -12,18 +12,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useStorageUrl } from "@/lib/utils";
+import { cn, useStorageUrl } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
+
+const ticketSchema = z.object({
+  name: z.string().min(1, "Ticket name is required"),
+  price: z.number().min(0, "Price must be 0 or greater"),
+  totalTickets: z.number().min(1, "Must have at least 1 ticket"),
+});
 
 const formSchema = z.object({
   name: z.string().min(1, "Event name is required"),
@@ -35,8 +41,9 @@ const formSchema = z.object({
       new Date(new Date().setHours(0, 0, 0, 0)),
       "Event date must be in the future"
     ),
-  price: z.number().min(0, "Price must be 0 or greater"),
-  totalTickets: z.number().min(1, "Must have at least 1 ticket"),
+  ticketTypes: z
+    .array(ticketSchema)
+    .min(1, "At least one ticket type required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -47,9 +54,13 @@ interface InitialEventData {
   description: string;
   location: string;
   eventDate: number;
-  price: number;
-  totalTickets: number;
   imageStorageId?: Id<"_storage">;
+  ticketTypes: {
+    _id: Id<"ticketTypes">;
+    name: string;
+    price: number;
+    totalTickets: number;
+  }[];
 }
 
 interface EventFormProps {
@@ -87,10 +98,63 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
       description: initialData?.description ?? "",
       location: initialData?.location ?? "",
       eventDate: initialData ? new Date(initialData.eventDate) : new Date(),
-      price: initialData?.price ?? 0,
-      totalTickets: initialData?.totalTickets ?? 1,
+      ticketTypes: initialData?.ticketTypes ?? [
+        { name: "", price: 0, totalTickets: 1 },
+      ],
     },
   });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "ticketTypes",
+  });
+
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+
+  const generateDescription = async () => {
+    // if (!form.getValues("name")) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Event name required",
+    //     description:
+    //       "Please enter an event name first to generate a description.",
+    //   });
+    //   return;
+    // }
+
+    setIsGeneratingDescription(true);
+    try {
+      toast({
+        title: "Generate with AI",
+        description: "Coming soon!",
+      });
+      // const response = await fetch("/api/generate-description", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     eventName: form.getValues("name"),
+      //     eventType: "event", // You can make this dynamic based on event type
+      //   }),
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error("Failed to generate description");
+      // }
+
+      // const data = await response.json();
+      // form.setValue("description", data.description);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate description. Please try again.",
+      });
+    } finally {
+      setIsGeneratingDescription(false);
+    }
+  };
 
   async function onSubmit(values: FormData) {
     if (!user?.id) return;
@@ -102,6 +166,15 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
         variant: "destructive",
         title: "Oops! Sorry",
         description: "Only sellers can create or update events.",
+      });
+      return;
+    }
+
+    if (!values.ticketTypes || values.ticketTypes.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Ticket Type Required",
+        description: "At least one ticket type must be added.",
       });
       return;
     }
@@ -152,6 +225,12 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             eventId: initialData._id,
             ...values,
             eventDate: values.eventDate.getTime(),
+            ticketTypes: values.ticketTypes.map((type, index) => ({
+              id: initialData.ticketTypes[index]?._id,
+              name: type.name,
+              price: type.price,
+              totalTickets: type.totalTickets,
+            })),
           });
 
           // Update image - this will now handle both adding new image and removing existing image
@@ -165,12 +244,11 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             });
           }
 
+          router.push(`/event/${initialData._id}`);
           toast({
             title: "Event updated",
             description: "Your event has been successfully updated.",
           });
-
-          router.push(`/event/${initialData._id}`);
         }
       } catch (error) {
         console.error("Failed to handle event:", error);
@@ -221,7 +299,9 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Event Name</FormLabel>
+                <FormLabel className={cn("text-muted-foreground")}>
+                  Event Name
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -235,108 +315,130 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <div className="flex items-center justify-between">
+                  <FormLabel className={cn("text-muted-foreground")}>
+                    Description
+                  </FormLabel>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={generateDescription}
+                    disabled={isGeneratingDescription}
+                    className="flex items-center gap-2"
+                  >
+                    {isGeneratingDescription ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4" />
+                        Generate with AI
+                      </>
+                    )}
+                  </Button>
+                </div>
                 <FormControl>
-                  <Textarea {...field} />
+                  <Textarea {...field}></Textarea>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={cn("text-muted-foreground")}>
+                    Location
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="eventDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Event Date</FormLabel>
-                <FormControl>
-                  <Input
-                    type="date"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(
-                        e.target.value ? new Date(e.target.value) : null
-                      );
-                    }}
-                    value={
-                      field.value
-                        ? new Date(field.value).toISOString().split("T")[0]
-                        : ""
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price per Ticket</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm">
-                      Ksh
-                    </span>
+            <FormField
+              control={form.control}
+              name="eventDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={cn("text-muted-foreground")}>
+                    Event Date
+                  </FormLabel>
+                  <FormControl>
                     <Input
-                      type="number"
+                      type="date"
                       {...field}
-                      value={field.value === 0 ? "" : field.value}
-                      onChange={
-                        (e) =>
-                          field.onChange(
-                            e.target.value === "" ? 0 : Number(e.target.value)
-                          ) // Update to 0 if input is empty
+                      onChange={(e) => {
+                        field.onChange(
+                          e.target.value ? new Date(e.target.value) : null
+                        );
+                      }}
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
                       }
-                      className="pl-10"
                     />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-          <FormField
-            control={form.control}
-            name="totalTickets"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Total Tickets Available</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    value={field.value === 0 ? "" : field.value}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="">
+            <label className="block text-sm text-muted-foreground  font-medium mb-2">
+              Ticket Types{" "}
+              <span className="text-muted-foreground italic">
+                {" "}
+                ( name, price, total-Tickets )
+              </span>
+            </label>
+            {fields.map((ticket, index) => (
+              <div key={ticket.id} className="flex gap-4 mb-2 items-center">
+                <Input
+                  {...form.register(`ticketTypes.${index}.name`)}
+                  placeholder="Ticket Name"
+                />
+                <Input
+                  type="number"
+                  {...form.register(`ticketTypes.${index}.price`, {
+                    valueAsNumber: true,
+                  })}
+                  placeholder="Price"
+                />
+                <Input
+                  type="number"
+                  {...form.register(`ticketTypes.${index}.totalTickets`, {
+                    valueAsNumber: true,
+                  })}
+                  placeholder="Total Tickets"
+                />
+                <Button type="button" onClick={() => remove(index)}>
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              onClick={() => append({ name: "", price: 0, totalTickets: 1 })}
+            >
+              Add Ticket Type
+            </Button>
+          </div>
 
           {/* Image Upload */}
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-primary">
+            <label className="block text-sm  font-medium text-muted-foreground">
               Event Image
             </label>
             <div className="mt-1 flex items-center gap-4">
@@ -373,16 +475,24 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-full file:border-0
                     file:text-sm file:font-semibold
-                    file:bg-[#00c9aa] file:text-gray-950
-                    hover:file:cursor-pointer hover:file:bg-[#00a184]/80  transition-colors"
+                    file:bg-jmprimary file:text-gray-950
+                    hover:file:cursor-pointer hover:file:bg-jmprimary/80  transition-colors"
                 />
               )}
             </div>
+            {mode === "edit" &&
+              initialData?.imageStorageId &&
+              !removedCurrentImage && (
+                <p className="text-sm text-muted-foreground">
+                  Current image will be kept if no new image is selected
+                </p>
+              )}
           </div>
         </div>
 
         <Button
           type="submit"
+          onSubmit={form.handleSubmit(onSubmit)}
           disabled={isPending}
           className="w-full  font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
         >

@@ -31,10 +31,12 @@ export default function TicketPurchaseDialog({
   open,
   setIsOpen,
   eventId,
+  ticketTypeId,
 }: {
   open: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   eventId: Id<"events">;
+  ticketTypeId: Id<"ticketTypes">;
 }) {
   const [paymentMethod, setPaymentMethod] = useState<string>("mpesa");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -50,34 +52,38 @@ export default function TicketPurchaseDialog({
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
     eventId,
     userId: user?.id ?? "",
+    ticketTypeId,
   });
 
   const handlePaymentMethodChange = (value: string) => {
     setPaymentMethod(value);
   };
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      if (isStkPushSent) {
-        const data = await checkStatusTransaction({
-          checkoutRequestId: checkoutId,
-        });
+  // useEffect(() => {
+  //   const interval = setInterval(async () => {
+  //     console.log("doing this");
+  //     if (checking) {
+  //       const data = await checkStatusTransaction({
+  //         checkoutRequestId: checkoutId,
+  //       });
 
-        if (data.transaction && data.transaction.status === "completed") {
-          clearInterval(interval);
-          setIsStkPushSent(false);
-          setChecking(false);
-          router.replace("/tickets/purchase-success");
-        } else if (data.transaction && data.transaction.status === "failed") {
-          clearInterval(interval);
-          setIsStkPushSent(false);
-          setChecking(false);
-        }
-      }
-    }, 4000);
+  //       if (data.transaction && data.transaction.status === "completed") {
+  //         console.log("success");
+  //         clearInterval(interval);
+  //         setIsStkPushSent(false);
+  //         setChecking(false);
+  //         router.replace("/tickets/purchase-success");
+  //       } else if (data.transaction && data.transaction.status === "failed") {
+  //         console.log("failed");
+  //         clearInterval(interval);
+  //         setIsStkPushSent(false);
+  //         setChecking(false);
+  //       }
+  //     }
+  //   }, 4000);
 
-    return () => clearInterval(interval);
-  }, [checkoutId, router, isStkPushSent]);
+  //   return () => clearInterval(interval);
+  // }, [checking]);
 
   const handlePurchaseStripe = async () => {
     if (!user || !queuePosition || queuePosition.status !== "offered") {
@@ -116,6 +122,7 @@ export default function TicketPurchaseDialog({
       const response = await createMpesaPaymentRequest({
         eventId,
         phoneNumber: formattedPhoneNumber,
+        ticketTypeId,
       });
 
       if (response.status === "ok") {

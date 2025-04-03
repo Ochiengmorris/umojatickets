@@ -31,6 +31,18 @@ export const getTicketTypes = query({
   },
 });
 
+export const getTicketType = query({
+  args: { ticketTypeId: v.id("ticketTypes") },
+  handler: async (ctx, { ticketTypeId }) => {
+    const ticketType = await ctx.db.get(ticketTypeId);
+    if (!ticketType) return null;
+
+    return {
+      ticketType,
+    };
+  },
+});
+
 export const getTicketWithDetails = query({
   args: { ticketId: v.id("tickets") },
   handler: async (ctx, { ticketId }) => {
@@ -38,10 +50,19 @@ export const getTicketWithDetails = query({
     if (!ticket) return null;
 
     const event = await ctx.db.get(ticket.eventId);
+    const ticketType = await ctx.db.get(ticket.ticketTypeId);
+    const eventOwner = event?.userId
+      ? await ctx.db
+          .query("users")
+          .withIndex("by_user_id", (q) => q.eq("userId", event.userId))
+          .first()
+      : null;
 
     return {
       ...ticket,
+      ticketType,
       event,
+      eventOwner,
     };
   },
 });
