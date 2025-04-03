@@ -56,6 +56,13 @@ export default function JoinQueue({
           title: result.message,
           duration: 5000,
         });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh! Oh! Sorry!",
+          description: result.message,
+          duration: 5000,
+        });
       }
     } catch (error) {
       if (

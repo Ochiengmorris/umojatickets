@@ -23,14 +23,20 @@ export default function EventPage() {
     {}
   );
 
-  // console.log(selectedCount, selectedTicket);
-
   const event = useQuery(api.events.getById, {
     eventId: params.id as Id<"events">,
   });
-  // const availability = useQuery(api.events.getEventAvailability, {
-  //   eventId: params.id as Id<"events">,
-  // });
+
+  const availability = useQuery(
+    api.events.getEventAvailability,
+    selectedTicket
+      ? {
+          eventId: params.id as Id<"events">,
+          ticketTypeId: selectedTicket as Id<"ticketTypes">,
+        }
+      : "skip"
+  );
+
   const hasBeenOffered = useQuery(api.waitingList.hasBeenOffered, {
     eventId: params.id as Id<"events">,
     userId: user?.id ?? "",
@@ -65,6 +71,15 @@ export default function EventPage() {
 
       // Prevent negative count
       if (newCount < 0) return prev;
+
+      // Check if we're trying to add more tickets than available
+      if (
+        change > 0 &&
+        availability &&
+        newCount > availability.remainingTickets
+      ) {
+        return prev;
+      }
 
       const updatedCounts = { ...prev };
       if (newCount === 0) {

@@ -186,14 +186,15 @@ export const joinWaitingList = mutation({
     if (!ticketType) throw new Error("Ticket type not found");
 
     // Check if there are any available tickets right now
-    const { available } = await checkAvailability(ctx, {
+    const { availableSpots } = await checkAvailability(ctx, {
       eventId,
       ticketType: ticketTypeId,
     });
 
     const now = Date.now();
 
-    if (available) {
+    // Check if there are enough tickets available
+    if (availableSpots >= selectedCount) {
       // If tickets are available, create an offer entry
       const waitingListId = await ctx.db.insert("waitingList", {
         eventId,
@@ -213,7 +214,7 @@ export const joinWaitingList = mutation({
           eventId,
         }
       );
-    } else {
+    } else if (availableSpots < selectedCount && selectedCount === 1) {
       // If no tickets available, add to waiting list
       await ctx.db.insert("waitingList", {
         eventId,
@@ -222,17 +223,29 @@ export const joinWaitingList = mutation({
         count: selectedCount,
         status: WAITING_LIST_STATUS.WAITING, // Mark as waiting
       });
+    } else if (availableSpots < selectedCount && availableSpots === 1) {
+      return {
+        success: false,
+        message: `Only ${availableSpots} ticket${availableSpots === 1 ? "" : "s"} remaining.`,
+      };
+    } else {
+      return {
+        success: false,
+        message: `Only ${availableSpots} ticket${availableSpots === 1 ? "" : "s"} remaining. Reduce your number of tickets to 1 to be added to the waiting list`,
+      };
     }
 
     // Return appropriate status message
     return {
       success: true,
-      status: available
-        ? WAITING_LIST_STATUS.OFFERED // If available, status is offered
-        : WAITING_LIST_STATUS.WAITING, // If not available, status is waiting
-      message: available
-        ? "Ticket offered - you have 30 minutes to purchase"
-        : "Added to waiting list - you'll be notified when a ticket becomes available",
+      status:
+        availableSpots >= selectedCount
+          ? WAITING_LIST_STATUS.OFFERED // If available, status is offered
+          : WAITING_LIST_STATUS.WAITING, // If not available, status is waiting
+      message:
+        availableSpots >= selectedCount
+          ? "Ticket offered - you have 30 minutes to purchase"
+          : "Added to waiting list - you'll be notified when a ticket becomes available",
     };
   },
 });
