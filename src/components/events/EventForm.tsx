@@ -250,12 +250,14 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             description: "Your event has been successfully updated.",
           });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Failed to handle event:", error);
+        const match = error?.message?.match(/Cannot reduce.*sold\)/);
+        const errorMessage = match ? match[0] : "An unexpected error occurred.";
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
+          description: errorMessage,
         });
       }
     });

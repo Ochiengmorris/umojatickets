@@ -20,9 +20,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
 
   if (!ticket || !ticket.event)
     return (
-      <div className="h-full w-full flex items-center justify-center">
-        <Spinner />
-      </div>
+      <div className="h-full w-full flex items-center justify-center">TODO</div>
     );
 
   const isPastEvent = ticket.event.eventDate < Date.now();

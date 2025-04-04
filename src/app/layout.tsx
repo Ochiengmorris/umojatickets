@@ -8,6 +8,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Head from "next/head";
 import "./globals.css";
 import NProgressHandler from "@/components/other/NProgress";
+import { ReactScan } from "@/components/other/ReactScan";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
+        {/* <ReactScan /> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

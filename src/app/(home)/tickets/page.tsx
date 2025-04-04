@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { Ticket } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
+import { Loader } from "@/components/loaders/SpinnerTwo";
 
 export default function MyTicketsPage() {
   const { user } = useUser();
@@ -16,7 +17,7 @@ export default function MyTicketsPage() {
   if (!tickets)
     return (
       <div className=" absolute top-1/2 right-1/2">
-        <Spinner />
+        <Loader />
       </div>
     );
 

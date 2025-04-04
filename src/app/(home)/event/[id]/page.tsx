@@ -27,6 +27,11 @@ export default function EventPage() {
     eventId: params.id as Id<"events">,
   });
 
+  const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
+    eventId: params.id as Id<"events">,
+    userId: user?.id ?? "",
+  });
+
   const availability = useQuery(
     api.events.getEventAvailability,
     selectedTicket
@@ -37,6 +42,8 @@ export default function EventPage() {
       : "skip"
   );
 
+  // console.log(availability);
+
   const hasBeenOffered = useQuery(api.waitingList.hasBeenOffered, {
     eventId: params.id as Id<"events">,
     userId: user?.id ?? "",
@@ -44,6 +51,8 @@ export default function EventPage() {
   const ticketTypesQuery = useQuery(api.tickets.getTicketTypes, {
     eventId: params.id as Id<"events">,
   });
+
+  // TODO: modify the check for availability of a ticket type to only check if its available on the waiting list... if not then the availability will be zero instead of only one. one should be allowed only when the last buyer is still in the waitiling list with a offered ticket type
 
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
@@ -183,7 +192,8 @@ export default function EventPage() {
                                   ) ||
                                   hasBeenOffered ||
                                   isEventPast ||
-                                  isEventOwner
+                                  isEventOwner ||
+                                  userTicket !== null
                                 }
                               >
                                 -
@@ -204,7 +214,8 @@ export default function EventPage() {
                                   ) ||
                                   hasBeenOffered ||
                                   isEventPast ||
-                                  isEventOwner
+                                  isEventOwner ||
+                                  userTicket !== null
                                 } // Disable other types if one is selected
                               >
                                 +
@@ -264,6 +275,12 @@ export default function EventPage() {
                       >
                         You are the owner of this event
                       </div>
+                    ) : hasBeenOffered ? (
+                      <></>
+                    ) : userTicket ? (
+                      <div className="w-full bg-primary/5 text-muted-foreground/50 font-semibold rounded-lg transition-all max-w-xl cursor-not-allowed text-center duration-200 px-4 py-3">
+                        You have already purchased a ticket for this event
+                      </div>
                     ) : (
                       <>
                         <div className="flex justify-end gap-2">
@@ -272,6 +289,7 @@ export default function EventPage() {
                             {FormatMoney(totalPrice)}
                           </span>
                         </div>
+                        {/*TODO: fix the way when one presses very fast it can add an extra ticket even though max is reached. */}
                         {selectedTicket !== null && selectedTicket !== "" ? (
                           <JoinQueue
                             eventId={params.id as Id<"events">}

@@ -27,13 +27,16 @@ export default function EventCard({
   eventId,
   motionkey,
 }: {
-  eventId: Id<"events">;
+  eventId: Id<"events"> | null;
   motionkey: number;
 }) {
   const { user } = useUser();
   const router = useRouter();
-  const event = useQuery(api.events.getById, { eventId });
 
+  // Early return for null eventId
+  if (!eventId) return null;
+
+  const event = useQuery(api.events.getById, { eventId });
   const ticketTypesQuery = useQuery(api.tickets.getTicketTypes, {
     eventId: eventId,
   });
@@ -41,12 +44,10 @@ export default function EventCard({
     eventId,
     userId: user?.id ?? "",
   });
-
   const queuePosition = useQuery(
     api.waitingList.getQueuePositions,
     user?.id ? { eventId, userId: user.id } : { eventId, userId: "" }
   );
-
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
   // Memoize expensive calculations
@@ -98,21 +99,9 @@ export default function EventCard({
   }, [router, userTicket]);
 
   if (!event) {
-    return <EventCardSkeleton />;
+    // return <EventCardSkeleton />;
+    return null;
   }
-
-  // const minTicketPrice = ticketTypesQuery
-  //   ? Math.min(...ticketTypesQuery.map((ticketType) => ticketType.price))
-  //   : 0;
-
-  // const maxTicketPrice = ticketTypesQuery
-  //   ? Math.max(...ticketTypesQuery.map((ticketType) => ticketType.price))
-  //   : 0;
-
-  // const isPastEvent = event.eventDate < Date.now();
-  // const isSingleTicketType = ticketTypesQuery?.length === 1;
-
-  // const isEventOwner = user?.id === event?.userId;
 
   const renderQueuePosition = () => {
     if (!queuePosition || queuePosition.status !== "waiting") return null;

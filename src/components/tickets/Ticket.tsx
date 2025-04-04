@@ -18,6 +18,7 @@ import React, { forwardRef } from "react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import Spinner from "@/components/loaders/Spinner";
+import { Loader } from "../loaders/SpinnerTwo";
 
 interface TicketDisplayProps {
   ticketId: Id<"tickets">;
@@ -33,7 +34,11 @@ const Ticket = forwardRef<HTMLDivElement, { ticketId: Id<"tickets"> }>(
     const imageUrl = useStorageUrl(ticket?.event?.imageStorageId);
 
     if (!ticket || !ticket.event || !user) {
-      return <Spinner />;
+      return (
+        <div className=" absolute top-1/2 right-1/2">
+          <Loader />
+        </div>
+      );
     }
 
     return (
@@ -143,7 +148,7 @@ const Ticket = forwardRef<HTMLDivElement, { ticketId: Id<"tickets"> }>(
                     <p className="text-sm text-muted-foreground/80">
                       Ticket Quantity
                     </p>
-                    <p className="font-bold text-3xl  text-primary/80">
+                    <p className="font-bold text-2xl  text-primary/80">
                       {(() => {
                         switch (ticket.count) {
                           case 1:

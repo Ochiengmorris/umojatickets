@@ -167,6 +167,7 @@ export default function TicketPurchaseDialog({
           title: "Transaction Status",
           description: `Result: ${result.message}`,
         });
+
         setIsStkPushSent(false);
         router.replace("/tickets/purchase-success");
       } else {
@@ -175,7 +176,6 @@ export default function TicketPurchaseDialog({
           title: "Transaction Failed",
           description: result.message || "Unable to check transaction status.",
         });
-        setIsOpen(false);
         setIsStkPushSent(false);
       }
     } catch (error) {
@@ -187,7 +187,6 @@ export default function TicketPurchaseDialog({
       console.error(error);
     } finally {
       setIsLoading(false);
-      setIsStkPushSent(false);
     }
   };
 

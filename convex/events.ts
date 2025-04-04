@@ -515,20 +515,30 @@ export const getEventAvailability = query({
     if (!ticket) throw new Error("Ticket type not found");
 
     // Count total purchased tickets
-    const purchasedCount = await ctx.db
+    const purchasedOffers = await ctx.db
       .query("tickets")
       .withIndex("by_event_ticket_id", (q) =>
         q.eq("eventId", eventId).eq("ticketTypeId", ticketTypeId)
       )
       .collect()
-      .then(
-        (tickets) =>
-          tickets.filter(
-            (t) =>
-              t.status === TICKET_STATUS.VALID ||
-              t.status === TICKET_STATUS.USED
-          ).length
+      .then((tickets) =>
+        tickets.filter(
+          (t) =>
+            t.status === TICKET_STATUS.VALID || t.status === TICKET_STATUS.USED
+        )
       );
+
+    console.log("purchasedOffers", purchasedOffers);
+    console.log("Purchased Offers:", purchasedOffers);
+    console.log(
+      "Purchased Count Calculation:",
+      purchasedOffers.map((o) => o.count)
+    );
+
+    const purchasedCount = purchasedOffers.reduce(
+      (acc, offer) => acc + (offer.count || 0), // Ensure count is added correctly
+      0 // Start from 0
+    );
 
     // Count current valid offers
     const now = Date.now();
