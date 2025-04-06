@@ -163,12 +163,12 @@ export const hasBeenOffered = query({
         q.eq("userId", userId).eq("eventId", eventId)
       )
       .filter((q) =>
-        q.eq(
-          q.field("status"),
-          WAITING_LIST_STATUS.OFFERED ||
-            q.eq(q.field("status"), WAITING_LIST_STATUS.WAITING)
+        q.or(
+          q.eq(q.field("status"), WAITING_LIST_STATUS.OFFERED),
+          q.eq(q.field("status"), WAITING_LIST_STATUS.WAITING)
         )
       )
+
       .collect();
     return entry.length > 0;
   },

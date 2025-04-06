@@ -32,17 +32,13 @@ export default function EventPage() {
     userId: user?.id ?? "",
   });
 
-  const availability = useQuery(
-    api.events.getEventAvailability,
-    selectedTicket
-      ? {
-          eventId: params.id as Id<"events">,
-          ticketTypeId: selectedTicket as Id<"ticketTypes">,
-        }
-      : "skip"
-  );
+  const allAvailability = useQuery(api.events.getAllAvailabilityForEvent, {
+    eventId: params.id as Id<"events">,
+  });
 
-  // console.log(availability);
+  const availabilityForSelected = allAvailability?.find(
+    (a) => a.ticketType._id === selectedTicket
+  )?.remainingTickets;
 
   const hasBeenOffered = useQuery(api.waitingList.hasBeenOffered, {
     eventId: params.id as Id<"events">,
@@ -51,14 +47,13 @@ export default function EventPage() {
   const ticketTypesQuery = useQuery(api.tickets.getTicketTypes, {
     eventId: params.id as Id<"events">,
   });
-
   // TODO: modify the check for availability of a ticket type to only check if its available on the waiting list... if not then the availability will be zero instead of only one. one should be allowed only when the last buyer is still in the waitiling list with a offered ticket type
 
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
   const isEventPast = event?.eventDate ? event.eventDate < Date.now() : false;
 
-  if (!event) {
+  if (!event || !allAvailability) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -84,8 +79,8 @@ export default function EventPage() {
       // Check if we're trying to add more tickets than available
       if (
         change > 0 &&
-        availability &&
-        newCount > availability.remainingTickets
+        availabilityForSelected !== undefined &&
+        newCount > availabilityForSelected
       ) {
         return prev;
       }

@@ -62,7 +62,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
               </p>
             )}
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col items-end shrink-0 gap-2">
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 ticket.event.is_cancelled

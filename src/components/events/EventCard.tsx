@@ -119,12 +119,15 @@ export default function EventCard({
 
     if (queuePosition.position === 2) {
       return (
-        <div className="flex flex-col lg:flex-row items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-100">
+        <div className="flex flex-col items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-100">
           <div className="flex items-center">
-            <CircleArrowRight className="w-5 h-5 text-amber-500 mr-2" />
+            <CircleArrowRight className="w-5 h-5 hidden md:block  text-amber-500 mr-1" />
             <span className="text-amber-700 font-medium">
-              You&apos;re next in line! (Queue position:{" "}
-              {queuePosition.position})
+              You&apos;re next in line!{" "}
+              <span className="text-amber-500 text-sm">
+                {" "}
+                (Queue position: {queuePosition.position})
+              </span>
             </span>
           </div>
           <div className="flex items-center">

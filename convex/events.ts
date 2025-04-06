@@ -505,6 +505,39 @@ export const getUserWaitingList = query({
 //   },
 // });
 
+export const getAllAvailabilityForEvent = query({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, { eventId }) => {
+    const event = await ctx.db.get(eventId);
+    if (!event) throw new Error("Event not found");
+
+    const ticketTypes = await ctx.db
+      .query("ticketTypes")
+      .withIndex("by_event", (q) => q.eq("eventId", eventId))
+      .collect();
+
+    if (!ticketTypes || ticketTypes.length === 0) {
+      throw new Error("No ticket types found for this event");
+    }
+
+    // get event availability from the geteventavailability function
+    const availability = await Promise.all(
+      ticketTypes.map(async (ticketType) => {
+        const availability = await getEventAvailability(ctx, {
+          eventId,
+          ticketTypeId: ticketType._id,
+        });
+        return {
+          ticketType,
+          ...availability,
+        };
+      })
+    );
+
+    return availability;
+  },
+});
+
 export const getEventAvailability = query({
   args: { eventId: v.id("events"), ticketTypeId: v.id("ticketTypes") },
   handler: async (ctx, { eventId, ticketTypeId }) => {
