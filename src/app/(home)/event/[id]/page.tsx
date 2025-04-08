@@ -36,6 +36,8 @@ export default function EventPage() {
     eventId: params.id as Id<"events">,
   });
 
+  console.log("allAvailability", allAvailability);
+
   const availabilityForSelected = allAvailability?.find(
     (a) => a.ticketType._id === selectedTicket
   )?.remainingTickets;
@@ -284,7 +286,7 @@ export default function EventPage() {
                             {FormatMoney(totalPrice)}
                           </span>
                         </div>
-                        {/*TODO: fix the way when one presses very fast it can add an extra ticket even though max is reached. */}
+
                         {selectedTicket !== null && selectedTicket !== "" ? (
                           <JoinQueue
                             eventId={params.id as Id<"events">}
@@ -305,7 +307,7 @@ export default function EventPage() {
                     )
                   ) : (
                     <SignInButton mode="modal">
-                      <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+                      <Button className="w-full bg-primary text-primary-foreground font-semibold rounded-lg transition-all max-w-xl text-center duration-200 px-4 py-3">
                         Sign in to buy tickets
                       </Button>
                     </SignInButton>

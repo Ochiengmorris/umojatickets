@@ -18,6 +18,7 @@ function Header() {
               height={200}
               alt="logo"
               className="object-contain w-[100px] h-[100px] md:w-[140px] md:h-[140px] absolute left-2"
+              priority
             />
           </Link>
 

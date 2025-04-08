@@ -71,11 +71,11 @@ export default function PurchaseTicket({
         <div className="bg-white rounded-lg p-6 border border-gray-200">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+              <div className="p-3 rounded-full bg-amber-100 flex items-center justify-center">
                 <Ticket className="w-6 h-6 text-amber-600" />
               </div>
               <div>
-                <h3 className="text-base md:text-lg font-semibold text-gray-900">
+                <h3 className="text-sm md:text-base lg:text-lg font-semibold text-gray-900">
                   Ticket Reserved
                 </h3>
                 <p className="text-xs md:text-sm text-gray-500">

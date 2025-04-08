@@ -3,6 +3,7 @@ import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { DURATIONS, TICKET_STATUS, WAITING_LIST_STATUS } from "./constants";
+import { getEventAvailability } from "./events";
 
 // function groupByEvent(
 //   offers: Array<{ eventId: Id<"events">; _id: Id<"waitingList">; ticketTypeId: Id<"ticketTypes"> }>
@@ -191,52 +192,53 @@ export const processQueue = mutation({
     if (!ticketType) throw new Error("Ticket type not found");
 
     // Calculate available spots
-    const { availableSpots } = await ctx.db
-      .query("events")
-      .filter((q) => q.eq(q.field("_id"), eventId))
-      .first()
-      .then(async (event) => {
-        if (!event) throw new Error("Event not found");
+    // const { availableSpots } = await ctx.db
+    //   .query("events")
+    //   .filter((q) => q.eq(q.field("_id"), eventId))
+    //   .first()
+    //   .then(async (event) => {
+    //     if (!event) throw new Error("Event not found");
 
-        const purchasedCount = await ctx.db
-          .query("tickets")
-          .withIndex("by_event_ticket_id", (q) =>
-            q.eq("eventId", eventId).eq("ticketTypeId", ticketTypeId)
-          )
-          .collect()
-          .then(
-            (tickets) =>
-              tickets.filter(
-                (t) =>
-                  t.status === TICKET_STATUS.VALID ||
-                  t.status === TICKET_STATUS.USED
-              ).length
-          );
+    //     const purchasedCount = await ctx.db
+    //       .query("tickets")
+    //       .withIndex("by_event_ticket_id", (q) =>
+    //         q.eq("eventId", eventId).eq("ticketTypeId", ticketTypeId)
+    //       )
+    //       .collect()
+    //       .then(
+    //         (tickets) =>
+    //           tickets.filter(
+    //             (t) =>
+    //               t.status === TICKET_STATUS.VALID ||
+    //               t.status === TICKET_STATUS.USED
+    //           ).length
+    //       );
 
-        const now = Date.now();
-        const activeOffers = await ctx.db
-          .query("waitingList")
-          .withIndex("by_event_ticket_type_status", (q) =>
-            q
-              .eq("eventId", eventId)
-              .eq("ticketTypeId", ticketTypeId)
-              .eq("status", WAITING_LIST_STATUS.OFFERED)
-          )
-          .collect()
-          .then(
-            (entries) =>
-              entries.filter((e) => (e.offerExpiresAt ?? 0) > now).length
-          );
+    //     const now = Date.now();
+    //     const activeOffers = await ctx.db
+    //       .query("waitingList")
+    //       .withIndex("by_event_ticket_type_status", (q) =>
+    //         q
+    //           .eq("eventId", eventId)
+    //           .eq("ticketTypeId", ticketTypeId)
+    //           .eq("status", WAITING_LIST_STATUS.OFFERED)
+    //       )
+    //       .collect()
+    //       .then(
+    //         (entries) =>
+    //           entries.filter((e) => (e.offerExpiresAt ?? 0) > now).length
+    //       );
 
-        return {
-          availableSpots:
-            ticketType.totalTickets - (purchasedCount + activeOffers),
-        };
-      });
+    //     return {
+    //       availableSpots:
+    //         ticketType.totalTickets - (purchasedCount + activeOffers),
+    //     };
+    //   });
 
-    if (availableSpots <= 0) return;
-
-    // Get next users in line
+    const { remainingTickets } = await getEventAvailability(ctx, {
+      eventId,
+      ticketTypeId,
+    });
     const waitingUsers = await ctx.db
       .query("waitingList")
       .withIndex("by_event_ticket_type_status", (q) =>
@@ -246,10 +248,21 @@ export const processQueue = mutation({
           .eq("status", WAITING_LIST_STATUS.WAITING)
       )
       .order("asc")
-      .take(availableSpots);
+      .collect();
+
+    const now = Date.now();
+    if (remainingTickets <= 0) {
+      // 🔴 No tickets left — expire everyone
+      for (const user of waitingUsers) {
+        await ctx.db.patch(user._id, {
+          status: WAITING_LIST_STATUS.EXPIRED,
+          offerExpiresAt: now,
+        });
+      }
+      return;
+    }
 
     // Create time-limited offers for selected users
-    const now = Date.now();
     for (const user of waitingUsers) {
       // Update the waiting list entry to OFFERED status
       await ctx.db.patch(user._id, {

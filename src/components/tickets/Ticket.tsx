@@ -82,12 +82,12 @@ const Ticket = forwardRef<HTMLDivElement, { ticketId: Id<"tickets"> }>(
             <div className="flex items-center gap-2 md:gap-4">
               {/* Date */}
               <div className="w-20 h-20 rounded-lg flex items-center justify-start flex-col shadow-md shrink-0 overflow-hidden">
-                <div className="uppercase bg-card-foreground px-2 py-1 justify-center flex font-semibold  w-full text-card">
+                <div className="uppercase bg-card-foreground px-2 py-1 justify-center flex font-semibold w-full text-card">
                   {new Intl.DateTimeFormat("en-US", { month: "short" }).format(
                     new Date(ticket.event.eventDate)
                   )}
                 </div>
-                <div className="text-card-foreground flex-1 flex items-center justify-center text-3xl ">
+                <div className="text-card-foreground flex-1 flex items-center justify-center text-3xl font-semibold">
                   {new Intl.DateTimeFormat("en-US", { day: "numeric" }).format(
                     new Date(ticket.event.eventDate)
                   )}

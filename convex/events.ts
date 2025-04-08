@@ -561,13 +561,6 @@ export const getEventAvailability = query({
         )
       );
 
-    console.log("purchasedOffers", purchasedOffers);
-    console.log("Purchased Offers:", purchasedOffers);
-    console.log(
-      "Purchased Count Calculation:",
-      purchasedOffers.map((o) => o.count)
-    );
-
     const purchasedCount = purchasedOffers.reduce(
       (acc, offer) => acc + (offer.count || 0), // Ensure count is added correctly
       0 // Start from 0
@@ -593,20 +586,16 @@ export const getEventAvailability = query({
 
     const totalReserved = purchasedCount + activeOffersLength;
 
-    if (!event) {
-      throw new Error("Event not found");
-    }
-
-    if (!ticket.totalTickets) {
-      throw new Error("Event totalTickets is undefined");
-    }
-
+    // if (activeOffers)
     return {
       isSoldOut: totalReserved >= ticket.totalTickets,
       totalTickets: ticket.totalTickets,
       purchasedCount,
       activeOffers,
-      remainingTickets: Math.max(0, ticket.totalTickets - totalReserved),
+      remainingTickets:
+        purchasedCount === ticket.totalTickets
+          ? 0
+          : ticket.totalTickets - totalReserved,
     };
   },
 });

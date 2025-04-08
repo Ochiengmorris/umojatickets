@@ -168,8 +168,8 @@ export default function TicketPurchaseDialog({
           description: `Result: ${result.message}`,
         });
 
-        setIsStkPushSent(false);
         router.replace("/tickets/purchase-success");
+        setIsStkPushSent(false);
       } else {
         toast({
           variant: "destructive",
