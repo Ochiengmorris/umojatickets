@@ -90,10 +90,13 @@ type PromoCodeFormValues = z.infer<typeof promoCodeSchema>;
 
 // Promotional code redemption component
 const RedemptionsDialog = ({ promoCode }: { promoCode: any }) => {
-  const { data: redemptions, isLoading } = useQuery({
-    queryKey: [`/api/promo-codes/${promoCode.id}/redemptions`],
-    enabled: !!promoCode,
-  });
+  // const { data: redemptions, isLoading } = useQuery({
+  //   queryKey: [`/api/promo-codes/${promoCode.id}/redemptions`],
+  //   enabled: !!promoCode,
+  // });
+  const data: any[] = [];
+  const isLoading = false;
+  const redemptions = data;
 
   return (
     <Dialog>
@@ -160,7 +163,7 @@ const PromoCodeForm = ({
   onSuccess: () => void;
 }) => {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
   // Initialize form with existing values or defaults
@@ -188,66 +191,66 @@ const PromoCodeForm = ({
   });
 
   // Create or update mutation
-  const mutation = useMutation({
-    mutationFn: async (data: PromoCodeFormValues) => {
-      // Format the data
-      // Make sure we send a proper Date object for expiresAt, not just an ISO string
-      // This is needed because Drizzle/Zod expects Date objects for date fields
-      const formattedData = {
-        ...data,
-        expiresAt: data.expiresAt
-          ? new Date(data.expiresAt + "T23:59:59")
-          : undefined,
-      };
+  // const mutation = useMutation({
+  //   mutationFn: async (data: PromoCodeFormValues) => {
+  //     // Format the data
+  //     // Make sure we send a proper Date object for expiresAt, not just an ISO string
+  //     // This is needed because Drizzle/Zod expects Date objects for date fields
+  //     const formattedData = {
+  //       ...data,
+  //       expiresAt: data.expiresAt
+  //         ? new Date(data.expiresAt + "T23:59:59")
+  //         : undefined,
+  //     };
 
-      if (existingCode) {
-        // Update existing code
-        return apiRequest(
-          "PUT",
-          `/api/promo-codes/${existingCode.id}`,
-          formattedData
-        );
-      } else {
-        // Create new code
-        return apiRequest(
-          "POST",
-          `/api/events/${data.eventId}/promo-codes`,
-          formattedData
-        );
-      }
-    },
-    onSuccess: () => {
-      // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ["/api/events"] });
-      events.forEach((event) => {
-        queryClient.invalidateQueries({
-          queryKey: [`/api/events/${event.id}/promo-codes`],
-        });
-      });
+  //     if (existingCode) {
+  //       // Update existing code
+  //       return apiRequest(
+  //         "PUT",
+  //         `/api/promo-codes/${existingCode.id}`,
+  //         formattedData
+  //       );
+  //     } else {
+  //       // Create new code
+  //       return apiRequest(
+  //         "POST",
+  //         `/api/events/${data.eventId}/promo-codes`,
+  //         formattedData
+  //       );
+  //     }
+  //   },
+  //   onSuccess: () => {
+  //     // Invalidate queries to refresh data
+  //     queryClient.invalidateQueries({ queryKey: ["/api/events"] });
+  //     events.forEach((event) => {
+  //       queryClient.invalidateQueries({
+  //         queryKey: [`/api/events/${event.id}/promo-codes`],
+  //       });
+  //     });
 
-      toast({
-        title: existingCode
-          ? "Promotional code updated"
-          : "Promotional code created",
-        description: existingCode
-          ? `The code "${form.getValues().code}" has been updated successfully.`
-          : `The code "${form.getValues().code}" has been created successfully.`,
-      });
+  //     toast({
+  //       title: existingCode
+  //         ? "Promotional code updated"
+  //         : "Promotional code created",
+  //       description: existingCode
+  //         ? `The code "${form.getValues().code}" has been updated successfully.`
+  //         : `The code "${form.getValues().code}" has been created successfully.`,
+  //     });
 
-      setIsOpen(false);
-      onSuccess();
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to process promotional code",
-        variant: "destructive",
-      });
-    },
-  });
+  //     setIsOpen(false);
+  //     onSuccess();
+  //   },
+  //   onError: (error: any) => {
+  //     toast({
+  //       title: "Error",
+  //       description: error.message || "Failed to process promotional code",
+  //       variant: "destructive",
+  //     });
+  //   },
+  // });
 
   function onSubmit(data: PromoCodeFormValues) {
-    mutation.mutate(data);
+    // mutation.mutate(data);
   }
 
   return (
@@ -383,12 +386,12 @@ const PromoCodeForm = ({
             />
 
             <div className="flex justify-end pt-4">
-              <Button type="submit" disabled={mutation.isPending}>
+              {/* <Button type="submit" disabled={mutation.isPending}>
                 {mutation.isPending && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 {existingCode ? "Update" : "Create"} Code
-              </Button>
+              </Button> */}
             </div>
           </form>
         </Form>
@@ -406,48 +409,54 @@ const PromoCodes = () => {
 
   const events: any = [];
   const eventsLoading = false;
+  const promoCodes: any = [];
+  const codesLoading = false;
+  const deleteCodeMutation: any = {};
   return (
-    <div className="flex-1 md:ml-64 lg:ml-72 p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Promotional Codes</h1>
-        <p className="text-muted-foreground">
-          Create and manage promotional codes for your events to offer discounts
-        </p>
-      </div>
-
-      {/* continue */}
-      <div className="mb-6 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <Label htmlFor="event-select">Event:</Label>
-          <Select
-            value={selectedEventId?.toString() || ""}
-            onValueChange={(value) => setSelectedEventId(Number(value))}
-          >
-            <SelectTrigger className="w-[240px]">
-              <SelectValue placeholder="Select an event" />
-            </SelectTrigger>
-            <SelectContent>
-              {eventsLoading ? (
-                <div className="flex items-center justify-center p-2">
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Loading...
-                </div>
-              ) : events && events.length > 0 ? (
-                events.map((event: any) => (
-                  <SelectItem key={event.id} value={event.id.toString()}>
-                    {event.name}
-                  </SelectItem>
-                ))
-              ) : (
-                <SelectItem value="none" disabled>
-                  No events found
-                </SelectItem>
-              )}
-            </SelectContent>
-          </Select>
+    <div className="flex">
+      <div className="flex-1 p-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Promotional Codes</h1>
+          <p className="text-muted-foreground">
+            Create and manage promotional codes for your events to offer
+            discounts
+          </p>
         </div>
 
-        {selectedEventId && events && events.length > 0 && <></>}
+        {/* continue */}
+        <div className="mb-6 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="event-select">Event:</Label>
+            <Select
+              value={selectedEventId?.toString() || ""}
+              onValueChange={(value) => setSelectedEventId(Number(value))}
+            >
+              <SelectTrigger className="w-[240px]">
+                <SelectValue placeholder="Select an event" />
+              </SelectTrigger>
+              <SelectContent>
+                {eventsLoading ? (
+                  <div className="flex items-center justify-center p-2">
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Loading...
+                  </div>
+                ) : events && events.length > 0 ? (
+                  events.map((event: any) => (
+                    <SelectItem key={event.id} value={event.id.toString()}>
+                      {event.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>
+                    No events found
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {selectedEventId && events && events.length > 0 && <></>}
+        </div>
 
         {!selectedEventId ? (
           <Card>
@@ -500,7 +509,7 @@ const PromoCodes = () => {
                                   variant="ghost"
                                   size="icon"
                                   className="h-6 w-6"
-                                  onClick={() => copyToClipboard(code.code)}
+                                  // onClick={() => copyToClipboard(code.code)}
                                 >
                                   <Copy className="h-3 w-3" />
                                 </Button>
@@ -556,13 +565,13 @@ const PromoCodes = () => {
                             events={events}
                             existingCode={code}
                             onSuccess={() => {
-                              if (selectedEventId) {
-                                queryClient.invalidateQueries({
-                                  queryKey: [
-                                    `/api/events/${selectedEventId}/promo-codes`,
-                                  ],
-                                });
-                              }
+                              // if (selectedEventId) {
+                              //   queryClient.invalidateQueries({
+                              //     queryKey: [
+                              //       `/api/events/${selectedEventId}/promo-codes`,
+                              //     ],
+                              //   });
+                              // }
                             }}
                           />
                           <Button
