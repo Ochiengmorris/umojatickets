@@ -118,7 +118,7 @@ export default function SellerDashboard() {
           <div className="flex flex-wrap gap-3 mt-6">
             {userDetails?.isSeller ? (
               <>
-                {/* <button
+                <button
                   // onClick={() => router.push("/admin/overview")}
                   onClick={handleManageAccount}
                   className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center"
@@ -132,7 +132,7 @@ export default function SellerDashboard() {
                   className={`px-4 py-2 rounded-lg text-foreground bg-foreground/10 hover:bg-foreground/20 transition-colors`}
                 >
                   Refresh Status
-                </button> */}
+                </button>
               </>
             ) : (
               <>

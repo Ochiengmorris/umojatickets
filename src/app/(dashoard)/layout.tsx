@@ -6,6 +6,7 @@ import "../globals.css";
 import HeaderAdmin from "@/components/layout/HeaderAdmin";
 import AdminSheet from "@/components/admin/AdminSheet";
 import BalanceCard from "@/components/seller/BalanceCard";
+import Sidebar from "@/components/seller/Sidebar";
 
 export const metadata: Metadata = {
   title: "UmojaTickets: Buy & Sell Tickets for Events & Concerts",
@@ -19,21 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-full flex flex-col">
-      <HeaderAdmin />
-      <section className="w-full flex-1 max-w-[1380px] mx-auto md:overflow-y-hidden flex">
-        <AdminSheet />
-        <main
-          className="grow overflow-y-auto"
-          style={{ scrollbarWidth: "none" }}
-        >
-          {children}
-        </main>
-        <article className="hidden lg:block w-1/4">
-          <BalanceCard />
-        </article>
-      </section>
-      <Footer />
+    <div className="flex h-screen overflow-hidden bg-gray-200">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto md:ml-64 lg:ml-72 pt-16 md:pt-0">
+        {children}
+      </main>
     </div>
   );
 }
