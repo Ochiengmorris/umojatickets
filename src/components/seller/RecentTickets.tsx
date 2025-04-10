@@ -60,7 +60,7 @@ interface Ticket {
 const RecentTickets = ({ tickets, isLoading = false }: RecentTicketsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 3;
 
   // Filter tickets based on search
   const filteredTickets = tickets
@@ -189,7 +189,7 @@ const RecentTickets = ({ tickets, isLoading = false }: RecentTicketsProps) => {
                           />
                         </div>
                         <div className="ml-3">
-                          <p className="text-sm font-medium text-slate-900">
+                          <p className="text-sm font-medium text-slate-900 ">
                             {ticket.user?.name}
                           </p>
                           <p className="text-xs text-slate-500">
@@ -199,7 +199,7 @@ const RecentTickets = ({ tickets, isLoading = false }: RecentTicketsProps) => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <p className="text-sm text-slate-900">
+                      <p className="text-sm text-slate-900 line-clamp-2">
                         {ticket.event?.name}
                       </p>
                       <p className="text-xs text-slate-500">

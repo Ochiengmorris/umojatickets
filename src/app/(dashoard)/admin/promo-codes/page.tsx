@@ -413,215 +413,209 @@ const PromoCodes = () => {
   const codesLoading = false;
   const deleteCodeMutation: any = {};
   return (
-    <div className="flex">
-      <div className="flex-1 max-w-screen-xl mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Promotional Codes</h1>
-          <p className="text-muted-foreground">
-            Create and manage promotional codes for your events to offer
-            discounts
-          </p>
-        </div>
-
-        {/* continue */}
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Label htmlFor="event-select">Event:</Label>
-            <Select
-              value={selectedEventId?.toString() || ""}
-              onValueChange={(value) => setSelectedEventId(Number(value))}
-            >
-              <SelectTrigger className="w-[240px]">
-                <SelectValue placeholder="Select an event" />
-              </SelectTrigger>
-              <SelectContent>
-                {eventsLoading ? (
-                  <div className="flex items-center justify-center p-2">
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Loading...
-                  </div>
-                ) : events && events.length > 0 ? (
-                  events.map((event: any) => (
-                    <SelectItem key={event.id} value={event.id.toString()}>
-                      {event.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="none" disabled>
-                    No events found
-                  </SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {selectedEventId && events && events.length > 0 && <></>}
-        </div>
-
-        {!selectedEventId ? (
-          <Card>
-            <CardContent className="p-8 flex flex-col items-center justify-center text-center">
-              <Tag className="h-12 w-12 text-muted-foreground mb-4" />
-              <CardTitle className="mb-2">Select an Event</CardTitle>
-              <CardDescription>
-                Please select an event to view and manage its promotional codes
-              </CardDescription>
-            </CardContent>
-          </Card>
-        ) : codesLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : promoCodes && promoCodes.length > 0 ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Promotional Codes</CardTitle>
-              <CardDescription>
-                Manage discount codes for{" "}
-                {
-                  events?.find((event: any) => event.id === selectedEventId)
-                    ?.name
-                }
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Code</TableHead>
-                    <TableHead>Discount</TableHead>
-                    <TableHead>Usage</TableHead>
-                    <TableHead>Expiration</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {promoCodes.map((code: any) => (
-                    <TableRow key={code.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center space-x-2">
-                          <span>{code.code}</span>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6"
-                                  // onClick={() => copyToClipboard(code.code)}
-                                >
-                                  <Copy className="h-3 w-3" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Copy to clipboard</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <Percent className="h-4 w-4 mr-1 text-muted-foreground" />
-                          {formatDiscount(code.discountPercentage)}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          {code.usedCount} / {code.maxUses}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {code.expiresAt ? (
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
-                            {format(new Date(code.expiresAt), "PP")}
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground">
-                            No expiration
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {code.isActive ? (
-                          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                            <Check className="h-3 w-3 mr-1" /> Active
-                          </Badge>
-                        ) : (
-                          <Badge
-                            variant="outline"
-                            className="bg-red-100 text-red-800 hover:bg-red-100"
-                          >
-                            <X className="h-3 w-3 mr-1" /> Inactive
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <RedemptionsDialog promoCode={code} />
-                          <PromoCodeForm
-                            events={events}
-                            existingCode={code}
-                            onSuccess={() => {
-                              // if (selectedEventId) {
-                              //   queryClient.invalidateQueries({
-                              //     queryKey: [
-                              //       `/api/events/${selectedEventId}/promo-codes`,
-                              //     ],
-                              //   });
-                              // }
-                            }}
-                          />
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              if (
-                                window.confirm(
-                                  "Are you sure you want to delete this promotional code?"
-                                )
-                              ) {
-                                deleteCodeMutation.mutate(code.id);
-                              }
-                            }}
-                            disabled={deleteCodeMutation.isPending}
-                          >
-                            {deleteCodeMutation.isPending ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Trash className="h-4 w-4 text-destructive" />
-                            )}
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardContent className="p-8 flex flex-col items-center justify-center text-center">
-              <Tag className="h-12 w-12 text-muted-foreground mb-4" />
-              <CardTitle className="mb-2">No Promotional Codes</CardTitle>
-              <CardDescription className="mb-6">
-                You haven't created any promotional codes for this event yet
-              </CardDescription>
-              <PromoCodeForm
-                events={events}
-                onSuccess={() => {
-                  if (selectedEventId) {
-                    // queryClient.invalidateQueries({ queryKey: [`/api/events/${selectedEventId}/promo-codes`] });
-                  }
-                }}
-              />
-            </CardContent>
-          </Card>
-        )}
+    <div className="max-w-screen-xl mx-auto p-6">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Promotional Codes</h1>
+        <p className="text-muted-foreground">
+          Create and manage promotional codes for your events to offer discounts
+        </p>
       </div>
+
+      {/* continue */}
+      <div className="mb-6 flex justify-between items-center">
+        <div className="flex items-center space-x-4">
+          <Label htmlFor="event-select">Event:</Label>
+          <Select
+            value={selectedEventId?.toString() || ""}
+            onValueChange={(value) => setSelectedEventId(Number(value))}
+          >
+            <SelectTrigger className="w-[240px]">
+              <SelectValue placeholder="Select an event" />
+            </SelectTrigger>
+            <SelectContent>
+              {eventsLoading ? (
+                <div className="flex items-center justify-center p-2">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Loading...
+                </div>
+              ) : events && events.length > 0 ? (
+                events.map((event: any) => (
+                  <SelectItem key={event.id} value={event.id.toString()}>
+                    {event.name}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="none" disabled>
+                  No events found
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {selectedEventId && events && events.length > 0 && <></>}
+      </div>
+
+      {!selectedEventId ? (
+        <Card>
+          <CardContent className="p-8 flex flex-col items-center justify-center text-center">
+            <Tag className="h-12 w-12 text-muted-foreground mb-4" />
+            <CardTitle className="mb-2">Select an Event</CardTitle>
+            <CardDescription>
+              Please select an event to view and manage its promotional codes
+            </CardDescription>
+          </CardContent>
+        </Card>
+      ) : codesLoading ? (
+        <div className="flex justify-center items-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : promoCodes && promoCodes.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Promotional Codes</CardTitle>
+            <CardDescription>
+              Manage discount codes for{" "}
+              {events?.find((event: any) => event.id === selectedEventId)?.name}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Code</TableHead>
+                  <TableHead>Discount</TableHead>
+                  <TableHead>Usage</TableHead>
+                  <TableHead>Expiration</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {promoCodes.map((code: any) => (
+                  <TableRow key={code.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center space-x-2">
+                        <span>{code.code}</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                // onClick={() => copyToClipboard(code.code)}
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Copy to clipboard</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <Percent className="h-4 w-4 mr-1 text-muted-foreground" />
+                        {formatDiscount(code.discountPercentage)}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {code.usedCount} / {code.maxUses}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {code.expiresAt ? (
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
+                          {format(new Date(code.expiresAt), "PP")}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          No expiration
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {code.isActive ? (
+                        <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                          <Check className="h-3 w-3 mr-1" /> Active
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="bg-red-100 text-red-800 hover:bg-red-100"
+                        >
+                          <X className="h-3 w-3 mr-1" /> Inactive
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-2">
+                        <RedemptionsDialog promoCode={code} />
+                        <PromoCodeForm
+                          events={events}
+                          existingCode={code}
+                          onSuccess={() => {
+                            // if (selectedEventId) {
+                            //   queryClient.invalidateQueries({
+                            //     queryKey: [
+                            //       `/api/events/${selectedEventId}/promo-codes`,
+                            //     ],
+                            //   });
+                            // }
+                          }}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "Are you sure you want to delete this promotional code?"
+                              )
+                            ) {
+                              deleteCodeMutation.mutate(code.id);
+                            }
+                          }}
+                          disabled={deleteCodeMutation.isPending}
+                        >
+                          {deleteCodeMutation.isPending ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash className="h-4 w-4 text-destructive" />
+                          )}
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardContent className="p-8 flex flex-col items-center justify-center text-center">
+            <Tag className="h-12 w-12 text-muted-foreground mb-4" />
+            <CardTitle className="mb-2">No Promotional Codes</CardTitle>
+            <CardDescription className="mb-6">
+              You haven't created any promotional codes for this event yet
+            </CardDescription>
+            <PromoCodeForm
+              events={events}
+              onSuccess={() => {
+                if (selectedEventId) {
+                  // queryClient.invalidateQueries({ queryKey: [`/api/events/${selectedEventId}/promo-codes`] });
+                }
+              }}
+            />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

@@ -36,7 +36,7 @@ export default function SellerDashboard() {
     try {
       router.push(`/admin/overview`);
     } catch (error) {
-      console.error("Error accessing Stripe Connect portal:", error);
+      console.error("Error redirecting to admin portal:", error);
       setError(true);
     }
   };

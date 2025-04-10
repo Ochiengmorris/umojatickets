@@ -496,7 +496,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
           type="submit"
           onSubmit={form.handleSubmit(onSubmit)}
           disabled={isPending}
-          className="w-full  font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+          className="place-self-end font-semibold py-6 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
         >
           {isPending ? (
             <>

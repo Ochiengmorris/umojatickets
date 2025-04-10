@@ -22,7 +22,7 @@ interface UpcomingEventsProps {
   isLoading?: boolean;
 }
 
-interface EventDataProps {
+export interface EventDataProps {
   _id: Id<"events">;
   name: string;
   eventDate: number;

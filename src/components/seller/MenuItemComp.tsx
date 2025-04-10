@@ -16,7 +16,8 @@ interface ItemProps {
 
 const MenuItemComp: React.FC<ItemProps> = ({ title, items }) => {
   const pathname = usePathname();
-  // console.log(pathname);
+  const splitPath = pathname.split("/").slice(0, 3).join("/");
+
   return (
     <div className="flex flex-col gap-2">
       <span className="text-gray-500 font-light my-4">{title}</span>
@@ -25,7 +26,7 @@ const MenuItemComp: React.FC<ItemProps> = ({ title, items }) => {
           <Link
             href={item.href}
             key={item.label}
-            className={`flex items-center ${pathname === item.href ? "bg-slate-300/20" : ""} justify-start gap-2 text-gray-400 p-3 rounded-md hover:bg-slate-300/20 transition-colors duration-200 ease-in-out`}
+            className={`flex items-center ${splitPath === item.href ? "bg-slate-300/20" : ""} justify-start gap-2 text-gray-400 p-3 rounded-md hover:bg-slate-300/20 transition-colors duration-200 ease-in-out`}
           >
             {item.icon}
             <span className="">{item.label}</span>

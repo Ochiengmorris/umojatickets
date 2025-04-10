@@ -1,20 +1,14 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@clerk/nextjs";
 import {
   Calendar,
-  Clock,
   DownloadIcon,
-  Edit,
-  EyeIcon,
   FilterIcon,
-  MapPin,
   PlusIcon,
   SearchIcon,
-  Trash2,
-  Users,
 } from "lucide-react";
 import {
   Select,
@@ -23,22 +17,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import EventCardSeller from "@/components/seller/EventCardSeller";
+import CreateEventModal from "@/components/seller/CreateEventModal";
+import Spinner from "@/components/loaders/Spinner";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const { toast } = useToast();
   const { user } = useUser();
+  const router = useRouter();
 
-  const events: any = [];
+  const events = useQuery(api.events.getSellerEvents, {
+    userId: user?.id ?? "",
+  });
+
+  const componentLoadingStates = useMemo(() => {
+    return {
+      eventsLoading: events === undefined,
+    };
+  }, [events]);
+
+  if (!user) router.replace("/");
+
+  // const events: any = [];
   const categories: any = [];
-  const isLoadingEvents = false;
 
   // Filter events based on search query and category filter
   const filteredEvents = events
@@ -57,7 +67,7 @@ const page = () => {
     : [];
 
   // Handle delete event
-  const handleDeleteEvent = (eventId: number) => {
+  const handleDeleteEvent = (eventId: Id<"events">) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
       // delete event logic
     }
@@ -69,6 +79,14 @@ const page = () => {
     const category = categories.find((cat: any) => cat.id === categoryId);
     return category ? category.name : "";
   };
+
+  // if (!events) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <Spinner />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -116,7 +134,7 @@ const page = () => {
           <div className="w-full sm:w-48">
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger>
-                <div className="flex items-center">
+                <div className="flex items-center text-slate-300">
                   <FilterIcon className="h-4 w-4 mr-2 text-slate-400" />
                   <SelectValue placeholder="All Categories" />
                 </div>
@@ -137,10 +155,10 @@ const page = () => {
           </div>
         </div>
 
-        {isLoadingEvents ? (
+        {componentLoadingStates.eventsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((item) => (
-              <Card key={item} className="overflow-hidden">
+              <Card key={item} className="overflow-hidden ">
                 <Skeleton className="h-40 w-full" />
                 <CardContent className="p-4">
                   <Skeleton className="h-6 w-3/4 mb-2" />
@@ -177,96 +195,21 @@ const page = () => {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map((event: any) => {
-              const categoryName = getCategoryName(event.categoryId);
-              const eventDate = formatDate(event.date);
-
-              return (
-                <Card key={event.id} className="overflow-hidden">
-                  <div
-                    className="h-40 bg-cover bg-center relative"
-                    style={{
-                      backgroundImage: event.bannerImage
-                        ? `url(${event.bannerImage})`
-                        : "url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60')",
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-                    <div className="absolute top-2 right-2">
-                      <Badge
-                        className={
-                          event.isPublished ? "bg-green-500" : "bg-amber-500"
-                        }
-                      >
-                        {event.isPublished ? "Published" : "Draft"}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-lg text-slate-900 mb-1 line-clamp-1">
-                      {event.name}
-                    </h3>
-
-                    {categoryName && (
-                      <Badge variant="outline" className="mb-2">
-                        {categoryName}
-                      </Badge>
-                    )}
-
-                    <div className="space-y-2 mt-3">
-                      <div className="flex items-start gap-2 text-sm text-slate-500">
-                        <Calendar className="h-4 w-4 mt-0.5" />
-                        <span>{eventDate}</span>
-                      </div>
-
-                      <div className="flex items-start gap-2 text-sm text-slate-500">
-                        <Clock className="h-4 w-4 mt-0.5" />
-                        <span>
-                          {event.startTime} - {event.endTime}
-                        </span>
-                      </div>
-
-                      <div className="flex items-start gap-2 text-sm text-slate-500">
-                        <MapPin className="h-4 w-4 mt-0.5" />
-                        <span className="line-clamp-1">{event.location}</span>
-                      </div>
-
-                      <div className="flex items-start gap-2 text-sm text-slate-500">
-                        <Users className="h-4 w-4 mt-0.5" />
-                        <span>{event.capacity} capacity</span>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center mt-4">
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">
-                          <EyeIcon className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
-
-                        <Button variant="outline" size="sm">
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
-                        </Button>
-                      </div>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                        onClick={() => handleDeleteEvent(event.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {filteredEvents.map((event) => (
+              <EventCardSeller
+                key={event._id}
+                event={event}
+                onDelete={handleDeleteEvent}
+              />
+            ))}
           </div>
         )}
       </div>
+
+      <CreateEventModal
+        isOpen={isCreateEventModalOpen}
+        onClose={() => setIsCreateEventModalOpen(false)}
+      />
     </>
   );
 };

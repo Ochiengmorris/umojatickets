@@ -1,13 +1,9 @@
-import Footer from "@/components/layout/Footer";
-
 import type { Metadata } from "next";
-
-import "../globals.css";
-import HeaderAdmin from "@/components/layout/HeaderAdmin";
-import AdminSheet from "@/components/admin/AdminSheet";
-import BalanceCard from "@/components/seller/BalanceCard";
+import { auth } from "@clerk/nextjs/server";
 import Sidebar from "@/components/seller/Sidebar";
 import MobileNavbar from "@/components/seller/MobileNavbar";
+import { redirect } from "next/navigation";
+import "../globals.css";
 
 export const metadata: Metadata = {
   title: "UmojaTickets: Buy & Sell Tickets for Events & Concerts",
@@ -15,15 +11,24 @@ export const metadata: Metadata = {
     "UmojaTickets is a leading ticketing platform in Kenya for events and concerts, offering easy ticket purchases and seamless event management for both organizers and attendees.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { userId } = await auth(); // Server-side auth
+
+  // Redirect unauthenticated users
+  if (!userId) {
+    redirect("/"); // or wherever your login page is
+  }
+
+  // TODO: cover this with a component that checks if a user is admin
+
   return (
-    <div className="flex h-screen bg-gray-200">
+    <div className="flex h-full bg-gray-100">
       <Sidebar />
-      {/* <MobileNavbar /> */}
+      <MobileNavbar />
       <main className="flex-1 overflow-y-auto md:ml-64 lg:ml-72 pt-16 md:pt-0">
         {children}
       </main>

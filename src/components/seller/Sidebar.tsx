@@ -13,8 +13,9 @@ import {
 import Image from "next/image";
 import logo_blue from "@/images/logo/logo-blue.png";
 import MenuItemComp from "./MenuItemComp";
-import { Button } from "../ui/button";
 import { currentUser } from "@clerk/nextjs/server";
+import { RedirectToSignIn } from "@clerk/nextjs";
+import LogOutButton from "./LogOutButton";
 
 const menuItems = [
   {
@@ -73,6 +74,11 @@ const menuItems = [
 
 const Sidebar = async () => {
   const user = await currentUser();
+
+  if (!user) {
+    <RedirectToSignIn />;
+  }
+
   return (
     <div className="hidden md:flex md:w-64 lg:w-72 flex-col bg-black text-gray-300 fixed inset-y-0">
       {/* Logo */}
@@ -113,14 +119,7 @@ const Sidebar = async () => {
             </p>
           </div>
         </div>
-        <button
-          type="button"
-          className="mt-3 w-full p-3 flex items-center justify-center gap-2 text-sm text-slate-400 rounded-md hover:bg-slate-300/20 transition-colors duration-200 ease-in-out"
-          // Add sign out functionality here
-        >
-          <LogOutIcon className="h-4 w-4" />
-          <span>Sign out</span>
-        </button>
+        <LogOutButton />
       </div>
     </div>
   );

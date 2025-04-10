@@ -1,6 +1,5 @@
 import SearchBar from "@/components/layout/SearchBar";
 import UserButton from "@/components/other/UserButton";
-import full_logo from "@/images/logo/full-logo.png";
 import logo_blue from "@/images/logo/logo-blue.png";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Image from "next/image";
