@@ -4,10 +4,11 @@ import { v } from "convex/values";
 export default defineSchema({
   events: defineTable({
     name: v.string(),
+    category: v.optional(v.id("eventCategories")),
     description: v.string(),
     location: v.string(),
     eventDate: v.number(),
-    // price: v.number(),
+    startTime: v.optional(v.number()),
     totalTickets: v.optional(v.number()),
     userId: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
@@ -16,6 +17,36 @@ export default defineSchema({
   })
     .index("by_user_id", ["userId"])
     .index("by_date", ["eventDate"]),
+
+  eventCategories: defineTable({
+    name: v.string(),
+    slug: v.string(),
+  }),
+
+  // Promotional codes for discounts
+  promoCodes: defineTable({
+    code: v.string(),
+    discountPercentage: v.number(), // Discount percentage (0-100)
+    maxDiscountAmount: v.number(),
+    startDate: v.number(),
+    endDate: v.number(),
+    isActive: v.boolean(),
+    eventId: v.optional(v.id("events")),
+    usageLimit: v.optional(v.number()),
+    usedCount: v.optional(v.number()),
+  }),
+
+  promotionalCodeRedemptions: defineTable({
+    userId: v.string(),
+    promoCodeId: v.id("promoCodes"),
+    eventId: v.id("events"),
+    ticketId: v.optional(v.id("tickets")),
+    redeemedAt: v.number(),
+    dicountAmount: v.number(), // Amount redeemed
+  })
+    .index("by_user", ["userId"])
+    .index("by_promo_code", ["promoCodeId"])
+    .index("by_event", ["eventId"]),
 
   ticketTypes: defineTable({
     eventId: v.id("events"),

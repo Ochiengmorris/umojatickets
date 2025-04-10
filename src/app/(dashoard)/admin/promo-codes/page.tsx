@@ -414,7 +414,7 @@ const PromoCodes = () => {
   const deleteCodeMutation: any = {};
   return (
     <div className="flex">
-      <div className="flex-1 p-6">
+      <div className="flex-1 max-w-screen-xl mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Promotional Codes</h1>
           <p className="text-muted-foreground">
