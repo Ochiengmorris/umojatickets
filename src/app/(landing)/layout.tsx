@@ -20,7 +20,7 @@ export default function LandingLayout({
 }) {
   return (
     <div
-      className={` ${montserrat.variable} ${geistSans.variable} antialiased flex flex-col h-screen bg-landingwhite overflow-y-auto`}
+      className={` ${montserrat.variable} ${geistSans.variable} antialiased flex flex-col h-screen bg-landingwhite `}
     >
       <Header />
       <main className="grow mt-6 ">{children}</main>

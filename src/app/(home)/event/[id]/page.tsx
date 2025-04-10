@@ -36,7 +36,7 @@ export default function EventPage() {
     eventId: params.id as Id<"events">,
   });
 
-  console.log("allAvailability", allAvailability);
+  // console.log("allAvailability", allAvailability);
 
   const availabilityForSelected = allAvailability?.find(
     (a) => a.ticketType._id === selectedTicket

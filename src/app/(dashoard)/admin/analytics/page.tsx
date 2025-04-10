@@ -26,6 +26,10 @@ import {
 } from "@/components/ui/select";
 import { format } from "date-fns";
 import RevenueChart from "@/components/seller/RevenueChart";
+import { useUser } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { mockMonthlyRevenue } from "../overview/page";
 
 const AnalyticsPage = () => {
   const [selectedYear, setSelectedYear] = useState(
@@ -36,14 +40,12 @@ const AnalyticsPage = () => {
   const [isLoadingEvents, setIsLoadingEvents] = useState(false);
   const [isLoadingTickets, setIsLoadingTickets] = useState(false);
   const [isLoadingRevenue, setIsLoadingRevenue] = useState(false);
-  const [revenueData, setRevenueData] = useState<any>(null);
+  const [revenueData, setRevenueData] = useState<any>(mockMonthlyRevenue);
+  const { user } = useUser();
 
-  const stats: any = {
-    totalTickets: 100,
-    totalAttendees: 200,
-    totalRevenue: 5000,
-    totalEvents: 10,
-  };
+  const eventMetrics = useQuery(api.events.getAllUserEventsMetrics, {
+    userId: user?.id ?? "",
+  });
 
   const events: any = []; // Replace with actual data fetching logic
 
@@ -181,8 +183,8 @@ const AnalyticsPage = () => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <StatsOverview />
-            <RevenueChart />
+            <StatsOverview stats={eventMetrics?.stats} />
+            <RevenueChart data={revenueData} />
           </TabsContent>
 
           <TabsContent value="events" className="space-y-6">

@@ -4,12 +4,16 @@ import { components, internal } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { DURATIONS, TICKET_STATUS, WAITING_LIST_STATUS } from "./constants";
 import { processQueue } from "./waitingList";
+import { Id } from "./_generated/dataModel";
+import { format, startOfMonth } from "date-fns";
 
 export type Metrics = {
   soldTickets: number;
   refundedTickets: number;
   cancelledTickets: number;
   revenue: number;
+  totalAttendees: number;
+  totalTickets: number;
 };
 
 // Initialize rate limiter
@@ -484,27 +488,6 @@ export const getUserWaitingList = query({
   },
 });
 
-// // Get user's waiting list entry for an event
-// export const getUserWaitingListForEvent = query({
-//   args: { userId: v.string(), eventId: v.id("events") },
-//   handler: async (ctx, { userId, eventId }) => {
-//     const entrys = await ctx.db
-//       .query("waitingList")
-//       .withIndex("by_user_event", (q) =>
-//         q.eq("userId", userId).eq("eventId", eventId)
-//       )
-//       .collect()
-//       .then((waitingList) =>
-//         waitingList.filter(
-//           (e) =>
-//             e.status !== WAITING_LIST_STATUS.PURCHASED &&
-//             e.status !== WAITING_LIST_STATUS.EXPIRED
-//         )
-//       );
-//     return entrys;
-//   },
-// });
-
 export const getAllAvailabilityForEvent = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, { eventId }) => {
@@ -646,6 +629,16 @@ export const getSellerEvents = query({
           .withIndex("by_event", (q) => q.eq("eventId", event._id))
           .collect();
 
+        // get total tickets from tickettypes
+        const ticketTypes = await ctx.db
+          .query("ticketTypes")
+          .withIndex("by_event", (q) => q.eq("eventId", event._id))
+          .collect();
+        const totalTickets = ticketTypes.reduce(
+          (acc, cur) => acc + (cur.totalTickets ?? 0),
+          0
+        );
+
         const validTickets = tickets.filter(
           (t) => t.status === "valid" || t.status === "used"
         );
@@ -653,21 +646,27 @@ export const getSellerEvents = query({
         const cancelledTickets = tickets.filter(
           (t) => t.status === "cancelled"
         );
+
+        const usedTickets = tickets.filter((t) => t.status === "used");
+
+        const totalUsedTickets = usedTickets.reduce(
+          (acc, cur) => acc + cur.count,
+          0
+        );
+
         // add all the amount in each ticket
         const totalRevenue = validTickets.reduce(
           (sum, ticket) => sum + (ticket.amount ?? 0),
           0
         );
 
-        // the revenue calculation is a placeholder and should be replaced with the actual formula
-        // const totalRevenue =
-
         const metrics: Metrics = {
           soldTickets: validTickets.length,
           refundedTickets: refundedTickets.length,
           cancelledTickets: cancelledTickets.length,
           revenue: totalRevenue,
-          // revenue: 0, // this is just a test case.
+          totalAttendees: totalUsedTickets,
+          totalTickets,
         };
 
         return {
@@ -678,6 +677,121 @@ export const getSellerEvents = query({
     );
 
     return eventsWithMetrics;
+  },
+});
+
+/**
+ * get all user events metrics
+ */
+export const getAllUserEventsMetrics = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    const sellerEventsMetrics = await getSellerEvents(ctx, { userId });
+
+    // Sum up the metrics for all events in one
+    const allEvents = sellerEventsMetrics.length;
+    const totalTicketsSold = sellerEventsMetrics.reduce(
+      (sum, event) => sum + (event.metrics.soldTickets ?? 0),
+      0
+    );
+    const totalAttendees = sellerEventsMetrics.reduce(
+      (sum, event) => sum + (event.metrics.totalAttendees ?? 0),
+      0
+    );
+    const totalRevenue = sellerEventsMetrics.reduce(
+      (sum, event) => sum + (event.metrics.revenue ?? 0),
+      0
+    );
+
+    return {
+      stats: {
+        liveEvents: allEvents,
+        totalTicketsSold,
+        totalAttendees,
+        totalRevenue,
+      },
+    };
+  },
+});
+
+/**
+ * get monthly revenue for data
+ */
+
+export const getMonthlyRevenue = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    const currentYear = new Date().getFullYear();
+    const events = await ctx.db
+      .query("events")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .collect();
+
+    const allTickets = await Promise.all(
+      events.map((event) =>
+        ctx.db
+          .query("tickets")
+          .withIndex("by_event", (q) => q.eq("eventId", event._id))
+          .collect()
+      )
+    );
+
+    // Flatten the ticket arrays
+    const tickets = allTickets.flat().filter((t) => {
+      const date = new Date(t._creationTime);
+      return (
+        (t.status === "valid" || t.status === "used") &&
+        date.getFullYear() === currentYear
+      );
+    });
+
+    // Group and sum revenue by month
+    const revenueByMonth: Record<string, number> = {};
+
+    // for (const ticket of tickets) {
+    //   const date = new Date(ticket._creationTime);
+    //   const month = date.getMonth() + 1; // getMonth() is 0-indexed
+    //   const year = date.getFullYear();
+    //   const key = `${year}-${month}`; // key for grouping
+
+    //   if (!revenueByMonth[key]) {
+    //     revenueByMonth[key] = 0;
+    //   }
+
+    //   revenueByMonth[key] += ticket.amount ?? 0;
+    // }
+
+    for (const ticket of tickets) {
+      const date = new Date(ticket._creationTime);
+      const month = date.getMonth() + 1; // 1-indexed
+
+      if (!revenueByMonth[month]) {
+        revenueByMonth[month] = 0;
+      }
+
+      revenueByMonth[month] += ticket.amount ?? 0;
+    }
+
+    // const monthlyRevenue = Object.entries(revenueByMonth)
+    //   .map(([key, revenue]) => {
+    //     const [yearStr, monthStr] = key.split("-");
+    //     return {
+    //       year: parseInt(yearStr),
+    //       month: parseInt(monthStr),
+    //       revenue,
+    //     };
+    //   })
+    //   .sort((a, b) =>
+    //     a.year === b.year ? a.month - b.month : a.year - b.year
+    //   );
+    const monthlyRevenue = Object.entries(revenueByMonth)
+      .map(([monthStr, revenue]) => ({
+        month: parseInt(monthStr),
+        revenue,
+      }))
+      .sort((a, b) => a.month - b.month);
+
+    return monthlyRevenue;
   },
 });
 

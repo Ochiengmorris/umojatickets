@@ -74,7 +74,7 @@ const menuItems = [
 const Sidebar = async () => {
   const user = await currentUser();
   return (
-    <div className="hidden md:flex md:w-64 lg:w-72 flex-col bg-primary text-primary-foreground fixed inset-y-0">
+    <div className="hidden md:flex md:w-64 lg:w-72 flex-col bg-black text-gray-300 fixed inset-y-0">
       {/* Logo */}
       <div className="flex items-center ">
         <Image
@@ -99,7 +99,7 @@ const Sidebar = async () => {
       </nav>
 
       {/* User Profile */}
-      <div className="p-4 border-t border-primary-foreground/10">
+      <div className="p-4 border-t border-slate-300/20">
         <div className="flex items-center gap-3">
           <img
             src={user?.imageUrl ?? ""}
@@ -115,7 +115,7 @@ const Sidebar = async () => {
         </div>
         <button
           type="button"
-          className="mt-3 w-full p-3 flex items-center justify-center gap-2 text-sm text-primary-foreground/80 rounded-md hover:bg-primary-foreground/10 transition-colors duration-200 ease-in-out"
+          className="mt-3 w-full p-3 flex items-center justify-center gap-2 text-sm text-slate-400 rounded-md hover:bg-slate-300/20 transition-colors duration-200 ease-in-out"
           // Add sign out functionality here
         >
           <LogOutIcon className="h-4 w-4" />

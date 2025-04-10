@@ -7,6 +7,7 @@ import HeaderAdmin from "@/components/layout/HeaderAdmin";
 import AdminSheet from "@/components/admin/AdminSheet";
 import BalanceCard from "@/components/seller/BalanceCard";
 import Sidebar from "@/components/seller/Sidebar";
+import MobileNavbar from "@/components/seller/MobileNavbar";
 
 export const metadata: Metadata = {
   title: "UmojaTickets: Buy & Sell Tickets for Events & Concerts",
@@ -20,8 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-200">
+    <div className="flex h-screen bg-gray-200">
       <Sidebar />
+      {/* <MobileNavbar /> */}
       <main className="flex-1 overflow-y-auto md:ml-64 lg:ml-72 pt-16 md:pt-0">
         {children}
       </main>

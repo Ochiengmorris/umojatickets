@@ -4,12 +4,21 @@ import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
 
-const StatsOverview = () => {
-  const isLoading = false; // Simulate loading state
+interface StatsOverviewProps {
+  stats?: {
+    liveEvents: number;
+    totalTicketsSold: number;
+    totalAttendees: number;
+    totalRevenue: number;
+  };
+  isLoading?: boolean;
+}
+
+const StatsOverview = ({ stats, isLoading = false }: StatsOverviewProps) => {
   const statsItems = [
     {
-      title: "Live Events",
-      value: 4,
+      title: "All Events",
+      value: stats?.liveEvents || 0,
       change: 12,
       changeType: "increase",
       icon: (
@@ -33,7 +42,7 @@ const StatsOverview = () => {
     },
     {
       title: "Tickets Sold",
-      value: 3425,
+      value: stats?.totalTicketsSold || 0,
       change: 8,
       changeType: "increase",
       icon: (
@@ -57,7 +66,7 @@ const StatsOverview = () => {
     },
     {
       title: "Attendees",
-      value: 253,
+      value: stats?.totalAttendees || 0,
       change: 5,
       changeType: "increase",
       icon: (
@@ -80,8 +89,8 @@ const StatsOverview = () => {
       ),
     },
     {
-      title: "Revenue",
-      value: 253675,
+      title: "Total Revenue",
+      value: stats?.totalRevenue || 0,
       change: 3,
       changeType: "decrease",
       icon: (
@@ -136,7 +145,7 @@ const StatsOverview = () => {
         // Data loaded state
         <>
           {statsItems.map((item, index) => (
-            <Card key={index} className="p-4 border border-slate-200">
+            <Card key={index} className="p-4 border border-slate-200 bg-white">
               <div className="flex items-center">
                 {item.icon}
                 <div>

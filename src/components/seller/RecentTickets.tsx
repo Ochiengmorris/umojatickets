@@ -25,27 +25,63 @@ import {
   TableRow,
 } from "../ui/table";
 import { formatDate } from "@/lib/utils";
+import { Id } from "../../../convex/_generated/dataModel";
 
 interface RecentTicketsProps {
-  tickets?: Array<any>;
+  tickets?: Ticket[];
   isLoading?: boolean;
 }
+
+interface Ticket {
+  _id: Id<"tickets">;
+  amount?: number;
+  eventId: Id<"events">;
+  count: number;
+  status: string;
+  paymentIntentId?: string;
+  ticketTypeId: Id<"ticketTypes">;
+  purchasedAt: number;
+  userId: string;
+  ticketType: {
+    name?: string;
+    price?: number;
+  };
+  event: {
+    name?: string;
+    eventDate?: number;
+    location?: string;
+  };
+  user: {
+    name?: string;
+    email?: string;
+  };
+}
+
 const RecentTickets = ({ tickets, isLoading = false }: RecentTicketsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 2;
 
   // Filter tickets based on search
   const filteredTickets = tickets
-    ? tickets.filter((ticket: any) => {
-        return (
-          searchQuery === "" ||
-          ticket.user?.fullName
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          ticket.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      })
+    ? tickets
+        .filter((ticket: Ticket) => {
+          return (
+            searchQuery === "" ||
+            ticket.user?.name
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            ticket.user?.email
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          );
+        })
+        .sort((a, b) => {
+          return (
+            new Date(b.purchasedAt).getTime() -
+            new Date(a.purchasedAt).getTime()
+          );
+        })
     : [];
 
   // Pagination
@@ -79,18 +115,18 @@ const RecentTickets = ({ tickets, isLoading = false }: RecentTicketsProps) => {
   };
 
   return (
-    <Card className="border border-slate-200 mb-6">
+    <Card className="border border-slate-200 bg-white mb-6">
       <div className="border-b border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <h2 className="font-semibold text-lg text-slate-900">
           Recent Ticket Purchases
         </h2>
         <div className="mt-2 sm:mt-0 flex gap-2">
           <div className="relative flex-1 sm:w-64">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900 h-4 w-4" />
             <Input
               type="text"
               placeholder="Search..."
-              className="pl-10 h-9"
+              className="pl-10 h-9 text-slate-900"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -141,23 +177,20 @@ const RecentTickets = ({ tickets, isLoading = false }: RecentTicketsProps) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedTickets.map((ticket: any) => (
-                  <TableRow key={ticket.id} className="hover:bg-slate-50">
+                {paginatedTickets.map((ticket: Ticket) => (
+                  <TableRow key={ticket._id} className="hover:bg-slate-50">
                     <TableCell>
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-full overflow-hidden flex-shrink-0">
                           <img
-                            src={
-                              ticket.user?.avatar ||
-                              `https://ui-avatars.com/api/?name=${encodeURIComponent(ticket.user?.fullName || "User")}&background=random`
-                            }
+                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(ticket.user?.name || "User")}&background=random`}
                             alt="User avatar"
                             className="h-full w-full object-cover"
                           />
                         </div>
                         <div className="ml-3">
                           <p className="text-sm font-medium text-slate-900">
-                            {ticket.user?.fullName}
+                            {ticket.user?.name}
                           </p>
                           <p className="text-xs text-slate-500">
                             {ticket.user?.email}
@@ -170,14 +203,17 @@ const RecentTickets = ({ tickets, isLoading = false }: RecentTicketsProps) => {
                         {ticket.event?.name}
                       </p>
                       <p className="text-xs text-slate-500">
-                        {ticket.event?.date && formatDate(ticket.event.date)}
+                        {ticket.event?.eventDate &&
+                          formatDate(
+                            new Date(ticket.event.eventDate).toISOString()
+                          )}
                       </p>
                     </TableCell>
                     <TableCell className="text-sm text-slate-500">
-                      {formatDate(ticket.purchaseDate)}
+                      {formatDate(new Date(ticket.purchasedAt).toISOString())}
                       <br />
                       <span className="text-xs">
-                        {formatTime(ticket.purchaseDate)}
+                        {formatTime(new Date(ticket.purchasedAt).toISOString())}
                       </span>
                     </TableCell>
                     <TableCell className="text-sm text-slate-900">

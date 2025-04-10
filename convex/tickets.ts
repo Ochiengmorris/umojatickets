@@ -1,6 +1,79 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+export const getAllUserTickets = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    const events = await ctx.db
+      .query("events")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .collect();
+
+    // Get event IDs from the fetched events
+    const eventIds = events.map((event) => event._id);
+
+    // If no events found, return empty array
+    if (eventIds.length === 0) {
+      return [];
+    }
+
+    // Fetch tickets for all events
+    const tickets = await ctx.db
+      .query("tickets")
+      .filter((q) =>
+        q.or(...eventIds.map((eventId) => q.eq(q.field("eventId"), eventId)))
+      )
+      .collect();
+
+    // Map tickets to include event details
+    const ticketsWithEvents = tickets.map((ticket) => {
+      const event = events.find((event) => event._id === ticket.eventId);
+      return {
+        ...ticket,
+        event: {
+          name: event?.name,
+          location: event?.location,
+          eventDate: event?.eventDate,
+          startTime: event?.startTime,
+        },
+      };
+    });
+
+    // Map ticketwith events to include ticket type details
+    const ticketsWithTicketTypes = await Promise.all(
+      ticketsWithEvents.map(async (ticket) => {
+        const ticketType = await ctx.db.get(ticket.ticketTypeId);
+        return {
+          ...ticket,
+          ticketType: {
+            name: ticketType?.name,
+            price: ticketType?.price,
+          },
+        };
+      })
+    );
+
+    //Map ticketsdetails with user's details
+    const ticketsWithTicketTypesAndUser = await Promise.all(
+      ticketsWithTicketTypes.map(async (ticket) => {
+        const user = await ctx.db
+          .query("users")
+          .withIndex("by_user_id", (q) => q.eq("userId", ticket.userId))
+          .first();
+        return {
+          ...ticket,
+          user: {
+            name: user?.name,
+            email: user?.email,
+          },
+        };
+      })
+    );
+
+    return ticketsWithTicketTypesAndUser;
+  },
+});
+
 export const getUserTicketForEvent = query({
   args: {
     eventId: v.id("events"),

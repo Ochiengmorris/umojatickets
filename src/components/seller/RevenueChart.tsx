@@ -59,7 +59,7 @@ const RevenueChart = ({ data, isLoading, className }: RevenueChartProps) => {
   };
 
   return (
-    <Card className={cn("border border-slate-200", className)}>
+    <Card className={cn("border border-slate-200 bg-white", className)}>
       <CardHeader className="p-4 pb-0">
         <div className="flex justify-between items-center mb-4">
           <CardTitle className="font-semibold text-lg text-slate-900">
@@ -67,11 +67,11 @@ const RevenueChart = ({ data, isLoading, className }: RevenueChartProps) => {
           </CardTitle>
           <div className="flex gap-2">
             <Button
-              variant={timeRange === "monthly" ? "default" : "outline"}
+              variant={timeRange === "monthly" ? "default" : "ghost"}
               className={cn(
                 "text-xs px-2 py-1",
                 timeRange === "monthly"
-                  ? "bg-indigo-600 hover:bg-indigo-700"
+                  ? "bg-jmprimary hover:bg-jmprimary"
                   : "bg-slate-200 text-slate-700"
               )}
               onClick={() => setTimeRange("monthly")}
@@ -79,11 +79,11 @@ const RevenueChart = ({ data, isLoading, className }: RevenueChartProps) => {
               Monthly
             </Button>
             <Button
-              variant={timeRange === "quarterly" ? "default" : "outline"}
+              variant={timeRange === "quarterly" ? "default" : "ghost"}
               className={cn(
                 "text-xs px-2 py-1",
                 timeRange === "quarterly"
-                  ? "bg-indigo-600 hover:bg-indigo-700"
+                  ? "bg-jmprimary hover:bg-jmprimary"
                   : "bg-slate-200 text-slate-700"
               )}
               onClick={() => setTimeRange("quarterly")}
@@ -91,11 +91,11 @@ const RevenueChart = ({ data, isLoading, className }: RevenueChartProps) => {
               Quarterly
             </Button>
             <Button
-              variant={timeRange === "yearly" ? "default" : "outline"}
+              variant={timeRange === "yearly" ? "default" : "ghost"}
               className={cn(
                 "text-xs px-2 py-1",
                 timeRange === "yearly"
-                  ? "bg-indigo-600 hover:bg-indigo-700"
+                  ? "bg-jmprimary hover:bg-jmprimary"
                   : "bg-slate-200 text-slate-700"
               )}
               onClick={() => setTimeRange("yearly")}
@@ -126,8 +126,8 @@ const RevenueChart = ({ data, isLoading, className }: RevenueChartProps) => {
               >
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#2F95DC" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#2F95DC" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
@@ -151,12 +151,12 @@ const RevenueChart = ({ data, isLoading, className }: RevenueChartProps) => {
                 <Line
                   type="monotone"
                   dataKey="revenue"
-                  stroke="#4F46E5"
+                  stroke="#2F95DC"
                   strokeWidth={2}
                   activeDot={{ r: 6 }}
                   dot={{
                     r: 4,
-                    fill: "#4F46E5",
+                    fill: "#2F95DC",
                     strokeWidth: 2,
                     stroke: "#FFFFFF",
                   }}

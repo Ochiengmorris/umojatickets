@@ -10,18 +10,33 @@ import {
 } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 import { format } from "date-fns";
-
-interface UpcomingEventsProps {
-  events?: Array<any>;
-  isLoading?: boolean;
-}
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
+import { Id } from "../../../convex/_generated/dataModel";
+import { Metrics } from "../../../convex/events";
 
-const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
+interface UpcomingEventsProps {
+  events?: EventDataProps[];
+  isLoading?: boolean;
+}
+
+interface EventDataProps {
+  _id: Id<"events">;
+  name: string;
+  eventDate: number;
+  imageStorageId?: Id<"_storage">;
+  location: string;
+  userId: string;
+  description: string;
+  metrics: Metrics;
+}
+
+const UpcomingEventsPage = ({
+  events,
+  isLoading = false,
+}: UpcomingEventsProps) => {
   // Only show upcoming events (date is in the future)
   const getUpcomingEvents = () => {
     if (!events) return [];
@@ -29,12 +44,16 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
     const today = new Date();
 
     return events
-      .filter((event) => new Date(event.date) >= today)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .slice(0, 3); // Get only the next 3 upcoming events
+      .filter((event) => new Date(event.eventDate) >= today)
+      .sort(
+        (a, b) =>
+          new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
+      )
+      .slice(0, 2);
   };
 
   const upcomingEvents = getUpcomingEvents();
+  // const upcomingEvents = events;
 
   // Helper function to get category name
   const getCategoryName = (categoryId: number) => {
@@ -67,7 +86,7 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
       case 2:
         return "bg-blue-100 text-blue-800"; // Tech
       case 3:
-        return "bg-indigo-100 text-indigo-800"; // Business
+        return "bg-jmprimary/10 text-jmprimary"; // Business
       case 4:
         return "bg-emerald-100 text-emerald-800"; // Sports
       case 5:
@@ -78,24 +97,27 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
   };
 
   // Helper function to calculate tickets progress percentage
-  const calculateProgress = (event: any) => {
-    if (!event || !event.capacity) return 0;
+  const calculateProgress = (event: EventDataProps) => {
+    if (!event)
+      return {
+        sold: 0,
+        capacity: 0,
+        percentage: 0,
+      };
 
-    // Since we don't have sold tickets count in the event object,
-    // we'll use a random number for demo purposes
-    // In a real application, this would come from the backend
-    const soldTickets = Math.floor(Math.random() * event.capacity);
-    const percentage = Math.round((soldTickets / event.capacity) * 100);
+    const percentage = Math.round(
+      (event.metrics.soldTickets / event.metrics.totalTickets) * 100
+    );
 
     return {
-      sold: soldTickets,
-      capacity: event.capacity,
+      sold: event.metrics.soldTickets,
+      capacity: event.metrics.totalTickets,
       percentage: percentage,
     };
   };
 
   return (
-    <Card className="border border-slate-200">
+    <Card className="border border-slate-200 bg-white">
       <CardHeader className="p-4 pb-0">
         <CardTitle className="font-semibold text-lg text-slate-900">
           Upcoming Events
@@ -118,7 +140,7 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
               </div>
             ))}
           </div>
-        ) : upcomingEvents.length === 0 ? (
+        ) : upcomingEvents?.length === 0 ? (
           // No events state
           <div className="text-center py-8">
             <CalendarIcon className="mx-auto h-12 w-12 text-slate-300 mb-3" />
@@ -130,7 +152,7 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
             </p>
             <Link
               href="/admin/events"
-              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+              className="text-jmprimary hover:text-jmprimary text-sm font-medium"
             >
               Go to Events
             </Link>
@@ -138,15 +160,18 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
         ) : (
           // Events loaded state
           <>
-            {upcomingEvents.map((event, index) => {
+            {upcomingEvents?.map((event, index) => {
               const progress = calculateProgress(event);
-              const categoryName = getCategoryName(event.categoryId);
-              const categoryStyle = getCategoryStyle(event.categoryId);
-              const eventDate = formatDate(event.date);
+              const categoryName = getCategoryName(3);
+              const categoryStyle = getCategoryStyle(3);
+
+              const eventDate = formatDate(
+                new Date(event.eventDate).toISOString()
+              );
 
               return (
                 <div
-                  key={event.id}
+                  key={event._id}
                   className={cn(
                     "pb-3 mb-3",
                     index < upcomingEvents.length - 1 &&
@@ -161,8 +186,7 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
                   </div>
                   <div className="text-sm text-slate-500 mb-1">
                     <CalendarIcon className="inline-block h-3.5 w-3.5 mr-1" />
-                    <span>{eventDate}</span> •
-                    <span className="ml-1">{event.startTime}</span>
+                    <span>{eventDate}</span> •<span className="ml-1">8 AM</span>
                   </div>
                   <div className="text-sm text-slate-500 mb-2">
                     <MapPinIcon className="inline-block h-3.5 w-3.5 mr-1" />
@@ -171,48 +195,45 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-slate-700">
                       <TicketIcon className="inline-block h-3.5 w-3.5 mr-1" />
-                      {typeof progress === "object" && (
+                      {
                         <>
                           <span>{progress.sold}</span>/
                           <span>{progress.capacity}</span> tickets sold
                         </>
-                      )}
+                      }
                     </span>
                     <span
                       className={cn(
                         "font-medium",
-                        typeof progress === "object" &&
-                          (progress.percentage >= 75
-                            ? "text-green-600"
-                            : progress.percentage >= 50
-                              ? "text-indigo-600"
-                              : progress.percentage >= 25
-                                ? "text-amber-600"
-                                : "text-red-600")
+
+                        progress.percentage >= 75
+                          ? "text-green-600"
+                          : progress.percentage >= 50
+                            ? "text-jmprimary"
+                            : progress.percentage >= 25
+                              ? "text-amber-600"
+                              : "text-red-600"
                       )}
                     >
-                      {typeof progress === "object"
-                        ? `${progress.percentage}%`
-                        : "0%"}
+                      {`${progress.percentage}%`}
                     </span>
                   </div>
                   <div className="w-full bg-slate-200 rounded-full h-1.5 mt-1">
                     <div
                       className={cn(
-                        "h-1.5 rounded-full",
-                        typeof progress === "object" &&
-                          (progress.percentage >= 75
-                            ? "text-green-600"
-                            : progress.percentage >= 50
-                              ? "text-indigo-600"
-                              : progress.percentage >= 25
-                                ? "text-amber-600"
-                                : "text-red-600")
+                        `h-1.5 rounded-full`,
+                        progress.percentage >= 75
+                          ? "text-green-600 bg-green-600"
+                          : progress.percentage >= 50
+                            ? "text-jmprimary bg-jmprimary"
+                            : progress.percentage >= 25
+                              ? "text-amber-600 bg-amber-600"
+                              : "text-red-600 bg-red-600"
                       )}
                       style={{
-                        width: `${typeof progress === "object" && progress.percentage}%`,
+                        width: `${progress.percentage}%`,
                       }}
-                    ></div>
+                    />
                   </div>
                 </div>
               );
@@ -220,7 +241,7 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
 
             <Link
               href="/admin/events"
-              className="mt-3 text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center justify-center"
+              className="mt-3 text-jmprimary hover:text-jmprimary text-sm font-medium flex items-center justify-center"
             >
               View all events
               <ChevronRightIcon className="ml-1 h-4 w-4" />
@@ -232,4 +253,4 @@ const UpcomingEvents = ({ events, isLoading = false }: UpcomingEventsProps) => {
   );
 };
 
-export default UpcomingEvents;
+export default UpcomingEventsPage;
