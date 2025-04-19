@@ -7,8 +7,8 @@ import Link from "next/link";
 
 function Header() {
   return (
-    <div className="border-b bg-background">
-      <div className="flex max-w-[1600px] m-auto flex-col lg:flex-row items-center gap-4 p-4 relative">
+    <header className="border-b bg-background/90 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+      <div className="flex max-w-7xl m-auto flex-col lg:flex-row items-center gap-4 p-4 relative">
         <div className="flex lg:max-w-[100px] items-center w-full lg:mr-12">
           <Link href="/" className="flex items-center">
             <Image
@@ -84,7 +84,7 @@ function Header() {
           </SignedIn>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
 

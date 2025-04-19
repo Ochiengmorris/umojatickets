@@ -268,28 +268,10 @@ export default function EventCard({
         <div className={`p-6 ${imageUrl ? "relative" : ""}`}>
           <div className="flex justify-between items-start">
             <div>
-              {isSingleTicketType ? (
-                <span className="text-xs text-card-foreground">
-                  At{" "}
-                  <span className="text-xl mr-2">
-                    {" "}
-                    KES {FormatMoney(minTicketPrice)}
-                  </span>
-                </span>
-              ) : (
-                <span className="text-xs text-card-foreground">
-                  From{" "}
-                  <span className="text-xl mr-2">
-                    {" "}
-                    KES {FormatMoney(minTicketPrice)}
-                  </span>{" "}
-                  to{" "}
-                  <span className="text-xl">
-                    {" "}
-                    KES {FormatMoney(maxTicketPrice)}
-                  </span>
-                </span>
-              )}
+              <span className="text-xs text-card-foreground font-extrabold">
+                KES{" "}
+                <span className="text-xl">{FormatMoney(minTicketPrice)}</span>{" "}
+              </span>
             </div>
 
             {/* <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
@@ -303,7 +285,7 @@ export default function EventCard({
 
           <div className="mt-4 flex gap-4">
             <div className="w-20 h-20 rounded-lg flex items-center justify-start flex-col shadow-md shrink-0  overflow-hidden">
-              <div className="uppercase bg-card-foreground px-2 py-1 justify-center flex font-semibold  w-full text-card">
+              <div className="uppercase bg-card-foreground px-2 py-1 justify-center flex font-bold  w-full text-card">
                 {new Intl.DateTimeFormat("en-US", { month: "short" }).format(
                   new Date(event.eventDate)
                 )}

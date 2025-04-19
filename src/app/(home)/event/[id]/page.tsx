@@ -8,12 +8,14 @@ import { ticketTypeWithId } from "@/constants/tickets";
 import FormatMoney, { cn, useStorageUrl } from "@/lib/utils";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { Ticket } from "lucide-react";
+import { Heart, Share2, Ticket } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "@/hooks/use-toast";
 
 export default function EventPage() {
   const { user } = useUser();
@@ -22,6 +24,7 @@ export default function EventPage() {
   const [selectedCount, setSelectedCount] = useState<{ [key: string]: number }>(
     {}
   );
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const event = useQuery(api.events.getById, {
     eventId: params.id as Id<"events">,
@@ -113,9 +116,10 @@ export default function EventPage() {
   return (
     <div className="h-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="border border-primary-foreground rounded-xl shadow-sm overflow-hidden">
+        <div className="rounded-xl shadow-sm overflow-hidden">
           {imageUrl && (
-            <div className="aspect-[21/9] relative w-full">
+            // Event Header
+            <section className="aspect-[21/9] relative w-full rounded-b-xl overflow-hidden">
               <Image
                 src={imageUrl}
                 alt={event.name}
@@ -123,23 +127,63 @@ export default function EventPage() {
                 className="object-cover"
                 priority
               />
-            </div>
-          )}
-
-          <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Left Column - Event Details */}
-              <div className="space-y-6 md:space-y-8">
-                <div>
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end">
+                <div className="container pb-8">
+                  <Badge variant="category" className="mb-4">
+                    {/* {event.category} */}
+                    {"Music"}
+                  </Badge>
+                  <h1 className="font-display font-extrabold text-3xl md:text-4xl lg:text-5xl text-white mb-4">
                     {event.name}
                   </h1>
-                  <p className="text-muted-foreground text-sm md:text-base">
-                    Select your preferred ticket type below
-                  </p>
                 </div>
+              </div>
+              <div className="absolute top-4 right-4 flex gap-2">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full bg-white/80 hover:bg-white"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator
+                        .share({
+                          title: event.name,
+                          text: `Check out this event: ${event.name}`,
+                          url: window.location.href,
+                        })
+                        .catch((error) =>
+                          console.error("Error sharing", error)
+                        );
+                    } else {
+                      // Fallback for browsers that don't support the Web Share API
+                      toast({
+                        title: "Sharing is not supported in your browser.",
+                        description: "Please copy the link manually.",
+                      });
+                    }
+                  }}
+                >
+                  <Share2 className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className={`rounded-full bg-white/80 hover:bg-white ${isFavorite ? "text-red-500" : ""}`}
+                  onClick={() => setIsFavorite(!isFavorite)}
+                >
+                  <Heart
+                    className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`}
+                  />
+                </Button>
+              </div>
+            </section>
+          )}
 
-                <div className="grid gap-3">
+          <section className="container py-8">
+            <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 gap-12">
+              {/* Left Column - Event Details */}
+              <div className="">
+                {/* <div className="grid gap-3">
                   {ticketTypesQuery?.map((ticket, index) => (
                     <div
                       key={index}
@@ -164,16 +208,8 @@ export default function EventPage() {
                           </span>
                         </p>
 
-                        {/* Ticket Buttons */}
                         <div className="flex-1 justify-end flex">
-                          {/* {availability.purchasedCount >=
-                          availability.totalTickets ? (
-                            <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-xs md:text-sm">
-                              Sold Out
-                            </span>
-                          ) : ( */}
                           <>
-                            {/* add and remove tickets button  */}
                             <div className="flex gap-3 md:gap-4 items-center">
                               <Button
                                 className={cn("font-bold ")}
@@ -219,34 +255,43 @@ export default function EventPage() {
                               </Button>
                             </div>
                           </>
-                          {/* )} */}
                         </div>
                       </div>
                     </div>
                   ))}
-
-                  {/* <div className="text-card-foreground bg-card p-4 rounded-lg border">
-                    <div className="flex items-center mb-1">
-                      <Users className="w-5 h-5 mr-2 text-[#00a184]" />
-                      <span className="text-sm text-muted-foreground font-medium">
-                        Availability
-                      </span>
-                    </div>
-                    <p className="text-sm md:text-base">
-                      {availability.totalTickets - availability.purchasedCount}{" "}
-                      / {availability.totalTickets} left
-                    </p>
-                  </div> */}
-                </div>
+                </div> */}
 
                 {/* Additional Event Information */}
                 <div className="text-card-foreground bg-card border rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-jmprimary mb-2">
-                    Event Description
+                  <h3 className="text-xl font-display text-jmprimary mb-2">
+                    About this Event
                   </h3>
-                  <p className="space-y-2 text-muted-foreground text-sm md:text-base">
+                  <p className="space-y-2 text-muted-foreground text-sm md:text-base whitespace-pre-line">
                     {event.description}
                   </p>
+
+                  <div className="border-t mt-4 pt-4">
+                    <h3 className="font-semibold mb-3">Organizer</h3>
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={user?.imageUrl ?? ""}
+                        alt={"Organizer Logo"}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="font-medium">
+                          {user?.fullName ?? "John Doe"}
+                        </p>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="h-auto font-semibold p-0"
+                        >
+                          View Profile
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -315,7 +360,7 @@ export default function EventPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </div>

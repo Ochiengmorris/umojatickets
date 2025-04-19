@@ -7,7 +7,6 @@ import {
   BarChart2Icon,
   UserIcon,
   SettingsIcon,
-  LogOutIcon,
   TagIcon,
 } from "lucide-react";
 import Image from "next/image";

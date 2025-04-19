@@ -115,7 +115,7 @@ export default function SellerDashboard() {
         <div className="p-6 border rounded-xl">
           {/* Account Creation Section */}
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3 mt-6">
+          <div className="flex flex-wrap gap-3">
             {userDetails?.isSeller ? (
               <>
                 <button
