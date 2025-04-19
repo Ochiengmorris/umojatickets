@@ -8,7 +8,7 @@ import { ticketTypeWithId } from "@/constants/tickets";
 import FormatMoney, { cn, useStorageUrl } from "@/lib/utils";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { Heart, Share2, Ticket } from "lucide-react";
+import { Clock, Heart, Info, Minus, Plus, Share2, Ticket } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -16,6 +16,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
+import { Card } from "@/components/ui/card";
 
 export default function EventPage() {
   const { user } = useUser();
@@ -39,7 +40,7 @@ export default function EventPage() {
     eventId: params.id as Id<"events">,
   });
 
-  // console.log("allAvailability", allAvailability);
+  console.log("allAvailability", allAvailability);
 
   const availabilityForSelected = allAvailability?.find(
     (a) => a.ticketType._id === selectedTicket
@@ -119,7 +120,7 @@ export default function EventPage() {
         <div className="rounded-xl shadow-sm overflow-hidden">
           {imageUrl && (
             // Event Header
-            <section className="aspect-[21/9] relative w-full rounded-b-xl overflow-hidden">
+            <section className="aspect-[21/9] relative w-full rounded-xl overflow-hidden border">
               <Image
                 src={imageUrl}
                 alt={event.name}
@@ -127,7 +128,7 @@ export default function EventPage() {
                 className="object-cover"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-end">
                 <div className="container pb-8">
                   <Badge variant="category" className="mb-4">
                     {/* {event.category} */}
@@ -136,6 +137,12 @@ export default function EventPage() {
                   <h1 className="font-display font-extrabold text-3xl md:text-4xl lg:text-5xl text-white mb-4">
                     {event.name}
                   </h1>
+                  <div className="flex flex-wrap gap-4 text-white">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-5 w-5" />
+                      <span>{event.startTime}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="absolute top-4 right-4 flex gap-2">
@@ -179,91 +186,17 @@ export default function EventPage() {
             </section>
           )}
 
-          <section className="container py-8">
+          <section className="container py-8 border border-primary-foreground  mt-8 rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 gap-12">
               {/* Left Column - Event Details */}
               <div className="">
-                {/* <div className="grid gap-3">
-                  {ticketTypesQuery?.map((ticket, index) => (
-                    <div
-                      key={index}
-                      className={cn(
-                        "text-card-foreground bg-card p-4 rounded-xl border transition-all duration-200 ease-in-out",
-                        selectedTicket === ticket._id
-                          ? "border-primary/30 shadow-md"
-                          : "border-border hover:border-primary/20"
-                      )}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-1 items-center">
-                          <Ticket className="w-5 h-5 mr-2 text-jmprimary" />
-                          <span className="md:text-base text-sm font-extrabold text-muted-foreground">
-                            {ticket.name}
-                          </span>
-                        </div>
-                        <p className="text-xs justify-end flex flex-1 md:text-base gap-1">
-                          Ksh
-                          <span className="font-extrabold mr-[50%]">
-                            {FormatMoney(Number(ticket.price))}
-                          </span>
-                        </p>
-
-                        <div className="flex-1 justify-end flex">
-                          <>
-                            <div className="flex gap-3 md:gap-4 items-center">
-                              <Button
-                                className={cn("font-bold ")}
-                                size={"sm"}
-                                onClick={() =>
-                                  handleTicketChange(ticket._id, -1)
-                                }
-                                disabled={
-                                  selectedCount[ticket._id] <= 0 ||
-                                  Boolean(
-                                    selectedTicket &&
-                                      selectedTicket !== ticket._id
-                                  ) ||
-                                  hasBeenOffered ||
-                                  isEventPast ||
-                                  isEventOwner ||
-                                  userTicket !== null
-                                }
-                              >
-                                -
-                              </Button>
-                              <span className="">
-                                {selectedCount[ticket._id] || 0}
-                              </span>
-                              <Button
-                                className={cn("font-bold")}
-                                size={"sm"}
-                                onClick={() =>
-                                  handleTicketChange(ticket._id, 1)
-                                }
-                                disabled={
-                                  Boolean(
-                                    selectedTicket &&
-                                      selectedTicket !== ticket._id
-                                  ) ||
-                                  hasBeenOffered ||
-                                  isEventPast ||
-                                  isEventOwner ||
-                                  userTicket !== null
-                                } // Disable other types if one is selected
-                              >
-                                +
-                              </Button>
-                            </div>
-                          </>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div> */}
-
                 {/* Additional Event Information */}
-                <div className="text-card-foreground bg-card border rounded-lg p-6">
-                  <h3 className="text-xl font-display text-jmprimary mb-2">
+                <Card
+                  className={cn(
+                    "text-card-foreground bg-card border rounded-lg p-6 relative shadow transition-all duration-300 overflow-hidden  border-primary-foreground max-w-xl"
+                  )}
+                >
+                  <h3 className="text-xl font-display font-semibold text-jmprimary mb-2">
                     About this Event
                   </h3>
                   <p className="space-y-2 text-muted-foreground text-sm md:text-base whitespace-pre-line">
@@ -273,14 +206,15 @@ export default function EventPage() {
                   <div className="border-t mt-4 pt-4">
                     <h3 className="font-semibold mb-3">Organizer</h3>
                     <div className="flex items-center gap-3">
+                      {/** TODO: Add organizer logo */}
                       <img
-                        src={user?.imageUrl ?? ""}
+                        src={user?.imageUrl ?? undefined}
                         alt={"Organizer Logo"}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div>
                         <p className="font-medium">
-                          {user?.fullName ?? "John Doe"}
+                          {user?.fullName ?? "Admin"}
                         </p>
                         <Button
                           variant="link"
@@ -292,7 +226,99 @@ export default function EventPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Card>
+
+                <Card className="rounded-lg  overflow-hidden mt-4 text-card-foreground bg-card shadow transition-all duration-300 border-primary-foreground max-w-xl">
+                  <div className="bg-secondary py-3 px-5">
+                    <h3 className="font-display font-semibold">
+                      Select Tickets
+                    </h3>
+                  </div>
+
+                  <div className="px-5 py-4">
+                    {allAvailability?.map((ticket) => (
+                      <div
+                        key={ticket.ticketType._id}
+                        className="py-4 border-b last:border-0"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <h4 className="font-semibold">
+                              {ticket.ticketType.name}
+                            </h4>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Ticket Description
+                            </p>
+                            <p className="font-semibold text-jmprimary">
+                              Ksh {FormatMoney(ticket.ticketType.price)}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <Button
+                              variant={"outline"}
+                              type="button"
+                              size={"icon"}
+                              onClick={() =>
+                                handleTicketChange(ticket.ticketType._id, -1)
+                              }
+                              disabled={
+                                selectedCount[ticket.ticketType._id] <= 0 ||
+                                selectedTicket !== ticket.ticketType._id ||
+                                hasBeenOffered ||
+                                isEventPast ||
+                                isEventOwner ||
+                                userTicket !== null
+                              }
+                            >
+                              <Minus className="w-4 h-4" />
+                            </Button>
+
+                            <span className="w-6 text-center">
+                              {selectedCount[ticket.ticketType._id] || 0}
+                            </span>
+
+                            <Button
+                              variant={"outline"}
+                              type="button"
+                              size={"icon"}
+                              onClick={() =>
+                                handleTicketChange(ticket.ticketType._id, 1)
+                              }
+                              disabled={
+                                (selectedTicket !== null &&
+                                  selectedTicket !== ticket.ticketType._id) ||
+                                hasBeenOffered ||
+                                isEventPast ||
+                                isEventOwner ||
+                                userTicket !== null
+                              }
+                            >
+                              <Plus className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="text-xs text-muted-foreground">
+                          {isEventPast
+                            ? "Event ended"
+                            : ticket.remainingTickets > 0
+                              ? ticket.remainingTickets === 1
+                                ? "1 Ticket Available"
+                                : `${ticket.remainingTickets} Tickets Available`
+                              : "0 Tickets Available"}
+                          {isEventPast
+                            ? null
+                            : ticket.remainingTickets === 0 && (
+                                <span className="text-red-500 ml-2">
+                                  (Sold Out)
+                                </span>
+                              )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
               </div>
 
               {/* Right Column - Ticket Purchase Card */}
@@ -352,11 +378,60 @@ export default function EventPage() {
                     )
                   ) : (
                     <SignInButton mode="modal">
-                      <Button className="w-full bg-primary text-primary-foreground font-semibold rounded-lg transition-all max-w-xl text-center duration-200 px-4 py-3">
+                      <button
+                        className={cn(
+                          "w-full bg-primary text-primary-foreground font-semibold rounded-lg transition-all max-w-xl text-center duration-200 px-4 py-3"
+                        )}
+                      >
                         Sign in to buy tickets
-                      </Button>
+                      </button>
                     </SignInButton>
                   )}
+                </div>
+
+                <div className="border rounded-lg mt-4 overflow-hidden text-card-foreground bg-card shadow transition-all duration-300 border-primary-foreground max-w-xl">
+                  <h3 className="font-display font-bold text-lg flex items-center mb-4 bg-secondary p-4">
+                    <Info className="h-5 w-5 mr-2 text-jmprimary" />
+                    Event Information
+                  </h3>
+                  <ul className="space-y-3 text-sm px-4">
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Refund Policy
+                      </span>
+                      <span className="font-semibold">No Refunds</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Age Restrictions
+                      </span>
+                      <span className="font-semibold">All Ages</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Accessibility
+                      </span>
+                      <span className="font-semibold">
+                        Wheelchair Accessible
+                      </span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-muted-foreground">Contact</span>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="h-auto font-semibold text-sm p-0"
+                      >
+                        Contact Organizer
+                      </Button>
+                    </li>
+                  </ul>
+                  <div className="mt-4 p-4 border-t text-xs text-muted-foreground">
+                    <p>
+                      For any questions regarding this event, please contact the
+                      organizer directly.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

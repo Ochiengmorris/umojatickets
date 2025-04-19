@@ -8,7 +8,7 @@ export default defineSchema({
     description: v.string(),
     location: v.string(),
     eventDate: v.number(),
-    startTime: v.optional(v.number()),
+    startTime: v.optional(v.string()),
     totalTickets: v.optional(v.number()),
     userId: v.string(),
     imageStorageId: v.optional(v.id("_storage")),

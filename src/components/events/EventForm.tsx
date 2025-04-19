@@ -16,7 +16,7 @@ import { cn, useStorageUrl } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
@@ -41,6 +41,7 @@ const formSchema = z.object({
       new Date(new Date().setHours(0, 0, 0, 0)),
       "Event date must be in the future"
     ),
+  time: z.string().min(1, "Time is required"),
   ticketTypes: z
     .array(ticketSchema)
     .min(1, "At least one ticket type required"),
@@ -55,6 +56,7 @@ interface InitialEventData {
   location: string;
   eventDate: number;
   imageStorageId?: Id<"_storage">;
+  time: string;
   ticketTypes: {
     _id: Id<"ticketTypes">;
     name: string;
@@ -98,6 +100,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
       description: initialData?.description ?? "",
       location: initialData?.location ?? "",
       eventDate: initialData ? new Date(initialData.eventDate) : new Date(),
+      time: initialData?.time ?? "",
       ticketTypes: initialData?.ticketTypes ?? [
         { name: "", price: 0, totalTickets: 1 },
       ],
@@ -225,6 +228,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             eventId: initialData._id,
             ...values,
             eventDate: values.eventDate.getTime(),
+            // time: values.time,
             ticketTypes: values.ticketTypes.map((type, index) => ({
               id: initialData.ticketTypes[index]?._id,
               name: type.name,
@@ -350,7 +354,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             )}
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <FormField
               control={form.control}
               name="location"
@@ -367,6 +371,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
               )}
             />
 
+            {/* <div className="grid grid-cols-2 gap-4"> */}
             <FormField
               control={form.control}
               name="eventDate"
@@ -395,6 +400,23 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="time"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={cn("text-muted-foreground")}>
+                    Event Time
+                  </FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* </div> */}
           </div>
 
           <div className="">
@@ -426,7 +448,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                   placeholder="Total Tickets"
                 />
                 <Button type="button" onClick={() => remove(index)}>
-                  Remove
+                  <X className="w-4 h-4" />
                 </Button>
               </div>
             ))}
