@@ -27,6 +27,7 @@ export interface EventDataProps {
   name: string;
   eventDate: number;
   imageStorageId?: Id<"_storage">;
+  startTime?: string;
   location: string;
   userId: string;
   description: string;

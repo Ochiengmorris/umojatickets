@@ -69,9 +69,7 @@ const EventCardSeller = ({
 
           <div className="flex items-start gap-2 text-sm text-slate-500">
             <Clock className="h-4 w-4 mt-0.5" />
-            <span>
-              {"8.00 AM"} - {"5.00 PM"}
-            </span>
+            <span>{event.startTime ?? "Start Time"}</span>
           </div>
 
           <div className="flex items-start gap-2 text-sm text-slate-500">

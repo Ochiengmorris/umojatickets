@@ -3,7 +3,7 @@
 import EventCard from "@/components/events/EventCard";
 import Spinner from "@/components/loaders/Spinner";
 import { useQuery } from "convex/react";
-import { CalendarDays, Ticket } from "lucide-react";
+import { CalendarDays, Loader, Ticket } from "lucide-react";
 import { api } from "../../../convex/_generated/api";
 import { useMemo } from "react";
 import { Skeleton } from "../ui/skeleton";
@@ -28,19 +28,8 @@ const EventList = () => {
 
   if (!events) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
-        <div className="flex items-center justify-between mb-8">
-          <div className="w-full">
-            <Skeleton className="h-8 w-48 mb-2" />
-            <Skeleton className="h-4 w-64" />
-          </div>
-          <Skeleton className="h-10 w-40" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-[350px] rounded-xl" />
-          ))}
-        </div>
+      <div className="min-h-[400px] flex items-center justify-center">
+        <Loader className="w-6 h-6 animate-spin" />
       </div>
     );
   }

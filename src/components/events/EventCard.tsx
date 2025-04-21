@@ -99,8 +99,8 @@ export default function EventCard({
   }, [router, userTicket]);
 
   if (!event) {
-    // return <EventCardSkeleton />;
-    return null;
+    return <EventCardSkeleton />;
+    // return null;
   }
 
   const renderQueuePosition = () => {
