@@ -36,9 +36,9 @@ function Header() {
         </div>
 
         {/* Search Bar - Full width on mobile */}
-        <div className="justify-start w-full lg:flex-1 lg:max-w-2xl ">
+        {/* <div className="justify-start w-full lg:flex-1 lg:max-w-2xl ">
           <SearchBar />
-        </div>
+        </div> */}
 
         <div className="hidden lg:flex ml-auto">
           <SignedIn>

@@ -26,13 +26,13 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
             <Link
               href="/events"
-              className="px-8 py-4 bg-card-foreground hover:bg-card-foreground/60 text-white font-medium rounded-md transition duration-300 text-center"
+              className="px-8 py-4 bg-landingwhite hover:bg-card-foreground/60 text-landingsecondary font-medium rounded-md transition duration-300 text-center"
             >
               Explore Events
             </Link>
             <Link
               href="#categories"
-              className="px-8 py-4 bg-white hover:bg-neutral-100 text-primary font-medium rounded-md transition duration-300 text-center"
+              className="px-8 py-4 bg-none hover:bg-landingwhite/10 text-landingwhite font-medium rounded-md transition duration-300 text-center border border-landingwhite/40"
             >
               Browse Categories
             </Link>

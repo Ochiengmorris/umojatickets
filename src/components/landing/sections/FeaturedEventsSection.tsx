@@ -4,13 +4,14 @@ import React from "react";
 import { api } from "../../../../convex/_generated/api";
 import { getConvexClient } from "@/lib/convex";
 import EventCard from "@/components/events/EventCard";
+import FeaturedCard from "../FeaturedCard";
 
 const convex = getConvexClient();
 
 export default async function FeaturedEventsSection() {
   const events =
     (await convex.query(api.events.get))
-      .filter((e) => e.eventDate < Date.now())
+      .filter((e) => e.eventDate > Date.now())
       .splice(0, 3) || [];
 
   // Generate skeleton loaders when loading
@@ -25,10 +26,10 @@ export default async function FeaturedEventsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h2 className="text-3xl font-bold font-montserrat text-neutral-800">
+            <h2 className=" text-landingsecondary sm:text-[50px] xs:text-[40px] text-[30px] font-bold">
               Featured Events
             </h2>
-            <p className="text-lg text-neutral-600 mt-2">
+            <p className="sm:text-[18px] text-[14px] text-landingprimary uppercase tracking-wider">
               Don't miss out on these popular events
             </p>
           </div>
@@ -41,11 +42,11 @@ export default async function FeaturedEventsSection() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {!events && renderSkeletons()}
           {events &&
             events.map((event) => (
-              <EventCard key={event._id} eventId={event._id} motionkey={1.5} />
+              <FeaturedCard key={event._id} eventId={event._id} />
             ))}
           {events && events.length === 0 && (
             <div className="col-span-full text-center py-8">
@@ -54,6 +55,16 @@ export default async function FeaturedEventsSection() {
               </p>
             </div>
           )}
+        </div>
+
+        <div className="mt-8 text-center md:hidden">
+          <Link
+            href="/events"
+            className="inline-flex items-center text-primary hover:text-primary-dark font-medium"
+          >
+            View All Events
+            <i className="fas fa-arrow-right ml-2"></i>
+          </Link>
         </div>
       </div>
     </section>
