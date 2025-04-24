@@ -8,18 +8,27 @@ import {
   Twitter,
   X,
 } from "lucide-react";
+import logo_blue from "@/images/logo/logo-blue.png";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
   return (
     <footer className="bg-neutral-50 text-landingsecondary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
           <div>
-            <h3 className="text-xl font-semibold font-montserrat mb-4">
-              UmojaTickets
-            </h3>
-            <p className="text-neutral-600 mb-4">
+            <Link href="/" className="flex items-center">
+              <Image
+                src={logo_blue}
+                width={200}
+                height={200}
+                alt="logo"
+                className="object-contain w-[100px] h-[100px] md:w-[140px] md:h-[140px] absolute -left-2 -top-10"
+                priority
+              />
+            </Link>
+            <p className="text-neutral-600 mb-4 mt-16">
               Your trusted platform for discovering and booking event tickets
               across Kenya.
             </p>
@@ -66,7 +75,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/events"
+                  href="/event"
                   className="text-neutral-500 hover:text-neutral-900 transition duration-300"
                 >
                   Events
@@ -74,7 +83,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#categories"
+                  href="/categories"
                   className="text-neutral-500 hover:text-neutral-900 transition duration-300"
                 >
                   Categories
@@ -90,7 +99,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/about-us"
                   className="text-neutral-500 hover:text-neutral-900 transition duration-300"
                 >
                   About Us
@@ -122,7 +131,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="faqs"
                   className="text-neutral-500 hover:text-neutral-900 transition duration-300"
                 >
                   FAQs
@@ -130,7 +139,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/termsOfService"
                   className="text-neutral-500 hover:text-neutral-900 transition duration-300"
                 >
                   Terms of Service
@@ -138,7 +147,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/privacyPolicy"
                   className="text-neutral-500 hover:text-neutral-900 transition duration-300"
                 >
                   Privacy Policy
@@ -146,7 +155,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/refundPolicy"
                   className="text-neutral-500 hover:text-neutral-900 transition duration-300"
                 >
                   Refund Policy
@@ -163,7 +172,7 @@ export default function Footer() {
               <li className="flex items-center">
                 <MapPinHouse className="w-4 h-4 mr-3 text-landingsecondary" />
                 <span className="text-neutral-500">
-                  Westlands Business Park, Nairobi, Kenya
+                  Westlands Park, Nairobi, Kenya
                 </span>
               </li>
               <li className="flex items-center">

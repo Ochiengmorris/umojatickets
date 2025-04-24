@@ -106,17 +106,6 @@ export default function EventCard({
   const renderQueuePosition = () => {
     if (!queuePosition || queuePosition.status !== "waiting") return null;
 
-    // if (availability.purchasedCount >= availability.totalTickets) {
-    //   return (
-    //     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-    //       <div className="flex items-center">
-    //         <Ticket className="w-5 h-5 text-gray-400 mr-2" />
-    //         <span className="text-gray-600">Event is sold out</span>
-    //       </div>
-    //     </div>
-    //   );
-    // }
-
     if (queuePosition.position === 2) {
       return (
         <div className="flex flex-col items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-100">
@@ -215,7 +204,7 @@ export default function EventCard({
   return (
     <Card
       className={cn(
-        "relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:border-primary/30 transition-all duration-300 border overflow-hidden  border-primary-foreground cursor-pointer max-w-xl"
+        "relative bg-card text-card-foreground shadow rounded-xl hover:shadow-lg hover:border-primary/20 transition-all duration-300 border overflow-hidden  border-primary-foreground cursor-pointer max-w-xl"
       )}
     >
       <motion.div

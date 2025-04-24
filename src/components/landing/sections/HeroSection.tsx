@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-neutral-800 overflow-hidden">
+    <section className="relative bg-landingsecondary overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1655882511099-a0db52b01ba3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGV2ZW50JTIwbXVzaWN8ZW58MHx8MHx8fDA%3D"
@@ -25,13 +25,13 @@ export default function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
             <Link
-              href="/events"
-              className="px-8 py-4 bg-landingwhite hover:bg-card-foreground/60 text-landingsecondary font-medium rounded-md transition duration-300 text-center"
+              href="/event"
+              className="px-8 py-4 bg-landingwhite hover:bg-landingwhite/60 text-landingsecondary font-medium rounded-md transition duration-300 text-center"
             >
               Explore Events
             </Link>
             <Link
-              href="#categories"
+              href="/categories"
               className="px-8 py-4 bg-none hover:bg-landingwhite/10 text-landingwhite font-medium rounded-md transition duration-300 text-center border border-landingwhite/40"
             >
               Browse Categories

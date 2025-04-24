@@ -48,6 +48,7 @@ export const create = mutation({
     description: v.string(),
     location: v.string(),
     eventDate: v.number(), // Store as timestamp
+    category: v.optional(v.string()),
     time: v.string(),
     userId: v.string(),
     ticketTypes: v.array(
@@ -68,6 +69,7 @@ export const create = mutation({
       eventDate: args.eventDate,
       startTime: args.time,
       userId: args.userId,
+      category: args.category,
     });
 
     for (const ticketType of ticketTypes) {

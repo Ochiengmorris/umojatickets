@@ -34,15 +34,8 @@ const EventList = () => {
     );
   }
 
-  // const upcomingEvents = events
-  //   .filter((event) => event.eventDate > Date.now())
-  //   .sort((a, b) => a.eventDate - b.eventDate);
-
-  // const pastEvents = events
-  //   .filter((event) => event.eventDate <= Date.now())
-  //   .sort((a, b) => b.eventDate - a.eventDate);
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
       {/* Header */}
       <section className="flex items-center justify-between mb-8">
         <div className="w-full">

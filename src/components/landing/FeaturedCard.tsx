@@ -80,7 +80,7 @@ const FeaturedCard = ({ eventId }: { eventId: Id<"events"> | null }) => {
   return (
     <Card
       className={cn(
-        "relative bg-white flex flex-col md:flex-row  text-landingsecondary shadow rounded-xl hover:shadow-sm transition-all duration-300 border overflow-hidden md:h-96 border-primary-foreground/20"
+        "relative bg-white flex flex-col md:flex-row  text-landingsecondary shadow-sm rounded-xl transition-all duration-300 border border-landingsecondary/10  overflow-hidden md:h-96"
       )}
     >
       {/* Event Image */}
@@ -156,26 +156,26 @@ const FeaturedCard = ({ eventId }: { eventId: Id<"events"> | null }) => {
         </div>
 
         <div className="mt-4">
-          <span className="xl:line-clamp-5 line-clamp-3 whitespace-pre-wrap text-sm text-landingsecondary/80">
+          <p className="xl:line-clamp-4 line-clamp-3 whitespace-pre-wrap text-sm text-landingsecondary/80">
             {event.description}
-          </span>
+          </p>
         </div>
 
-        <div className="flex gap-2 mt-4">
-          {/** TODO: Reuse this somehwere else*/}
-          {/* {isPastEvent && (
+        {/* <div className="flex gap-2 mt-4"> */}
+        {/** TODO: Reuse this somehwere else*/}
+        {/* {isPastEvent && (
                 <span className="inline-flex items-center gap-1 border border-red-500/10 bg-red-500/10 backdrop-blur-sm text-red-500 px-2 py-1 rounded-md text-xs font-semibold">
                 <XCircle className="w-3 h-3" />
                 Past Event
                 </span>
                 )} */}
-          {isPastEvent && (
+        {/* {isPastEvent && (
             <span className="inline-flex items-center gap-1 border border-green-500/10 bg-jmprimary/20 backdrop-blur-sm text-landingtertiary px-2 py-1 rounded-md text-xs font-semibold">
               <Check className="w-3 h-3" />
               Tickets Available
             </span>
           )}
-        </div>
+        </div> */}
         <div className="items-end flex-1 flex justify-between ">
           <Link
             href={`/event/${eventId}`}

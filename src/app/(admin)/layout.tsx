@@ -3,6 +3,7 @@ import MobileNavbar from "@/components/seller/MobileNavbar";
 import type { Metadata } from "next";
 import "../globals.css";
 import RequireAdminSeller from "@/components/layout/RequireAdminSeller";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: "UmojaTickets: Buy & Sell Tickets for Events & Concerts",
@@ -17,6 +18,7 @@ export default async function RootLayout({
 }>) {
   return (
     <RequireAdminSeller>
+      <NextTopLoader showSpinner={false} />
       <div className="flex h-full bg-gray-100">
         <Sidebar />
         <MobileNavbar />

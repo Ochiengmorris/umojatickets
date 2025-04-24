@@ -3,16 +3,18 @@ import Link from "next/link";
 import React from "react";
 import { api } from "../../../../convex/_generated/api";
 import { getConvexClient } from "@/lib/convex";
-import EventCard from "@/components/events/EventCard";
 import FeaturedCard from "../FeaturedCard";
+import { fetchQuery } from "convex/nextjs";
 
 const convex = getConvexClient();
 
 export default async function FeaturedEventsSection() {
   const events =
-    (await convex.query(api.events.get))
+    (await fetchQuery(api.events.get))
       .filter((e) => e.eventDate > Date.now())
       .splice(0, 3) || [];
+
+  console.log("events", events);
 
   // Generate skeleton loaders when loading
   const renderSkeletons = () => {
@@ -22,7 +24,7 @@ export default async function FeaturedEventsSection() {
   };
 
   return (
-    <section className="py-16">
+    <section className="py-16 bg-white/90">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -35,7 +37,7 @@ export default async function FeaturedEventsSection() {
           </div>
           <Link
             href="/events"
-            className="hidden md:flex items-center text-primary hover:text-primary-dark font-medium"
+            className="hidden md:flex items-center text-landingsecondary hover:underline font-medium"
           >
             View All Events
             <i className="fas fa-arrow-right ml-2"></i>

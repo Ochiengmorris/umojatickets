@@ -9,6 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -35,6 +42,9 @@ const formSchema = z.object({
   name: z.string().min(1, "Event name is required"),
   description: z.string().min(1, "Description is required"),
   location: z.string().min(1, "Location is required"),
+  category: z.string({
+    required_error: "Category is required",
+  }),
   eventDate: z
     .date()
     .min(
@@ -56,6 +66,7 @@ interface InitialEventData {
   location: string;
   eventDate: number;
   imageStorageId?: Id<"_storage">;
+  category: string;
   time: string;
   ticketTypes: {
     _id: Id<"ticketTypes">;
@@ -69,6 +80,15 @@ interface EventFormProps {
   mode: "create" | "edit";
   initialData?: InitialEventData;
 }
+
+export const categoryOptions = [
+  "Music",
+  "Sports",
+  "Arts",
+  "Food & Drink",
+  "Technology",
+  "Travel",
+];
 
 export default function EventForm({ mode, initialData }: EventFormProps) {
   const { user } = useUser();
@@ -99,6 +119,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
       name: initialData?.name ?? "",
       description: initialData?.description ?? "",
       location: initialData?.location ?? "",
+      category: initialData?.category ?? "",
       eventDate: initialData ? new Date(initialData.eventDate) : new Date(),
       time: initialData?.time ?? "",
       ticketTypes: initialData?.ticketTypes ?? [
@@ -354,7 +375,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
             )}
           />
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
               name="location"
@@ -394,8 +415,43 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                           ? new Date(field.value).toISOString().split("T")[0]
                           : ""
                       }
+                      min={new Date().toISOString().split("T")[0]} // Prevent past dates
+                      className={cn("justify-end")}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* </div> */}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={cn("text-muted-foreground")}>
+                    Category
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categoryOptions.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -410,20 +466,18 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     Event Time
                   </FormLabel>
                   <FormControl>
-                    <Input type="time" {...field} />
+                    <Input type="time" {...field} className="justify-end" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {/* </div> */}
           </div>
 
           <div className="">
             <label className="block text-sm text-muted-foreground  font-medium mb-2">
               Ticket Types{" "}
               <span className="text-muted-foreground italic">
-                {" "}
                 ( name, price, total-Tickets )
               </span>
             </label>

@@ -20,8 +20,8 @@ const CreateEventModal = ({ isOpen, onClose }: CreateEventModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl p-0 overflow-hidden">
-        <DialogTitle className="flex items-center justify-between p-4 pb-0  border-b border-slate-200">
-          <span className="text-lg font-semibold text-slate-900">
+        <DialogTitle className="flex items-center justify-between px-4 py-2  border-b border-slate-200/50">
+          <span className="text-lg font-semibold text-secondary-foreground">
             Create New Event
           </span>
         </DialogTitle>
@@ -30,7 +30,7 @@ const CreateEventModal = ({ isOpen, onClose }: CreateEventModalProps) => {
           will review your event and notify you once it's live. If you have any
           questions, please contact our support team.
         </DialogDescription>
-        <div className="p-6">
+        <div className="px-6 pb-6">
           <EventForm mode="create" />
         </div>
       </DialogContent>

@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   events: defineTable({
     name: v.string(),
-    category: v.optional(v.id("eventCategories")),
+    category: v.optional(v.string()),
     description: v.string(),
     location: v.string(),
     eventDate: v.number(),
@@ -17,11 +17,6 @@ export default defineSchema({
   })
     .index("by_user_id", ["userId"])
     .index("by_date", ["eventDate"]),
-
-  eventCategories: defineTable({
-    name: v.string(),
-    slug: v.string(),
-  }),
 
   // Promotional codes for discounts
   promoCodes: defineTable({

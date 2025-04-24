@@ -22,7 +22,7 @@ const Upcoming = async () => {
   };
   return (
     <section className="py-14 bg-neutral-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="flex flex-col items-center">
           {/* section subheading */}
           <p className="sm:text-[18px] text-[14px] text-landingprimary uppercase tracking-wider">
@@ -38,19 +38,19 @@ const Upcoming = async () => {
             Upcoming Events
           </h2>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {!events && renderSkeletons()}
+          <div className="mt-6 grid grid-cols-1 w-full md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* {!events && renderSkeletons()} */}
             {events &&
               events.map((event) => (
                 <EventCard key={event._id} eventId={event._id} motionkey={1} />
               ))}
-            {events && events.length === 0 && (
+            {/* {events && events.length === 0 && (
               <div className="col-span-full text-center py-8">
                 <p className="text-neutral-500">
                   No upcoming events at the moment. Check back soon!
                 </p>
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="mt-8 text-center md:hidden">

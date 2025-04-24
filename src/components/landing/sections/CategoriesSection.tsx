@@ -1,16 +1,51 @@
-import React from "react";
+import React, { JSX } from "react";
 import CategoryCard from "../CategoryCard";
-import { Cpu, Film, Music, Palette, Trophy, Utensils } from "lucide-react";
+import {
+  Cpu,
+  Film,
+  Music,
+  Palette,
+  Plane,
+  Trophy,
+  Utensils,
+} from "lucide-react";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "../../../../convex/_generated/api";
 
-const CategoriesSection = () => {
-  const categoryIcons = {
+const categoryOptions = [
+  "Music",
+  "Sports",
+  "Arts",
+  "Food & Drink",
+  "Technology",
+  "Travel",
+];
+
+const CategoriesSection = async () => {
+  const events = await fetchQuery(api.events.get);
+
+  const categoryCounts = events.reduce<Record<string, number>>((acc, event) => {
+    const category = event.category;
+    if (category) {
+      acc[category] = (acc[category] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  const categoryCountsArray = categoryOptions.map((category) => ({
+    category,
+    count: categoryCounts[category] || 0,
+  }));
+
+  const categoryIcons: Record<string, JSX.Element> = {
     Music: <Music className="h-6 w-6 text-purple-600" />,
     Technology: <Cpu className="h-6 w-6 text-blue-600" />,
     "Food & Drink": <Utensils className="h-6 w-6 text-orange-600" />,
     Arts: <Palette className="h-6 w-6 text-pink-600" />,
     Sports: <Trophy className="h-6 w-6 text-green-600" />,
-    Entertainment: <Film className="h-6 w-6 text-red-600" />,
+    Travel: <Plane className="h-6 w-6 text-red-600" />,
   };
+
   return (
     <section id="categories" className="py-16 bg-neutral-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,42 +59,15 @@ const CategoriesSection = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          <CategoryCard
-            title="Music"
-            icon={categoryIcons["Music"]}
-            count={42}
-            color="bg-purple-100"
-          />
-          <CategoryCard
-            title="Technology"
-            icon={categoryIcons["Technology"]}
-            count={35}
-            color="bg-blue-100"
-          />
-          <CategoryCard
-            title="Food & Drink"
-            icon={categoryIcons["Food & Drink"]}
-            count={28}
-            color="bg-orange-100"
-          />
-          <CategoryCard
-            title="Arts"
-            icon={categoryIcons["Arts"]}
-            count={21}
-            color="bg-pink-100"
-          />
-          <CategoryCard
-            title="Sports"
-            icon={categoryIcons["Sports"]}
-            count={19}
-            color="bg-green-100"
-          />
-          <CategoryCard
-            title="Entertainment"
-            icon={categoryIcons["Entertainment"]}
-            count={24}
-            color="bg-red-100"
-          />
+          {categoryCountsArray.map(({ category, count }) => (
+            <CategoryCard
+              key={category}
+              title={category}
+              icon={categoryIcons[category]}
+              count={count}
+              color="bg-gray-100"
+            />
+          ))}
         </div>
       </div>
     </section>

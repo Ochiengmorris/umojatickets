@@ -6,7 +6,7 @@ export const Loader = () => {
   return (
     <div className="animate-spin ">
       <div className="animate-pulse">
-        <Image src={loader} alt="loader" className="w-16 h-16" />
+        <Image src={loader} alt="loader" className="w-8 h-8" />
       </div>
     </div>
   );

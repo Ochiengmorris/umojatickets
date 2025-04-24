@@ -13,7 +13,7 @@ export default function CTASection() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link
-            href="/events"
+            href="/event"
             className="px-6 py-4 bg-white hover:bg-neutral-100 text-landingsecondary font-semibold rounded-md transition duration-300"
           >
             Explore Events

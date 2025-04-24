@@ -191,50 +191,6 @@ export const processQueue = mutation({
     const ticketType = await ctx.db.get(ticketTypeId);
     if (!ticketType) throw new Error("Ticket type not found");
 
-    // Calculate available spots
-    // const { availableSpots } = await ctx.db
-    //   .query("events")
-    //   .filter((q) => q.eq(q.field("_id"), eventId))
-    //   .first()
-    //   .then(async (event) => {
-    //     if (!event) throw new Error("Event not found");
-
-    //     const purchasedCount = await ctx.db
-    //       .query("tickets")
-    //       .withIndex("by_event_ticket_id", (q) =>
-    //         q.eq("eventId", eventId).eq("ticketTypeId", ticketTypeId)
-    //       )
-    //       .collect()
-    //       .then(
-    //         (tickets) =>
-    //           tickets.filter(
-    //             (t) =>
-    //               t.status === TICKET_STATUS.VALID ||
-    //               t.status === TICKET_STATUS.USED
-    //           ).length
-    //       );
-
-    //     const now = Date.now();
-    //     const activeOffers = await ctx.db
-    //       .query("waitingList")
-    //       .withIndex("by_event_ticket_type_status", (q) =>
-    //         q
-    //           .eq("eventId", eventId)
-    //           .eq("ticketTypeId", ticketTypeId)
-    //           .eq("status", WAITING_LIST_STATUS.OFFERED)
-    //       )
-    //       .collect()
-    //       .then(
-    //         (entries) =>
-    //           entries.filter((e) => (e.offerExpiresAt ?? 0) > now).length
-    //       );
-
-    //     return {
-    //       availableSpots:
-    //         ticketType.totalTickets - (purchasedCount + activeOffers),
-    //     };
-    //   });
-
     const { remainingTickets } = await getEventAvailability(ctx, {
       eventId,
       ticketTypeId,

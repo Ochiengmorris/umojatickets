@@ -131,8 +131,8 @@ export default function EventPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-end">
                 <div className="container pb-8">
                   <Badge variant="category" className="mb-4">
-                    {/* {event.category} */}
-                    {"Music"}
+                    {event.category}
+                    {/* {"Music"} */}
                   </Badge>
                   <h1 className="font-display font-extrabold text-3xl md:text-4xl lg:text-5xl text-white mb-4">
                     {event.name}

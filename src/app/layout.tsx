@@ -7,8 +7,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Head from "next/head";
 import "./globals.css";
-import NProgressHandler from "@/components/other/NProgress";
 import { ReactScan } from "@/components/other/ReactScan";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,8 +62,8 @@ export default function RootLayout({
         >
           <ConvexClientProvider>
             <ClerkProvider>
-              <NProgressHandler />
               <SyncUserWithConvex />
+              <NextTopLoader showSpinner={false} />
               <main className="flex flex-col h-screen overflow-hidden">
                 {children}
               </main>
